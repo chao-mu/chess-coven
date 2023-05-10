@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+// Chess.js
+import { BLACK, WHITE, QUEEN, Piece } from 'chess.js'
+
+// Components
 import { ChessboardSquare } from '../components/ChessboardSquare';
+
 
 const meta: Meta<typeof ChessboardSquare> = {
   component: ChessboardSquare,
@@ -12,27 +17,39 @@ type Story = StoryObj<typeof ChessboardSquare>;
 export const LightSquare: Story = {
   args: {
     isLight: true,
-    piece: 'empty',
   },
 };
 
 export const DarkSquare: Story = {
   args: {
     isLight: false,
-    piece: 'empty',
   },
 };
 
-export const LightSquareWithPiece: Story = {
+export const LightSquareWithWhitePiece: Story = {
   args: {
     isLight: true,
-    piece: 'black-queen',
+    piece: { color: WHITE, type: QUEEN } as Piece,
   },
 };
 
-export const DarkSquareWithPiece: Story = {
+export const LightSquareWithBlackPiece: Story = {
   args: {
-    isLight: false,
-    piece: 'white-queen',
+    isLight: true,
+    piece: { color: BLACK, type: QUEEN } as Piece,
   },
 };
+
+export const DarkSquareWithBlackPiece: Story = {
+  args: {
+    isLight: false,
+    piece: { color: BLACK, type: QUEEN } as Piece,
+  },
+}
+
+export const DarkSquareWithWhitePiece: Story = {
+  args: {
+    isLight: false,
+    piece: { color: WHITE, type: QUEEN } as Piece,
+  },
+}
