@@ -12,12 +12,30 @@ type MemorizerNavProps = {
   isRevealed: boolean
 }
 
-export const MemorizerNav = ({ onJump, isRevealed, onRevealToggle }: MemorizerNavProps) => {
+export const MemorizerNav = ({ totalMoves, position, onJump, isRevealed, onRevealToggle }: MemorizerNavProps) => {
   const jumpsBack = [-8, -4, -1];
   const jumpsForward = [1, 4, 8];
 
+  const random = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+  }
+
+  const jumpRandomForward = () => {
+    onJump(random(1, totalMoves - position))
+  }
+
+  const jumpRandomBackward = () => {
+    if (position == 0) return
+    onJump(-random(1, position))
+  }
+
   return (
     <div className="flex gap-2">
+      <NavButton onClick={jumpRandomBackward}>
+        <div className="whitespace-nowrap">
+          «🎲
+        </div>
+      </NavButton>
       {jumpsBack.map((jump) => (
         <NavButton key={jump} onClick={() => onJump(jump)}>
           «{Math.abs(jump)}
@@ -31,6 +49,9 @@ export const MemorizerNav = ({ onJump, isRevealed, onRevealToggle }: MemorizerNa
           {jump}»
         </NavButton>
       ))}
+      <NavButton onClick={jumpRandomForward}>
+        🎲»
+      </NavButton>
     </div>
   );
 };

@@ -18,10 +18,12 @@ export default function MemorizerPage() {
   const [game, setGame] = useState<Game>(games[0])
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full gap-4">
-      <div className="text-4xl font-bold">Memorizer</div>
+    <div className="flex flex-col items-center justify-center w-full h-full gap-4 mt-4">
+      <div className="text-5xl font-bold font-header">Game Memorizer</div>
+      <div className="max-w-4xl">
+        <GameSelect setGame={setGame} games={games} />
+      </div>
       <GameMemorizer pgn={game.pgn} />
-      <GameSelect setGame={setGame} games={games} />
     </div>
   )
 }

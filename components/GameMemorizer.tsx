@@ -37,6 +37,7 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
   const isLastPosition = position >= totalMoves;
 
   function onJump(steps: number) {
+    console.log(steps)
     setPosition((p) => Math.min(totalMoves, Math.max(0, p + steps)))
   }
 
@@ -83,14 +84,14 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
           }}
         />
       </div>
-      <div className="mt-4 flex justify-center">
+      <div className="mt-4 flex justify-center items-center">
         {isLastPosition ? (
           <div className="text-center text-2xl font-bold">
             🎉 End of game!
           </div>
         ) : isRevealed ? (
           <div>
-            <div className="flex text-2xl font-bold">
+            <div className="flex text-2xl">
               <div className="mr-3">
                 Continuation
               </div>
@@ -101,7 +102,7 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
           </div>
         ) : (
           <div className="flex">
-            <div className="text-2xl font-bold mr-3">
+            <div className="text-2xl mr-3 flex justify-center items-center">
               Continuation
             </div>
             <SanInputForm
