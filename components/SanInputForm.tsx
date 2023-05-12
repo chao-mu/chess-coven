@@ -28,17 +28,17 @@ export const SanInputForm = ({ onSubmit, isWrong }: SanInputFormProps) => {
 
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="flex items-center">
+    <form onSubmit={handleSubmit(submit)} className="flex items-center gap-2">
         <input
           {...register("san", { validate: validateSan })}
-          className="border border-gray-300 rounded-l-md p-2 w-24"
-          placeholder="Enter SAN"
+          className="w-24 p-2 text-xl bg-transparent border-2 border-purple-500 rounded-lg"
+          placeholder="SAN"
           autoComplete="off"
           autoFocus
         />
         <button
           type="submit"
-          className="bg-lime-500 text-white rounded-r-md p-2 hover:bg-lime-600 mr-2"
+          className="p-2 text-xl border-2 border-purple-500 rounded-lg"
         >
           Submit
         </button>

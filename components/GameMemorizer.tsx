@@ -34,10 +34,10 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
   }
 
   const totalMoves = moves.length
-  const isLastPosition = position === totalMoves - 1;
+  const isLastPosition = position >= totalMoves;
 
   function onJump(steps: number) {
-    setPosition((p) => Math.min(totalMoves - 1, Math.max(0, p + steps)))
+    setPosition((p) => Math.min(totalMoves, Math.max(0, p + steps)))
   }
 
   function onGuess(san: string) {
