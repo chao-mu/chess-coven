@@ -5,7 +5,7 @@ import React from 'react'
 import { WHITE, Piece } from 'chess.js'
 
 // https://github.com/nikfrank/react-chess-pieces
-import PieceComponent from 'react-chess-pieces';
+import ChessPiece from 'react-chess-pieces'
 
 export type ChessboardSquareProps = {
   piece: Piece | null | undefined
@@ -27,7 +27,7 @@ export function ChessboardSquare(props: ChessboardSquareProps) {
     <div
       className={`${fill} aspect-square`}
     >
-      { piece && <PieceComponent piece={piece} /> }
+      { piece && <ChessPiece piece={piece} /> }
     </div>
   )
 }
