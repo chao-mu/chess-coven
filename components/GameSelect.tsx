@@ -1,9 +1,6 @@
 // React
 import React from 'react'
 
-// React Hook Form
-import { useForm } from 'react-hook-form'
-
 // Types
 import { Game } from '@/types'
 

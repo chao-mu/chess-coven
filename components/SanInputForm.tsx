@@ -34,7 +34,6 @@ export const SanInputForm = ({ onSubmit, isWrong }: SanInputFormProps) => {
           className="w-24 p-2 text-xl bg-transparent border-2 border-purple-500 rounded-lg"
           placeholder="SAN"
           autoComplete="off"
-          autoFocus
         />
         <button
           type="submit"

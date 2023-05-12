@@ -1,8 +1,10 @@
 {
   "extends": [
     "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
     "next/core-web-vitals",
     "plugin:jsx-a11y/recommended",
     "plugin:storybook/recommended"
-  ]
+  ],
+  "parser": "@typescript-eslint/parser"
 }
