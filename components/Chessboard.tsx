@@ -9,8 +9,8 @@ import { ChessboardSquare } from './ChessboardSquare'
 
 type ChessboardProps = {
   fen: string | undefined
-  goodSquares: string[]
-  badSquares: string[]
+  goodSquares?: string[]
+  badSquares?: string[]
   onSquareClick?: (square: string) => void
 }
 
