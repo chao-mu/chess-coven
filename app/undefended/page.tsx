@@ -3,7 +3,7 @@
 // React
 import React from 'react';
 
-export default () => {
+export default function UndefendedPage() {
   React.useEffect(() => {
     window.location.replace('https://tactical-elements.netlify.app/');
   })

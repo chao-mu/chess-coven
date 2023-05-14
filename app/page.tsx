@@ -9,7 +9,7 @@ import Link from 'next/link';
 // Components
 import { NavSquare } from '../components/NavSquare';
 
-export default () => {
+export default function HomePage() {
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
       <h1 className="text-6xl font-bold font-header mb-6 mb-4">Tactical Elements</h1>

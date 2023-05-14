@@ -14,7 +14,7 @@ type ChessboardProps = {
   onSquareClick?: (square: string) => void
 }
 
-export function Chessboard({fen, goodSquares=[], badSquares=[], onSquareClick}: ChessboardProps) {
+export function Chessboard({fen, goodSquares=[], badSquares=[]}: ChessboardProps) {
   let chess = new Chess()
   if (fen) {
     chess = new Chess(fen)
