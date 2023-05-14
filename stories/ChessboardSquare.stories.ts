@@ -53,3 +53,47 @@ export const DarkSquareWithWhitePiece: Story = {
     piece: { color: WHITE, type: QUEEN } as Piece,
   },
 }
+
+export const LightSquareIsGood: Story = {
+  args: {
+    isLight: true,
+    isGood: true,
+  },
+}
+
+export const DarkSquareIsGood: Story = {
+  args: {
+    isLight: false,
+    isGood: true,
+  },
+}
+
+export const LightSquareIsBad: Story = {
+  args: {
+    isLight: true,
+    isBad: true,
+  },
+}
+
+export const DarkSquareIsBad: Story = {
+  args: {
+    isLight: false,
+    isBad: true,
+  },
+}
+
+export const DarkSquareIsGoodWithWhitePiece: Story = {
+  args: {
+    isLight: true,
+    isGood: true,
+    piece: { color: WHITE, type: QUEEN } as Piece,
+  },
+}
+
+export const DarkSquareIsBadWithBlackWhitePiece: Story = {
+  args: {
+    isLight: true,
+    isGood: true,
+    piece: { color: BLACK, type: QUEEN } as Piece,
+  },
+}

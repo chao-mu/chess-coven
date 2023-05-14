@@ -9,13 +9,15 @@ import { ChessboardSquare } from './ChessboardSquare'
 
 type ChessboardProps = {
   fen: string | undefined
+  goodSquares: string[]
+  badSquares: string[]
+  onSquareClick?: (square: string) => void
 }
 
-export function Chessboard(props: ChessboardProps) {
-
+export function Chessboard({fen, goodSquares=[], badSquares=[], onSquareClick}: ChessboardProps) {
   let chess = new Chess()
-  if (props.fen) {
-    chess = new Chess(props.fen)
+  if (fen) {
+    chess = new Chess(fen)
   }
 
   function squareName(row: number, col: number): string {
@@ -26,9 +28,15 @@ export function Chessboard(props: ChessboardProps) {
 
   return (
     <div className="grid grid-cols-8">
-      {chess.board().map((row, rowIdx: number) => (
-          row.map(((piece, colIdx) => (
-            <ChessboardSquare piece={piece} isLight={(rowIdx + colIdx) % 2 === 1} key={squareName(rowIdx, colIdx)}/>
+      {chess.board().map((row, rowIdx) => (
+        row.map(((piece, colIdx) => (
+          <ChessboardSquare
+            piece={piece}
+            isLight={(rowIdx + colIdx) % 2 === 1}
+            isGood={goodSquares.includes(squareName(rowIdx, colIdx))}
+            isBad={badSquares.includes(squareName(rowIdx, colIdx))}
+            key={squareName(rowIdx, colIdx)} 
+          />
           )))
       ))}
     </div>

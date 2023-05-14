@@ -1,6 +1,9 @@
 // React
 import React  from 'react';
 
+// react icons
+import { FaAngleLeft, FaAngleRight, FaDice, FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
+
 // Components
 import { NavButton } from './NavButton';
 
@@ -13,9 +16,6 @@ type MemorizerNavProps = {
 }
 
 export const MemorizerNav = ({ totalMoves, position, onJump, isRevealed, onRevealToggle }: MemorizerNavProps) => {
-  const jumpsBack = [-8, -4, -1];
-  const jumpsForward = [1, 4, 8];
-
   const random = (min: number, max: number) => {
     return Math.floor(Math.random() * (max - min + 1)) + min
   }
@@ -30,27 +30,27 @@ export const MemorizerNav = ({ totalMoves, position, onJump, isRevealed, onRevea
   }
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 flex-wrap">
+      <NavButton onClick={() => onJump(-position)}>
+        <FaAngleDoubleLeft />
+      </NavButton>
       <NavButton onClick={jumpRandomBackward}>
-        <div className="whitespace-nowrap">
-          «🎲
-        </div>
+        <FaDice />
       </NavButton>
-      {jumpsBack.map((jump) => (
-        <NavButton key={jump} onClick={() => onJump(jump)}>
-          «{Math.abs(jump)}
-        </NavButton>
-      ))}
+      <NavButton onClick={() => onJump(-1)}>
+        <FaAngleLeft />
+      </NavButton>
       <NavButton onClick={() => {onRevealToggle(!isRevealed)}}>
-        {isRevealed ? '😔' : '👁️'}
+        {isRevealed ? 'hide' : 'show'}
       </NavButton>
-      {jumpsForward.map((jump) => (
-        <NavButton key={jump} onClick={() => onJump(jump)}>
-          {jump}»
-        </NavButton>
-      ))}
+      <NavButton onClick={() => onJump(1)}>
+        <FaAngleRight />
+      </NavButton>
       <NavButton onClick={jumpRandomForward}>
-        🎲»
+        <FaDice />
+      </NavButton>
+      <NavButton onClick={() => onJump(totalMoves)}>
+        <FaAngleDoubleRight />
       </NavButton>
     </div>
   );

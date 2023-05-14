@@ -37,12 +37,10 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
   const isLastPosition = position >= totalMoves;
 
   function onJump(steps: number) {
-    console.log(steps)
     setPosition((p) => Math.min(totalMoves, Math.max(0, p + steps)))
   }
 
   function onGuess(san: string) {
-    console.log(moves[position], san);
     chess.move(moves[position]);
     const solutionFen = chess.fen();
     chess.undo();
@@ -66,8 +64,8 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
 
 
   return (
-    <div className="flex flex-col max-w-2xl">  
-      <div className="flex flex-col items-center">  
+    <div className="flex flex-col w-full">  
+      <div className="flex flex-col w-full items-center">  
         <div className="w-full mb-2">
           <Chessboard fen={chess.fen()}/>
         </div>

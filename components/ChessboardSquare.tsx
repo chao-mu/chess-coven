@@ -10,6 +10,8 @@ import ChessPiece from 'react-chess-pieces'
 export type ChessboardSquareProps = {
   piece: Piece | null | undefined
   isLight: boolean
+  isGood: boolean
+  isBad: boolean
 }
 
 export function ChessboardSquare(props: ChessboardSquareProps) {
@@ -23,11 +25,22 @@ export function ChessboardSquare(props: ChessboardSquareProps) {
     }
   }
 
+  let circleClass;
+  if (props.isGood) {
+    circleClass = 'border-green-500'
+  } else if (props.isBad) {
+    circleClass = 'border-red-500'
+  } else {
+    circleClass = 'border-none'
+  }
+
   return (
     <div
-      className={`${fill} aspect-square`}
+      className={`${fill} aspect-square flex justify-center items-center`}
     >
-      { piece && <ChessPiece piece={piece} /> }
+      <div className={`${circleClass} border-8 rounded-full w-full h-full`}>
+        { piece && <ChessPiece piece={piece} /> }
+      </div>
     </div>
   )
 }
