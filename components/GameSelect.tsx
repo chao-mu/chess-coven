@@ -13,7 +13,7 @@ export function GameSelect({ setGame, games }: GameSelectProps) {
   return (
     <select
       onChange={(e) => setGame(games[parseInt(e.target.value)])}
-      className="w-full p-2 text-xl bg-transparent border-2 border-purple-500 rounded-lg"
+      className="w-full p-2 text-xl bg-transparent border-2 border-purple-500"
     >
       {games.map((game, idx) => (
         <option key={idx} value={idx}>

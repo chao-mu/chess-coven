@@ -20,8 +20,8 @@ export default function MemorizerPage() {
   return (
 
     <div className="flex flex-col items-center justify-center w-full h-full gap-4 mt-4">
-      <h1 className="text-5xl text-center mb-3 font-header">Memorizer/Notation Trainer</h1>
-      <div className="font-bold font-header max-w-2xl">
+      <h1 className="text-3xl text-center mb-3 font-header">Memorizer/Notation Trainer</h1>
+      <div className="font-body max-w-2xl">
         <GameSelect setGame={setGame} games={games} />
         <div className="mt-2"/>
         <GameMemorizer pgn={game.pgn} />

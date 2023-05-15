@@ -82,13 +82,13 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
           }}
         />
       </div>
-      <div className="mt-4 flex justify-center items-center">
+      <div className="mt-4">
         {isLastPosition ? (
           <div className="text-center text-2xl font-bold">
-            🎉 End of game!
+             🎉 End of game! 🎉
           </div>
         ) : isRevealed ? (
-          <div>
+          <div className="flex items-center justify-center">
             <div className="flex text-2xl">
               <div className="mr-3">
                 Continuation
@@ -99,15 +99,13 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
             </div>
           </div>
         ) : (
-          <div className="flex">
-            <div className="text-2xl mr-3 flex justify-center items-center">
-              Continuation
-            </div>
-            <SanInputForm
-              onSubmit={onGuess}
-              isWrong={isWrong}
-            />
-          </div>
+          <SanInputForm
+            onSubmit={onGuess}
+            isWrong={isWrong}
+            onReset={() => {
+              setIsWrong(false);
+            }}
+          />
         )}
       </div>
     </div>

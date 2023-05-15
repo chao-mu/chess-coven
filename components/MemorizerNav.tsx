@@ -31,27 +31,31 @@ export const MemorizerNav = ({ totalMoves, position, onJump, isRevealed, onRevea
 
   return (
     <div className="flex gap-2 flex-wrap">
-      <NavButton onClick={() => onJump(-position)}>
-        <FaAngleDoubleLeft />
-      </NavButton>
-      <NavButton onClick={jumpRandomBackward}>
-        <FaDice />
-      </NavButton>
-      <NavButton onClick={() => onJump(-1)}>
-        <FaAngleLeft />
-      </NavButton>
-      <NavButton onClick={() => {onRevealToggle(!isRevealed)}}>
-        {isRevealed ? 'hide' : 'show'}
-      </NavButton>
-      <NavButton onClick={() => onJump(1)}>
-        <FaAngleRight />
-      </NavButton>
-      <NavButton onClick={jumpRandomForward}>
-        <FaDice />
-      </NavButton>
-      <NavButton onClick={() => onJump(totalMoves)}>
-        <FaAngleDoubleRight />
-      </NavButton>
+      <div className="flex gap-2 justify-between">
+        <NavButton onClick={() => onJump(-position)}>
+          <FaAngleDoubleLeft />
+        </NavButton>
+        <NavButton onClick={jumpRandomBackward}>
+          <FaDice />
+        </NavButton>
+        <NavButton onClick={() => onJump(-1)}>
+          <FaAngleLeft />
+        </NavButton>
+        <NavButton onClick={() => {onRevealToggle(!isRevealed)}}>
+          {isRevealed ? 'hide' : 'show'}
+        </NavButton>
+      </div>
+      <div className="flex gap-2 justify-between">
+        <NavButton onClick={() => onJump(1)}>
+          <FaAngleRight />
+        </NavButton>
+        <NavButton onClick={jumpRandomForward}>
+          <FaDice />
+        </NavButton>
+        <NavButton onClick={() => onJump(totalMoves)}>
+          <FaAngleDoubleRight />
+        </NavButton>
+      </div>
     </div>
   );
 };
