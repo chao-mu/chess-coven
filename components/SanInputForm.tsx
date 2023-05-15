@@ -62,7 +62,12 @@ export const SanInputForm = ({ onSubmit, isWrong, onReset }: SanInputFormProps) 
           <button
             type="reset"
             className="p-2 text-xl border-2 border-purple-500"
-            onClick={onReset}
+            onClick={() => {
+              reset()
+              if (onReset) {
+                onReset()
+              }
+            }}
           >
             Reset
           </button>
