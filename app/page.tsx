@@ -14,7 +14,7 @@ export default function HomePage() {
     <div className="flex flex-col justify-center items-center min-h-screen">
       <h1 className="text-6xl font-bold font-header mb-6 mb-4">Tactical Elements</h1>
       <div className="flex flex-col gap-4">
-        <Link href="/undefended">
+        <Link href="https://tactical-elements.netlify.app/">
           <NavSquare
             title="Undefended Pieces/Pawns"
             description="Click the undefended chessmen. Kings can't defend attacked pieces."
