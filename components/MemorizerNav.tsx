@@ -1,6 +1,9 @@
 // React
 import React  from 'react';
 
+// react icons
+import { FaAngleLeft, FaAngleRight, FaDice, FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
+
 // Components
 import { NavButton } from './NavButton';
 
@@ -12,25 +15,47 @@ type MemorizerNavProps = {
   isRevealed: boolean
 }
 
-export const MemorizerNav = ({ onJump, isRevealed, onRevealToggle }: MemorizerNavProps) => {
-  const jumpsBack = [-8, -4, -1];
-  const jumpsForward = [1, 4, 8];
+export const MemorizerNav = ({ totalMoves, position, onJump, isRevealed, onRevealToggle }: MemorizerNavProps) => {
+  const random = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+  }
+
+  const jumpRandomForward = () => {
+    onJump(random(1, totalMoves - position))
+  }
+
+  const jumpRandomBackward = () => {
+    if (position == 0) return
+    onJump(-random(1, position))
+  }
 
   return (
-    <div className="flex gap-2">
-      {jumpsBack.map((jump) => (
-        <NavButton key={jump} onClick={() => onJump(jump)}>
-          «{Math.abs(jump)}
+    <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2 justify-between">
+        <NavButton onClick={() => onJump(-position)}>
+          <FaAngleDoubleLeft />
         </NavButton>
-      ))}
-      <NavButton onClick={() => {onRevealToggle(!isRevealed)}}>
-        {isRevealed ? '😔' : '👁️'}
-      </NavButton>
-      {jumpsForward.map((jump) => (
-        <NavButton key={jump} onClick={() => onJump(jump)}>
-          {jump}»
+        <NavButton onClick={jumpRandomBackward}>
+          <FaDice />
         </NavButton>
-      ))}
+        <NavButton onClick={() => onJump(-1)}>
+          <FaAngleLeft />
+        </NavButton>
+        <NavButton onClick={() => {onRevealToggle(!isRevealed)}}>
+          {isRevealed ? 'hide' : 'show'}
+        </NavButton>
+      </div>
+      <div className="flex gap-2 justify-between">
+        <NavButton onClick={() => onJump(1)}>
+          <FaAngleRight />
+        </NavButton>
+        <NavButton onClick={jumpRandomForward}>
+          <FaDice />
+        </NavButton>
+        <NavButton onClick={() => onJump(totalMoves)}>
+          <FaAngleDoubleRight />
+        </NavButton>
+      </div>
     </div>
   );
 };

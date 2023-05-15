@@ -34,14 +34,13 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
   }
 
   const totalMoves = moves.length
-  const isLastPosition = position === totalMoves - 1;
+  const isLastPosition = position >= totalMoves;
 
   function onJump(steps: number) {
-    setPosition((p) => Math.min(totalMoves - 1, Math.max(0, p + steps)))
+    setPosition((p) => Math.min(totalMoves, Math.max(0, p + steps)))
   }
 
   function onGuess(san: string) {
-    console.log(moves[position], san);
     chess.move(moves[position]);
     const solutionFen = chess.fen();
     chess.undo();
@@ -65,8 +64,8 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
 
 
   return (
-    <div className="flex flex-col max-w-2xl">  
-      <div className="flex flex-col items-center">  
+    <div className="flex flex-col w-full">  
+      <div className="flex flex-col w-full items-center">  
         <div className="w-full mb-2">
           <Chessboard fen={chess.fen()}/>
         </div>
@@ -83,14 +82,14 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
           }}
         />
       </div>
-      <div className="mt-4 flex justify-center">
+      <div className="mt-4">
         {isLastPosition ? (
           <div className="text-center text-2xl font-bold">
-            🎉 End of game!
+             🎉 End of game! 🎉
           </div>
         ) : isRevealed ? (
-          <div>
-            <div className="flex text-2xl font-bold">
+          <div className="flex items-center justify-center">
+            <div className="flex text-2xl">
               <div className="mr-3">
                 Continuation
               </div>
@@ -100,15 +99,13 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
             </div>
           </div>
         ) : (
-          <div className="flex">
-            <div className="text-2xl font-bold mr-3">
-              Continuation
-            </div>
-            <SanInputForm
-              onSubmit={onGuess}
-              isWrong={isWrong}
-            />
-          </div>
+          <SanInputForm
+            onSubmit={onGuess}
+            isWrong={isWrong}
+            onReset={() => {
+              setIsWrong(false);
+            }}
+          />
         )}
       </div>
     </div>

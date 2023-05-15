@@ -35,7 +35,6 @@ export const PgnLoader = ({ onPgnLoaded }: PgnLoaderProps) => {
         className="border border-gray-300 rounded-lg p-2"
         placeholder="Enter PGN"
         autoComplete="off"
-        autoFocus
       />
       <button
         type="submit"
