@@ -8,11 +8,11 @@ import { useState } from 'react'
 import { Game } from '@/types'
 
 // Assets
-import games from '../../assets/games.json'
+import games from '@/assets/games.json'
 
 // Components
-import { GameMemorizer } from '../../components/GameMemorizer'
-import { GameSelect } from '../../components/GameSelect'
+import { GameMemorizer } from '@/components/GameMemorizer'
+import { GameSelect } from '@/components/GameSelect'
 
 export default function MemorizerPage() {
   const [game, setGame] = useState<Game>(games[0])

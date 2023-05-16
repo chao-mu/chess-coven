@@ -43,7 +43,7 @@ export const SanInputForm = ({ onSubmit, isWrong, onReset }: SanInputFormProps) 
   return (
     <form onSubmit={handleSubmit(submit)} className="flex flex-col justify-center items-center gap-2">
       <div className="flex gap-2 items-center flex-wrap">
-        <label htmlFor="san" className="text-white text-xl">
+        <label htmlFor="san" className="text-xl">
           Continuation
         </label>
         <div className="flex gap-2">

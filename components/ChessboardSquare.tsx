@@ -15,7 +15,7 @@ export type ChessboardSquareProps = {
 }
 
 export function ChessboardSquare(props: ChessboardSquareProps) {
-  const fill = props.isLight ? 'bg-fuchsia-100' : 'bg-fuchsia-500'
+  const fill = props.isLight ? 'bg-fuchsia-100' : 'bg-fuchsia-400'
 
   let piece: string | null = null
   if (props.piece) {
@@ -38,7 +38,7 @@ export function ChessboardSquare(props: ChessboardSquareProps) {
     <div
       className={`${fill} aspect-square flex justify-center items-center`}
     >
-      <div className={`${circleClass} border-8 rounded-full w-full h-full`}>
+      <div className={`${circleClass} border-4 rounded-full w-full h-full`}>
         { piece && <ChessPiece piece={piece} /> }
       </div>
     </div>
