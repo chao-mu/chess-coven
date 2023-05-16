@@ -1,9 +1,6 @@
 // React
 import React from 'react';
-import { useState, useEffect } from 'react';
-
-// chess.js
-import { Chess } from 'chess.js';
+import { useState } from 'react';
 
 // Components
 import { Chessboard } from './Chessboard';

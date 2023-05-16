@@ -32,14 +32,14 @@ export function Chessboard({fen, onSquareClick, goodSquares=[], badSquares=[]}: 
         row.map((piece, rowIdx) => {
           const square = toSquareName(rowIdx, colIdx)
           return (
-            <div onClick={() => onSquareClick && onSquareClick(square)} key={square}>
+            <button onClick={() => onSquareClick && onSquareClick(square)} key={square}>
               <ChessboardSquare
                 piece={piece}
                 isLight={(colIdx + rowIdx) % 2 === 1}
                 isGood={goodSquares.includes(square)}
                 isBad={badSquares.includes(square)}
               />
-            </div>
+            </button>
           )
         })
       ))}
