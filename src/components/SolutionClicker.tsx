@@ -13,15 +13,16 @@ type SolutionClickerProps = {
 };
 
 export const SolutionClicker = ({ puzzles }: SolutionClickerProps) => {
-  const [puzzleIndex, setPuzzleIndex] = useState(0);
+  const [puzzleIndex, setPuzzleIndex] = useState(Math.floor(Math.random() * puzzles.length));
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
   const [guessResults, setGuessResults] = useState<boolean[]>([]);
+  const [lastIndex, setLastIndex] = useState<number>(-1);
 
   const currentFen = puzzles[puzzleIndex].fen;
   let lastFen = ''
-  if (puzzleIndex > 0) {
-    lastFen = puzzles[puzzleIndex - 1].fen;
+  if (lastIndex > 0) {
+    lastFen = puzzles[lastIndex].fen;
   }
 
   const recentResults = guessResults.slice(-10);
@@ -43,8 +44,8 @@ export const SolutionClicker = ({ puzzles }: SolutionClickerProps) => {
 
       // Check if puzzle is complete
       if (newGoodGuesses.length === solutions.length) {
-        // Go to next puzzle
-        setPuzzleIndex((index) => (index + 1) % puzzles.length);
+        setLastIndex(puzzleIndex);
+        setPuzzleIndex(Math.floor(Math.random() * puzzles.length));
         setGoodGuesses([]);
         setBadGuesses([]);
       }
