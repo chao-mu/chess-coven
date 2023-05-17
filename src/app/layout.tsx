@@ -1,7 +1,7 @@
 // React
 import React from 'react'
 
-import './globals.css'
+import '@/app/globals.css'
 
 export const metadata = {
   title: 'Tactical Elements',
@@ -15,10 +15,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="font-body bg-gradient-to-r from-gray-950 text-white to-lime-800">
-        <div className="flex flex-col justify-center items-center min-h-screen">
-          {children}
-        </div>
+      <body className="font-body  min-h-screen bg-gray-950 text-white">
+        {children}
       </body>
     </html>
   )

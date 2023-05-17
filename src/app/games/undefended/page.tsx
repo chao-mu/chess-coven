@@ -4,14 +4,15 @@
 import React from 'react'
 
 import { SolutionClicker } from '@/components/SolutionClicker';
+import { GameHeader } from '@/components/GameHeader';
+
 import undefendedPieces from '@/assets/puzzles/undefended.json';
 
 export default function Page() {
   return (
-    <SolutionClicker
-      puzzles={undefendedPieces}
-      title="Click Undefended"
-      rules="Kings can't defend attacked squares."
-    />
+    <div className="flex flex-col">
+      <GameHeader title="Undefended Pieces" rules="Click the undefended pieces." />
+      <SolutionClicker puzzles={undefendedPieces} />
+    </div>
   )
 }

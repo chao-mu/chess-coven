@@ -10,11 +10,9 @@ import { Puzzle } from '@/types';
 
 type SolutionClickerProps = {
   puzzles: Puzzle[]
-  title: string
-  rules: string
 };
 
-export const SolutionClicker = ({ title, rules, puzzles }: SolutionClickerProps) => {
+export const SolutionClicker = ({ puzzles }: SolutionClickerProps) => {
   const [puzzleIndex, setPuzzleIndex] = useState(0);
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
@@ -57,13 +55,6 @@ export const SolutionClicker = ({ title, rules, puzzles }: SolutionClickerProps)
 
   return (
     <div className="flex flex-col">
-      <div className="px-4 py-2 bg-purple-500 flex flex-col text-white">
-        <div className="text-3xl font-bold">{ title }</div>         
-        <div className="text-lg flex justify-between flex-wrap">
-          <div className="whitespace-nowrap mr-1">{ rules }</div>
-          <div className="whitespace-nowrap">White on bottom</div>
-        </div>
-      </div>                                       
       <Chessboard
         fen={currentFen}
         goodSquares={goodGuesses}

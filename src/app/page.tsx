@@ -11,8 +11,8 @@ import { NavSquare } from '@/components/NavSquare';
 
 export default function Page() {
   return (
-    <div>
-      <h1 className="text-6xl font-bold font-header mb-6 text-center">Tactical Elements</h1>
+    <div className="max-w-4xl mx-auto">
+      <h1 className="text-6xl font-bold font-header text-center mb-4 mt-8">Tactical Elements</h1>
       <div className="flex flex-col gap-4">
         <Link href="/games/undefended">
           <NavSquare
