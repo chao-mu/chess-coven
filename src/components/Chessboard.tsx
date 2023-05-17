@@ -2,7 +2,7 @@
 import React from 'react'
 
 // chess.js
-import { Chess } from 'chess.js'
+import { Chess, Piece } from 'chess.js'
 
 // Components
 import { ChessboardSquare } from './ChessboardSquare'
@@ -15,9 +15,9 @@ type ChessboardProps = {
 }
 
 export function Chessboard({fen, onSquareClick, goodSquares=[], badSquares=[]}: ChessboardProps) {
-  let chess = new Chess()
+  let board: Array<Array<Piece | null>> = Array(8).fill(Array(8).fill(null))
   if (fen) {
-    chess = new Chess(fen)
+    board = (new Chess(fen).board())
   }
 
   function toSquareName(row: number, col: number): string {
@@ -28,7 +28,7 @@ export function Chessboard({fen, onSquareClick, goodSquares=[], badSquares=[]}: 
 
   return (
     <div className="grid grid-cols-8">
-      {chess.board().map((row, colIdx) => (
+      {board.map((row, colIdx) => (
         row.map((piece, rowIdx) => {
           const square = toSquareName(rowIdx, colIdx)
           return (

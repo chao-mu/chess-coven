@@ -38,8 +38,8 @@ export function ChessboardSquare(props: ChessboardSquareProps) {
     <div
       className={`${fill} aspect-square flex justify-center items-center`}
     >
-      <div className={`${circleClass} border-4 rounded-full w-full h-full`}>
-        { piece && <ChessPiece piece={piece} /> }
+      <div className={`${circleClass} border-4 rounded-full w-full h-full relative`}>
+          { piece && <ChessPiece piece={piece} /> }
       </div>
     </div>
   )
