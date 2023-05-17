@@ -11,12 +11,12 @@ import { NavSquare } from '@/components/NavSquare';
 
 export default function Page() {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen">
-      <h1 className="text-6xl font-bold font-header mb-6 mb-4">Tactical Elements</h1>
+    <div>
+      <h1 className="text-6xl font-bold font-header mb-6 text-center">Tactical Elements</h1>
       <div className="flex flex-col gap-4">
         <Link href="/games/undefended">
           <NavSquare
-            title="Undefended Pieces/Pawns"
+            title="Undefended"
             description="Click the undefended chessmen. Kings can't defend attacked pieces."
           />
         </Link>
@@ -30,7 +30,7 @@ export default function Page() {
         */ }
         <Link href="/games/memorizer">
           <NavSquare
-            title="Game Memorizer/Notation Trainer"
+            title="Game Memorizer"
             description="Study and memorize chess games, specifying continuations in short algebraic notation"
           />
         </Link>

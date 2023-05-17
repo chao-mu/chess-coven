@@ -14,7 +14,7 @@ export const NavSquare = ({ title, description }: NavSquareProps) => {
       <div className="font-bold text-2xl font-header">
         {title}
       </div>
-      <div className="text-xl ml-2 font-body">
+      <div className="text-xl font-body">
         {description}
       </div>
     </div>

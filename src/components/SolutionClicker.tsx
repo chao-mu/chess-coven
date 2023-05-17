@@ -15,17 +15,19 @@ type SolutionClickerProps = {
 };
 
 export const SolutionClicker = ({ title, rules, puzzles }: SolutionClickerProps) => {
-  const [score, setScore] = useState(0);
   const [puzzleIndex, setPuzzleIndex] = useState(0);
-  const [highScore, setHighScore] = useState(0);
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
+  const [guessResults, setGuessResults] = useState<boolean[]>([]);
 
   const currentFen = puzzles[puzzleIndex].fen;
   let lastFen = ''
   if (puzzleIndex > 0) {
     lastFen = puzzles[puzzleIndex - 1].fen;
   }
+
+  const recentResults = guessResults.slice(-10);
+  const momentum = recentResults.reduce((acc, curr) => acc + (curr ? 1 : -1), 0) / (recentResults.length || 1);
 
   const checkGuess = (square: string) => {
     if (goodGuesses.includes(square) || badGuesses.includes(square)) {
@@ -34,16 +36,12 @@ export const SolutionClicker = ({ title, rules, puzzles }: SolutionClickerProps)
 
     const solutions = puzzles[puzzleIndex].solution;
     const isCorrect = solutions.includes(square);
+    setGuessResults([...guessResults, isCorrect]);
+
+
     if (isCorrect) {
       const newGoodGuesses = [...goodGuesses, square];
       setGoodGuesses(newGoodGuesses);
-
-      // Update scoreboard
-      const newScore = score + 1;
-      setScore(newScore);
-      if (newScore > highScore) {
-        setHighScore(score + 1);
-      }
 
       // Check if puzzle is complete
       if (newGoodGuesses.length === solutions.length) {
@@ -53,7 +51,6 @@ export const SolutionClicker = ({ title, rules, puzzles }: SolutionClickerProps)
         setBadGuesses([]);
       }
     } else {
-      setScore(0);
       setBadGuesses([...badGuesses, square]);
     }
   }
@@ -72,11 +69,9 @@ export const SolutionClicker = ({ title, rules, puzzles }: SolutionClickerProps)
         goodSquares={goodGuesses}
         badSquares={badGuesses}
         onSquareClick={checkGuess} />
-      <div className="bg-purple-300 px-4 py-2 text-black">
-        <div className="flex justify-between items-center font-bold text-lg">
-          <div>Score: { score }</div>
-          <div>Still more to go</div>
-          <div>High Score: { highScore }</div>
+      <div className="bg-purple-300 px-4 py-2 text-black flex flex-col">
+        <div className="text-center font-bold">
+          Momentum: { momentum >= 0 ? "+" : "-" }{ momentum.toFixed(2) }
         </div>
         <div className="text-md pt-2">FEN: { currentFen }</div>
         <div className="text-md pt-2">Last FEN: { lastFen }</div>

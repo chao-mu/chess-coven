@@ -11,15 +11,15 @@ type GameSelectProps = {
 
 export function GameSelect({ setGame, games }: GameSelectProps) {
   return (
-    <select
-      onChange={(e) => setGame(games[parseInt(e.target.value)])}
-      className="w-full p-2 text-xl bg-transparent border-2 border-purple-500"
-    >
-      {games.map((game, idx) => (
-        <option key={idx} value={idx}>
-          {game.event}
-        </option>
-      ))}
+      <select
+        onChange={(e) => setGame(games[parseInt(e.target.value)])}
+        className="overflow-hidden w-full text-ellipsis ring-2 ring-purple-600 rounded-md px-2 py-1 bg-white text-black"
+      >
+        {games.map((game, idx) => (
+          <option key={idx} value={idx}>
+            {game.event}
+          </option>
+        ))}
     </select>
   )
 }
