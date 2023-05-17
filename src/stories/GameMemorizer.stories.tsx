@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { GameMemorizer } from '../components/GameMemorizer';
+import { GameMemorizer } from '@/components/GameMemorizer';
 
 const meta: Meta<typeof GameMemorizer> = {
   component: GameMemorizer,

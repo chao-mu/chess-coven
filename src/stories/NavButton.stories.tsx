@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { NavButton } from '../components/NavButton';
+import { NavButton } from '@/components/NavButton';
 
 const meta: Meta<typeof NavButton> = {
   component: NavButton,

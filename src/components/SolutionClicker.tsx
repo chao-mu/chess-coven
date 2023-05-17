@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Chessboard } from './Chessboard';
 
 // Types
-import { Puzzle } from '../types';
+import { Puzzle } from '@/types';
 
 type SolutionClickerProps = {
   puzzles: Puzzle[]

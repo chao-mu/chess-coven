@@ -7,7 +7,7 @@ import React from 'react';
 import Link from 'next/link';
 
 // Components
-import { NavSquare } from '../components/NavSquare';
+import { NavSquare } from '@/components/NavSquare';
 
 export default function Page() {
   return (

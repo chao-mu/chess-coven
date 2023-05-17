@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { PgnLoader } from '../components/PgnLoader';
+import { PgnLoader } from '@/components/PgnLoader';
 
 const meta: Meta<typeof PgnLoader> = {
   component: PgnLoader,

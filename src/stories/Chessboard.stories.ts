@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Chessboard } from '../components/Chessboard';
+import { Chessboard } from '@/components/Chessboard';
 
 const meta: Meta<typeof Chessboard> = {
   component: Chessboard,

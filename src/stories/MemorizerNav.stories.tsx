@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { MemorizerNav } from '../components/MemorizerNav';
+import { MemorizerNav } from '@/components/MemorizerNav';
 
 const meta: Meta<typeof MemorizerNav> = {
   component: MemorizerNav,

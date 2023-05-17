@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { BLACK, WHITE, QUEEN, Piece } from 'chess.js'
 
 // Components
-import { ChessboardSquare } from '../components/ChessboardSquare';
+import { ChessboardSquare } from '@/components/ChessboardSquare';
 
 
 const meta: Meta<typeof ChessboardSquare> = {
