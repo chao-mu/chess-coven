@@ -1,8 +1,8 @@
 // React
 import React from 'react';
 
-// NextJS
-import { Image } from 'next/image';
+// NextJs
+import Image from 'next/image';
 
 type HeartProps = {
   full: boolean
@@ -10,7 +10,8 @@ type HeartProps = {
 
 export function Heart({ full }: HeartProps) {
   return (
-    <img
+    <Image
+      alt={`${ full ? 'full' : 'empty'} heart`}
       src={`/images/${full ? '/heart-full.svg' : '/heart-empty.svg'}`}
     />
   )

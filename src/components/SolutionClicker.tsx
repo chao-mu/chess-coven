@@ -32,11 +32,6 @@ export const SolutionClicker = ({ puzzles, title, rules, story }: SolutionClicke
     currentFen = puzzles[puzzleIndex].fen;
   }
 
-  let lastFen = "";
-  if (puzzleIndex > 0) {
-    lastFen = puzzles[puzzleIndex - 1].fen;
-  }
-
   const playAgain = () => {
     setGoodGuesses([]);
     setBadGuesses([]);
@@ -95,10 +90,11 @@ export const SolutionClicker = ({ puzzles, title, rules, story }: SolutionClicke
       </div>
       { isGameOver ? (
         <div className="flex items-center justify-center aspect-square">
-          <div className="flex flex-col items-start ">
-            <div className="text-3xl font-bold">Game Over!</div>
-            <div className="text-3xl font-bold">Final Score: { currentScore }</div>
-            <button className="text-3xl font-bold" onClick={() => playAgain()}>Play Again</button>
+          <div className="flex flex-col items-start">
+            <div className="text-3xl font-bold mb-4">Game Over!</div>
+            <div className="text-2xl mb-2">Final Score: { currentScore }</div>
+            <button className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-full"
+              onClick={() => playAgain()}>Play Again</button>
           </div>
         </div>
       ) : (

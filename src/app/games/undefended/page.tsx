@@ -6,7 +6,6 @@ import { useState } from 'react'
 
 // Components
 import { SolutionClicker } from '@/components/SolutionClicker';
-import { GameHeader } from '@/components/GameHeader';
 
 // Types
 import { Puzzle } from '@/types';

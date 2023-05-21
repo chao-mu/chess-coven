@@ -3,9 +3,6 @@
 // React
 import React from 'react';
 
-// NextJS
-import Link from 'next/link';
-
 // Components
 import { SiteNav } from '@/components/SiteNav';
 
