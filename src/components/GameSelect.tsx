@@ -13,7 +13,7 @@ export function GameSelect({ setGame, games }: GameSelectProps) {
   return (
       <select
         onChange={(e) => setGame(games[parseInt(e.target.value)])}
-        className="overflow-hidden w-full text-ellipsis ring-2 ring-purple-600 rounded-md px-2 py-1 bg-white text-black"
+        className="overflow-hidden w-full text-xl text-ellipsis ring-2 rounded-md px-2 py-1 bg-white text-black"
       >
         {games.map((game, idx) => (
           <option key={idx} value={idx}>

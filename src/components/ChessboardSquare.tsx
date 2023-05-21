@@ -15,7 +15,7 @@ export type ChessboardSquareProps = {
 }
 
 export function ChessboardSquare(props: ChessboardSquareProps) {
-  const fill = props.isLight ? 'bg-fuchsia-100' : 'bg-fuchsia-400'
+  const fill = props.isLight ? 'bg-red-100' : 'bg-red-400'
 
   let piece: string | null = null
   if (props.piece) {

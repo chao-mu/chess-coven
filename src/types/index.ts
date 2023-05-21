@@ -5,5 +5,7 @@ export type Game = {
 
 export type Puzzle = {
   fen: string
-  solution: string[]
+  solutions: string[]
+  goodGuesses: string[]
+  badGuesses: string[]
 }

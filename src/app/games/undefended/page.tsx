@@ -24,9 +24,8 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="flex flex-col">
-      <GameHeader title="Undefended Pieces" rules="Click the undefended pieces. Kings can't defend attacked pieces." />
-      <SolutionClicker puzzles={puzzles} />
+    <div className="flex flex-col bg-gray-800/50">
+      <SolutionClicker puzzles={puzzles} title="Enchant the Undefended" story="The battlefield is littered with fallen chesspersons. Opposing forces clash, blinded by mutual hatred and pricked on by a thirst for blood. There is however a chance for peace. Find the chesspersons who are most vulnerable and pacify them to quell the cycle of violence." rules="Click undefended pieces and pawns. Kings can't defend attacked squares." />
     </div>
   )
 }

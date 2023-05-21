@@ -34,7 +34,7 @@ export const SanInputForm = ({ onSubmit, isWrong, onReset }: SanInputFormProps) 
     <button
       type="button"
       onClick={() => appendShortcut(shortcut)}
-      className="p-2 text-xl border-2 border-purple-500"
+      className="p-2 text-xl border-2 border-amber-300"
     >
       {shortcut}
     </button>
@@ -49,19 +49,19 @@ export const SanInputForm = ({ onSubmit, isWrong, onReset }: SanInputFormProps) 
         <div className="flex gap-2">
           <input
             {...register("san")}
-            className="w-24 p-2 text-xl bg-transparent border-2 border-purple-500"
+            className="w-24 p-2 text-xl bg-transparent border-2 border-amber-500"
             placeholder="SAN"
             autoComplete="off"
           />
           <button
             type="submit"
-            className="p-2 text-xl border-2 border-purple-500"
+            className="p-2 text-xl border-2 border-amber-500"
           >
             Submit
           </button>
           <button
             type="reset"
-            className="p-2 text-xl border-2 border-purple-500"
+            className="p-2 text-xl border-2 border-amber-500"
             onClick={() => {
               reset()
               if (onReset) {
@@ -80,7 +80,7 @@ export const SanInputForm = ({ onSubmit, isWrong, onReset }: SanInputFormProps) 
         ) : null
       }
       </div>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 hidden">
         <div className="grid grid-cols-3 gap-2">
           { pieceNames.map((piece) => <ShortcutButton key={piece} shortcut={piece}/> )}
         </div>
