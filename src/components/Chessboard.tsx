@@ -35,7 +35,7 @@ export function Chessboard({fen, onSquareClick, goodSquares=[], badSquares=[]}: 
             <button onClick={() => onSquareClick && onSquareClick(square)} key={square}>
               <ChessboardSquare
                 piece={piece}
-                isLight={(colIdx + rowIdx) % 2 !== 1}
+                isLight={(colIdx + rowIdx) % 2 != 1}
                 isGood={goodSquares.includes(square)}
                 isBad={badSquares.includes(square)}
               />
