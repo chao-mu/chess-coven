@@ -31,7 +31,7 @@ export function ChessboardSquare(props: ChessboardSquareProps) {
   } else if (props.isBad) {
     circleClass = 'border-red-500'
   } else {
-    circleClass = 'border-none'
+    circleClass = 'border-transparent'
   }
 
   return (
@@ -39,7 +39,7 @@ export function ChessboardSquare(props: ChessboardSquareProps) {
       className={`${fill} aspect-square flex justify-center items-center`}
     >
       <div className={`${circleClass} border-4 rounded-full w-full h-full relative`}>
-          { piece && <ChessPiece piece={piece} /> }
+        { piece && <ChessPiece piece={piece} /> }
       </div>
     </div>
   )
