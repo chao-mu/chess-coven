@@ -2,6 +2,9 @@
 import React from 'react';
 import { useState } from 'react';
 
+// Chess.js
+import { Chess, BLACK } from 'chess.js';
+
 // Components
 import { Chessboard } from './Chessboard';
 
@@ -82,6 +85,13 @@ export const SolutionClicker = ({ puzzles, title, rules, story }: SolutionClicke
     }
   }
 
+  // Determine if chessboard should be flipped based on who's turn it is
+  let flipped = false;
+  if (currentFen) {
+    const chess = new Chess(currentFen)
+    flipped = chess.turn() == BLACK
+  }
+
   return (
     <div className="flex flex-col">
       <div className="p-6">
@@ -102,7 +112,9 @@ export const SolutionClicker = ({ puzzles, title, rules, story }: SolutionClicke
           fen={currentFen}
           goodSquares={goodGuesses}
           badSquares={badGuesses}
-          onSquareClick={checkGuess} />
+          onSquareClick={checkGuess}
+          flipped={flipped}
+        />
       ) }
       <div className="flex flex-row justify-between px-4 py-2">
         <div className="text-md">Score: { currentScore }</div>
