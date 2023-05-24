@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/react';
 
 // Chess.js
 import { BLACK, WHITE, QUEEN, Piece } from 'chess.js'
