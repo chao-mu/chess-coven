@@ -4,7 +4,8 @@
     "plugin:@typescript-eslint/recommended",
     "next/core-web-vitals",
     "plugin:jsx-a11y/recommended",
-    "plugin:storybook/recommended"
+    "plugin:storybook/recommended",
+    "plugin:tailwindcss/recommended"
   ],
   "parser": "@typescript-eslint/parser"
 }

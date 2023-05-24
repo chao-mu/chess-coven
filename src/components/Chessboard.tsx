@@ -36,7 +36,7 @@ export function Chessboard({fen, onSquareClick, goodSquares=[], badSquares=[], f
 
   return (
     <div className={`flex ${flipped ? 'flex-col-reverse' : 'flex-col'}`}>
-      <div className="bg-red-400 text-lg text-right px-4 py-1 border-2  border-black text-black">
+      <div className="border-2 border-black bg-red-400 px-4 py-1 text-right  text-lg text-black">
         Black
       </div>
       <div className="grid grid-cols-8 border-x-2 border-black">
@@ -56,7 +56,7 @@ export function Chessboard({fen, onSquareClick, goodSquares=[], badSquares=[], f
           })
         ))}
       </div>
-      <div className="bg-red-100 text-lg text-left border-2 px-4 py-1 border-black text-black">
+      <div className="border-2 border-black bg-red-100 px-4 py-1 text-left text-lg text-black">
         White
       </div>
     </div>

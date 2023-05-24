@@ -66,7 +66,7 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
   return (
     <div className="flex flex-col">  
       <div className="flex flex-col items-center">  
-        <div className="w-full mb-2">
+        <div className="mb-2 w-full">
           <Chessboard fen={chess.fen()}/>
         </div>
         <MemorizerNav
@@ -82,7 +82,7 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
           }}
         />
       </div>
-      <div className="mt-4 pb-4 h-24 flex flex-col justify-center">
+      <div className="mt-4 flex h-24 flex-col justify-center pb-4">
         {isLastPosition ? (
           <div className="text-center text-2xl font-bold">
              🎉 End of game! 🎉

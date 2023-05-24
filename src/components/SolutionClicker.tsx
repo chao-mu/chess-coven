@@ -96,14 +96,14 @@ export const SolutionClicker = ({ puzzles, title, rules, story }: SolutionClicke
     <div className="flex flex-col">
       <div className="p-6">
         <div className="text-3xl font-bold">{ title }</div>         
-        <div className="text-xl mt-2">{ rules }</div>
+        <div className="mt-2 text-xl">{ rules }</div>
       </div>
       { isGameOver ? (
-        <div className="flex items-center justify-center aspect-square">
+        <div className="flex aspect-square items-center justify-center">
           <div className="flex flex-col items-start">
-            <div className="text-3xl font-bold mb-4">Game Over!</div>
-            <div className="text-2xl mb-2">Final Score: { currentScore }</div>
-            <button className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-full"
+            <div className="mb-4 text-3xl font-bold">Game Over!</div>
+            <div className="mb-2 text-2xl">Final Score: { currentScore }</div>
+            <button className="rounded-full bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
               onClick={() => playAgain()}>Play Again</button>
           </div>
         </div>
@@ -117,11 +117,11 @@ export const SolutionClicker = ({ puzzles, title, rules, story }: SolutionClicke
         />
       ) }
       <div className="flex flex-row justify-between px-4 py-2">
-        <div className="text-md">Score: { currentScore }</div>
-        <div className="text-md">High Score: { highScore }</div>
-        <div className="text-md">Health: { health }</div>
+        <div>Score: { currentScore }</div>
+        <div>High Score: { highScore }</div>
+        <div>Health: { health }</div>
       </div>
-      <div className="text-md flex flex-col gap-4 py-4 px-4">
+      <div className="flex flex-col gap-4 p-4">
         <div>{ story }</div>
       </div>
     </div>

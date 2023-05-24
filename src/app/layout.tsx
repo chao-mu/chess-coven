@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="font-body min-h-screen bg-gray-950 text-white bg-forest bg-cover">
+      <body className="min-h-screen bg-gray-950 bg-forest bg-cover font-body text-white">
         {children}
         <Analytics />
       </body>
