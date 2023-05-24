@@ -16,15 +16,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex flex-wrap-reverse justify-center items-center p-4 min-h-screen">
+    <div className="flex min-h-screen flex-wrap-reverse items-center justify-center p-4">
       <div className="flex-1">
-        <div className="p-8 flex flex-col items-center">
-          <Link href="/" className="text-3xl font-bold font-header text-amber-300 mb-6 whitespace-nowrap">Tactical Elements</Link>
+        <div className="flex flex-col items-center p-8">
+          <Link href="/" className="mb-6 whitespace-nowrap font-header text-3xl font-bold text-amber-300">Tactical Elements</Link>
           <SiteNav />
         </div>
       </div>
       <div className="w-full xl:w-auto">
-        <div className="max-w-3xl mx-auto">
+        <div className="mx-auto max-w-3xl">
           { children }
         </div>
       </div>

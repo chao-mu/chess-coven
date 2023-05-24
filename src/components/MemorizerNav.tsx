@@ -30,8 +30,8 @@ export const MemorizerNav = ({ totalMoves, position, onJump, isRevealed, onRevea
   }
 
   return (
-    <div className="flex gap-2 flex-wrap">
-      <div className="flex gap-2 justify-between">
+    <div className="flex flex-wrap gap-2">
+      <div className="flex justify-between gap-2">
         <NavButton onClick={() => onJump(-position)}>
           <FaAngleDoubleLeft />
         </NavButton>
@@ -45,7 +45,7 @@ export const MemorizerNav = ({ totalMoves, position, onJump, isRevealed, onRevea
           {isRevealed ? 'hide' : 'show'}
         </NavButton>
       </div>
-      <div className="flex gap-2 justify-between">
+      <div className="flex justify-between gap-2">
         <NavButton onClick={() => onJump(1)}>
           <FaAngleRight />
         </NavButton>

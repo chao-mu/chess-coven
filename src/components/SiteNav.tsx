@@ -8,7 +8,7 @@ import { LinkButton } from '@/components/LinkButton';
 
 export function SiteNav() {
   return (
-    <div className="flex flex-col gap-2 max-w-2xl">
+    <div className="flex max-w-2xl flex-col gap-2">
       <LinkButton href="/games/undefended">
         Enchant the Undefended
       </LinkButton>
