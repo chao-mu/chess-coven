@@ -28,9 +28,9 @@ export function Chessboard({fen, onSquareClick, goodSquares=[], badSquares=[], f
 
   function toSquareName(row: number, col: number): string {
     const rowIdx = flipped ? 7 - row : row
-    const colIdx = flipped ? 7 - col : col
+    const colIdx = flipped ? col : 7 - col
     const rowName = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'][rowIdx]
-    const colName = colIdx.toString()
+    const colName = (colIdx + 1).toString()
     return `${rowName}${colName}`
   }
 
@@ -44,7 +44,7 @@ export function Chessboard({fen, onSquareClick, goodSquares=[], badSquares=[], f
           row.map((piece, rowIdx) => {
             const square = toSquareName(rowIdx, colIdx)
             return (
-              <button onClick={() => onSquareClick && onSquareClick(square)} key={square}>
+              <button id={`square-${square}`} onClick={() => onSquareClick && onSquareClick(square)} key={square}>
                 <ChessboardSquare
                   piece={piece}
                   isLight={(colIdx + rowIdx) % 2 == (flipped ? 1 : 0)}
