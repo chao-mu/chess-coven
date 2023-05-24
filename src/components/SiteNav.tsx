@@ -18,6 +18,9 @@ export function SiteNav() {
       <LinkButton href="https://lichess.org/@/bestieboots">
         Find me on Lichess
       </LinkButton>
+      <LinkButton href="https://github.com/chao-mu/tactical-elements">
+        Source Code
+      </LinkButton>
     </div>
   )
 }
