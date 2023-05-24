@@ -3,7 +3,7 @@ import React from 'react';
 import { useState } from 'react';
 
 // Chess.js
-import { Chess } from 'chess.js';
+import { Chess, BLACK } from 'chess.js';
 
 // Components
 import { Chessboard } from './Chessboard';
@@ -89,7 +89,7 @@ export const SolutionClicker = ({ puzzles, title, rules, story }: SolutionClicke
   let flipped = false;
   if (currentFen) {
     const chess = new Chess(currentFen)
-    flipped = chess.turn() == chess.BLACK
+    flipped = chess.turn() == BLACK
   }
 
   return (
