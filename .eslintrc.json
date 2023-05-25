@@ -2,10 +2,11 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "next/core-web-vitals",
     "plugin:jsx-a11y/recommended",
     "plugin:storybook/recommended",
-    "plugin:tailwindcss/recommended"
+    "plugin:tailwindcss/recommended",
+    "prettier",
+    "next/core-web-vitals"
   ],
   "parser": "@typescript-eslint/parser"
 }

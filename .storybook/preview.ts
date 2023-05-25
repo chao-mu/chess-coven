@@ -1,7 +1,8 @@
 import type { Preview } from "@storybook/react";
 import '!style-loader!css-loader!postcss-loader!tailwindcss/tailwind.css';
 import '!style-loader!css-loader!postcss-loader!../src/app/globals.css';
-import backgroundImage from 'images/background-images.jpg';
+
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 
 const preview: Preview = {
   parameters: {
@@ -11,6 +12,10 @@ const preview: Preview = {
         color: /(background|color)$/i,
         date: /Date$/,
       },
+    },
+    viewport: {
+      viewports: INITIAL_VIEWPORTS,
+      defaultViewport: 'iphone6',
     },
   },
 };
