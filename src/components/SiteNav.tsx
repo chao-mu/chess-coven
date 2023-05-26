@@ -12,6 +12,9 @@ export function SiteNav() {
       <LinkButton href="/games/undefended">
         Enchant the Undefended
       </LinkButton>
+      <LinkButton href="/games/knight-forks">
+        Catapult Knights
+      </LinkButton>
       <LinkButton href="/games/memorizer">
         Memorize Games
       </LinkButton>
