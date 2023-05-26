@@ -14,6 +14,9 @@ import { GameStartScreen } from '@/components/GameStartScreen';
 // Types
 import { Puzzle } from '@/types';
 
+// Utils
+import { parseFen } from '@/utils';
+
 type SolutionClickerProps = {
   nextPuzzle: () => Puzzle
   title: string
@@ -123,9 +126,9 @@ export const SolutionClicker = ({ nextPuzzle, title, rules, story }: SolutionCli
           onPlayAgain={playAgain}
         />
       }
-      { gameStatus == GameStatus.PLAYING && 
+      { gameStatus == GameStatus.PLAYING && currentFen && 
         <Chessboard
-          fen={currentFen}
+          board={parseFen(currentFen)}
           goodSquares={goodGuesses}
           badSquares={badGuesses}
           onSquareClick={checkGuess}

@@ -8,7 +8,7 @@ import { WHITE, Piece } from 'chess.js'
 import ChessPiece from 'react-chess-pieces'
 
 export type ChessboardSquareProps = {
-  piece: Piece | null | undefined
+  piece: Piece | null
   isLight: boolean
   isGood: boolean
   isBad: boolean

@@ -67,7 +67,7 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
     <div className="flex flex-col">  
       <div className="flex flex-col items-center">  
         <div className="mb-2 w-full">
-          <Chessboard fen={chess.fen()}/>
+          <Chessboard board={chess.board()}/>
         </div>
         <MemorizerNav
           totalMoves={totalMoves}
