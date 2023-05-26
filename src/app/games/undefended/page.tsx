@@ -12,7 +12,7 @@ import undefendedPieces from '@/assets/puzzles/undefended.json';
 
 const TITLE = "Enchant the Undefended"
 
-const RULES = "Click undefended pieces and pawns. Kings can't defend attacked squares. Next puzzle will show once all solutions are selected."
+const RULES = "Click undefended pieces and pawns. Next puzzle will show once all solutions are selected."
 
 const STORY = "The battlefield is littered with fallen chesspersons. Opposing forces clash, blinded by mutual hatred and pricked on by a thirst for blood. There is however a chance for peace. Find the chesspersons who are most vulnerable and pacify them to quell the cycle of violence."
 
