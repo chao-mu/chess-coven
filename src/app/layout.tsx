@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-950 bg-forest bg-cover font-body text-white">
-        <div className="flex h-full flex-col min-h-screen">
+        <div className="flex h-full min-h-screen flex-col">
           {children}
           <Footer />
         </div>

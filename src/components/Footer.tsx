@@ -9,13 +9,13 @@ import { SiGithub, SiLichess } from "react-icons/si";
 
 export function Footer() {
   return (
-    <footer className="w-full mt-auto bg-white shadow bg-gray-900/75">
-      <div className="w-full flex flex-wrap justify-between p-2 items-center">
-        <ul className="flex flex-wrap items-center text-gray-300 gap-4 mr-8">
+    <footer className="mt-auto w-full bg-gray-900/75 shadow">
+      <div className="flex w-full flex-wrap items-center justify-between p-2">
+        <ul className="mr-8 flex flex-wrap items-center gap-4 text-gray-300">
           <li>
             <Link
               href="https://github.com/chao-mu/tactical-elements"
-              className="flex items-center gap-2 hover:underline hover:text-amber-500"
+              className="flex items-center gap-2 hover:text-amber-500 hover:underline"
             >
               <SiGithub />
               <span>Source Code</span>
@@ -25,7 +25,7 @@ export function Footer() {
           <li>
             <Link
               href="https://lichess.org/@/bestieboots"
-              className="flex items-center gap-2 hover:underline hover:text-amber-500"
+              className="flex items-center gap-2 hover:text-amber-500 hover:underline"
             >
               <SiLichess />
               Say hi!
@@ -36,7 +36,7 @@ export function Footer() {
           © 2023{" "}
           <Link
             href="https://modestprogress.com/"
-            className="hover:underline hover:text-amber-500"
+            className="hover:text-amber-500 hover:underline"
           >
             Modest Progress LLC
           </Link>
