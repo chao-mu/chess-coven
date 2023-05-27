@@ -9,17 +9,20 @@ import { LinkButton } from '@/components/LinkButton';
 export function SiteNav() {
   return (
     <div className="flex max-w-2xl flex-col gap-2">
-      <LinkButton href="/games/undefended">
-        Enchant the Undefended
-      </LinkButton>
       <LinkButton href="/games/knight-forks">
         Catapult Knights
       </LinkButton>
+      <LinkButton href="/games/checkables">
+        Miserable Kings
+      </LinkButton>
+      <LinkButton href="/games/undefended">
+        The Undefended
+      </LinkButton>
       <LinkButton href="/games/memorizer">
-        Memorize Games
+        Game Memorizer
       </LinkButton>
       <LinkButton href="https://lichess.org/@/bestieboots">
-        Find me on Lichess
+        Say hi on Lichess
       </LinkButton>
       <LinkButton href="https://github.com/chao-mu/tactical-elements">
         Source Code
