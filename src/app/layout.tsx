@@ -1,28 +1,34 @@
 // React
-import React from 'react'
+import React from "react";
 
 // Vercel
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from "@vercel/analytics/react";
 
-// Ours
-import '@/app/globals.css'
+// CSS
+import "@/app/globals.css";
+
+// Components
+import { Footer } from "@/components/Footer";
 
 export const metadata = {
-  title: 'Tactical Elements',
-  description: 'Chess learning tools and games'
-}
+  title: "Tactical Elements",
+  description: "Chess learning tools and games",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gray-950 bg-forest bg-cover font-body text-white">
-        {children}
+      <body className="bg-gray-950 bg-forest bg-cover font-body text-white">
+        <div className="flex h-full min-h-screen flex-col">
+          {children}
+          <Footer />
+        </div>
         <Analytics />
       </body>
     </html>
-  )
+  );
 }
