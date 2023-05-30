@@ -1,38 +1,45 @@
 // React
-import React from 'react';
-import { useState } from 'react';
+import React from "react";
+import { useState } from "react";
 
 // Chess.js
-import { Chess, BLACK } from 'chess.js';
+import { Chess, BLACK } from "chess.js";
 
 // Components
-import { Chessboard } from '@/components/Chessboard';
-import { Heart } from '@/components/Heart';
-import { GameOverScreen } from '@/components/GameOverScreen';
-import { GameStartScreen } from '@/components/GameStartScreen';
+import { Chessboard } from "@/components/Chessboard";
+import { Heart } from "@/components/Heart";
+import { GameOverScreen } from "@/components/GameOverScreen";
+import { GameStartScreen } from "@/components/GameStartScreen";
 
 // Types
-import { Puzzle } from '@/types';
+import { Puzzle } from "@/types";
 
 // Utils
-import { parseFen } from '@/utils';
+import { parseFen } from "@/utils";
 
 type SolutionClickerProps = {
-  nextPuzzle: () => Puzzle
-  title: string
-  rules: string
-  story: string
+  nextPuzzle: () => Puzzle;
+  title: string;
+  rules: string;
+  story: string;
+  autoAdvance: boolean;
 };
 
 const GameStatus = {
-  START: 'start',
-  PLAYING: 'playing',
-  OVER: 'over',
+  START: "start",
+  PLAYING: "playing",
+  OVER: "over",
 };
 
 const MAX_HEALTH = 3;
 
-export const SolutionClicker = ({ nextPuzzle, title, rules, story }: SolutionClickerProps) => {
+export const SolutionClicker = ({
+  nextPuzzle,
+  title,
+  rules,
+  story,
+  autoAdvance,
+}: SolutionClickerProps) => {
   const [puzzle, setPuzzle] = useState<Puzzle | undefined>();
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
@@ -41,6 +48,7 @@ export const SolutionClicker = ({ nextPuzzle, title, rules, story }: SolutionCli
   const [currentScore, setCurrentScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [gameStatus, setGameStatus] = useState(GameStatus.START);
+  const [wrongComplete, setWrongComplete] = useState(false);
 
   let currentFen;
   if (puzzle) {
@@ -56,97 +64,128 @@ export const SolutionClicker = ({ nextPuzzle, title, rules, story }: SolutionCli
     setHealth(MAX_HEALTH);
     setCurrentScore(0);
     setGameStatus(GameStatus.PLAYING);
+    setWrongComplete(false);
 
     gotoNextPuzzle();
-  }
+  };
 
   const gotoNextPuzzle = () => {
     setGoodGuesses([]);
     setBadGuesses([]);
     setPuzzle(nextPuzzle());
-  }
+  };
+
+  const loseHealth = () => {
+    const newHealth = health - 1;
+    setHealth(newHealth);
+    if (newHealth < 1) {
+      setGameStatus(GameStatus.OVER);
+    }
+  };
+
+  const checkCompleted = () => {
+    const solutions = puzzle?.solution || [];
+
+    if (goodGuesses.length === solutions.length) {
+      gotoNextPuzzle();
+    } else {
+      loseHealth();
+      setWrongComplete(true);
+    }
+  };
 
   const checkGuess = (square: string) => {
     if (goodGuesses.includes(square) || badGuesses.includes(square)) {
       return;
     }
 
-    const solutions = puzzle?.solution || []
+    const solutions = puzzle?.solution || [];
     const isCorrect = solutions.includes(square);
     setGuessResults([...guessResults, isCorrect]);
 
     if (isCorrect) {
       const newGoodGuesses = [...goodGuesses, square];
       setGoodGuesses(newGoodGuesses);
+      setWrongComplete(false);
 
       // Check if puzzle is complete
-      if (newGoodGuesses.length === solutions.length) {
+      if (newGoodGuesses.length === solutions.length && autoAdvance) {
         gotoNextPuzzle();
       }
 
       // Update score
-      setCurrentScore(score => score + 1);
+      setCurrentScore((score) => score + 1);
     } else {
-      const newHealth = health - 1;
-      setHealth(newHealth);
-      if (newHealth < 1) {
-        setGameStatus(GameStatus.OVER);
-      } 
-
+      loseHealth();
       setBadGuesses([...badGuesses, square]);
     }
-  }
+  };
 
-  let flipped = false
+  let flipped = false;
   if (!currentFen) {
-    const chess = new Chess(currentFen)
-    flipped = chess.turn() == BLACK
+    const chess = new Chess(currentFen);
+    flipped = chess.turn() == BLACK;
   }
 
   return (
     <div className="flex h-full flex-col">
-      { (gameStatus === GameStatus.PLAYING || gameStatus === GameStatus.OVER) &&
-      <div className="p-6">
-        <div className="text-3xl font-bold">{ title }</div>         
-        <div className="mt-2 text-xl">{ rules }</div>
-      </div>
-      }
-      { gameStatus === GameStatus.START &&
+      {(gameStatus === GameStatus.PLAYING ||
+        gameStatus === GameStatus.OVER) && (
+        <div className="p-6">
+          <div className="text-3xl font-bold">{title}</div>
+          <div className="mt-2 text-xl">{rules}</div>
+        </div>
+      )}
+      {gameStatus === GameStatus.START && (
         <GameStartScreen
           title={title}
           story={story}
           rules={rules}
           onGameStart={() => playAgain()}
         />
-      }
-      { gameStatus === GameStatus.OVER &&
+      )}
+      {gameStatus === GameStatus.OVER && (
         <GameOverScreen
           finalScore={currentScore}
           newHighScore={currentScore > highScore}
           onPlayAgain={playAgain}
         />
-      }
-      { gameStatus == GameStatus.PLAYING && currentFen && 
-        <Chessboard
-          board={parseFen(currentFen)}
-          goodSquares={goodGuesses}
-          badSquares={badGuesses}
-          onSquareClick={checkGuess}
-          flipped={flipped}
-        />
-      }
-      { (gameStatus === GameStatus.PLAYING || gameStatus === GameStatus.OVER) &&
+      )}
+      {gameStatus == GameStatus.PLAYING && currentFen && (
+        <>
+          <Chessboard
+            board={parseFen(currentFen)}
+            goodSquares={goodGuesses}
+            badSquares={badGuesses}
+            onSquareClick={checkGuess}
+            flipped={flipped}
+          />
+          {wrongComplete || autoAdvance ? (
+            <div className="p-2 text-center text-xl font-bold text-amber-400">
+              Still more to go!
+            </div>
+          ) : (
+            <button
+              className="rounded-md bg-amber-600 p-2 text-xl font-bold text-white hover:bg-amber-700"
+              onClick={() => checkCompleted()}
+            >
+              Mark as complete
+            </button>
+          )}
+        </>
+      )}
+      {(gameStatus === GameStatus.PLAYING ||
+        gameStatus === GameStatus.OVER) && (
         <div className="flex flex-row items-center justify-between gap-4 px-4 py-2 text-xl">
-          <div>Score: { currentScore }</div>
-          <div>High Score: { highScore }</div>
+          <div>Score: {currentScore}</div>
+          <div>High Score: {highScore}</div>
           <div className="flex gap-2">
-            { [...Array(MAX_HEALTH)].map((_, index) => (
+            {[...Array(MAX_HEALTH)].map((_, index) => (
               <Heart key={index} full={index < health} />
-            )) }
+            ))}
           </div>
         </div>
-      }
+      )}
     </div>
   );
-}
-
+};

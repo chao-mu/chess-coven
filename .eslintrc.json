@@ -8,5 +8,19 @@
     "prettier",
     "next/core-web-vitals"
   ],
-  "parser": "@typescript-eslint/parser"
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    //"spellcheck"
+  ],
+  "rules": {
+    /*"spellcheck/spell-checker": [1,
+      {
+        "identifiers": false,
+        "skipIfMatch": [
+          "\\d"
+        ],
+        "minLength": 3
+      }
+    ]*/
+  }
 }
