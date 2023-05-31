@@ -26,7 +26,7 @@ export function ChessboardSquare(props: ChessboardSquareProps) {
     }
   }
 
-  let circleClass: string = "border-4 rounded-full ";
+  let circleClass = "border-4 rounded-full ";
   if (props.isHighlighted) {
     circleClass += "border-blue-500";
   } else if (props.isBad) {

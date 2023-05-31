@@ -26,7 +26,7 @@ export const ActionBar = ({
       )}
       {playerStatus != "gave-up" && (
         <button
-          className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded"
+          className="rounded bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
           onClick={onGiveUp}
         >
           Give Up
@@ -34,7 +34,7 @@ export const ActionBar = ({
       )}
       {(!autoAdvance || playerStatus == "gave-up") && (
         <button
-          className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded"
+          className="rounded bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
           onClick={onAdvance}
         >
           Advance
