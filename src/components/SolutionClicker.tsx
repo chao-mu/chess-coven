@@ -10,9 +10,10 @@ import { Chessboard } from "@/components/Chessboard";
 import { Heart } from "@/components/Heart";
 import { GameOverScreen } from "@/components/GameOverScreen";
 import { GameStartScreen } from "@/components/GameStartScreen";
+import { ActionBar } from "@/components/ActionBar";
 
 // Types
-import { Puzzle } from "@/types";
+import { Puzzle, PlayerStatus } from "@/types";
 
 // Utils
 import { parseFen } from "@/utils";
@@ -48,7 +49,7 @@ export const SolutionClicker = ({
   const [currentScore, setCurrentScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [gameStatus, setGameStatus] = useState(GameStatus.START);
-  const [wrongComplete, setWrongComplete] = useState(false);
+  const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
 
   let currentFen;
   if (puzzle) {
@@ -64,7 +65,7 @@ export const SolutionClicker = ({
     setHealth(MAX_HEALTH);
     setCurrentScore(0);
     setGameStatus(GameStatus.PLAYING);
-    setWrongComplete(false);
+    setPlayerStatus("playing");
 
     gotoNextPuzzle();
   };
@@ -86,15 +87,18 @@ export const SolutionClicker = ({
   const checkCompleted = () => {
     const solutions = puzzle?.solution || [];
 
-    if (goodGuesses.length === solutions.length) {
+    if (playerStatus === "gave-up" || goodGuesses.length === solutions.length) {
       gotoNextPuzzle();
+      setPlayerStatus("playing");
     } else {
+      setPlayerStatus("premature-advancement");
       loseHealth();
-      setWrongComplete(true);
     }
   };
 
   const checkGuess = (square: string) => {
+    setPlayerStatus("playing");
+
     if (goodGuesses.includes(square) || badGuesses.includes(square)) {
       return;
     }
@@ -106,7 +110,6 @@ export const SolutionClicker = ({
     if (isCorrect) {
       const newGoodGuesses = [...goodGuesses, square];
       setGoodGuesses(newGoodGuesses);
-      setWrongComplete(false);
 
       // Check if puzzle is complete
       if (newGoodGuesses.length === solutions.length && autoAdvance) {
@@ -119,6 +122,11 @@ export const SolutionClicker = ({
       loseHealth();
       setBadGuesses([...badGuesses, square]);
     }
+  };
+
+  const giveUp = () => {
+    loseHealth();
+    setPlayerStatus("gave-up");
   };
 
   let flipped = false;
@@ -152,27 +160,24 @@ export const SolutionClicker = ({
         />
       )}
       {gameStatus == GameStatus.PLAYING && currentFen && (
-        <>
+        <div className="flex flex-col gap-2">
           <Chessboard
             board={parseFen(currentFen)}
             goodSquares={goodGuesses}
             badSquares={badGuesses}
             onSquareClick={checkGuess}
             flipped={flipped}
+            highlightedSquares={
+              playerStatus == "gave-up" ? puzzle?.solution : []
+            }
           />
-          {wrongComplete || autoAdvance ? (
-            <div className="p-2 text-center text-xl font-bold text-amber-400">
-              Still more to go!
-            </div>
-          ) : (
-            <button
-              className="rounded-md bg-amber-600 p-2 text-xl font-bold text-white hover:bg-amber-700"
-              onClick={() => checkCompleted()}
-            >
-              Mark as complete
-            </button>
-          )}
-        </>
+          <ActionBar
+            autoAdvance={autoAdvance}
+            onAdvance={checkCompleted}
+            onGiveUp={giveUp}
+            playerStatus={playerStatus}
+          />
+        </div>
       )}
       {(gameStatus === GameStatus.PLAYING ||
         gameStatus === GameStatus.OVER) && (
