@@ -12,7 +12,7 @@ export function SiteNav() {
       <LinkButton href="/games/knight-forks">Catapult Knights</LinkButton>
       <LinkButton href="/games/checkables">Miserable Kings</LinkButton>
       <LinkButton href="/games/undefended">The Undefended</LinkButton>
-      {/*<LinkButton href="/games/checks-captures">Checks/Captures</LinkButton>*/}
+      <LinkButton href="/games/checks-captures">Checks/Captures</LinkButton>
       <LinkButton href="/games/memorizer">Game Memorizer</LinkButton>
     </div>
   );
