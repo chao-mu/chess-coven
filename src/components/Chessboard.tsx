@@ -28,9 +28,10 @@ export function Chessboard({
   highlightedSquares = [],
   flipped = false,
 }: ChessboardProps) {
+  board = board.map((row) => [...row]);
   if (flipped) {
-    board = [...board].reverse();
-    board = board.map((row) => [...row].reverse());
+    board.reverse();
+    board.forEach((row) => row.reverse());
   }
 
   return (
