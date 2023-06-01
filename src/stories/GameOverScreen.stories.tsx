@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { GameOverScreen } from '@/components/GameOverScreen';
+import { GameOverScreen } from "@/components/GameOverScreen";
 
 const meta: Meta<typeof GameOverScreen> = {
   component: GameOverScreen,
@@ -14,7 +14,7 @@ export const HighScore: Story = {
     finalScore: 23,
     newHighScore: true,
     onPlayAgain: () => {
-      console.log('onPlayAgain');
+      console.log("onPlayAgain");
     },
   },
 };

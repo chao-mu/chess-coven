@@ -1,17 +1,17 @@
 // React
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React from "react";
+import { useState, useEffect } from "react";
 
 // chess.js
-import { Chess } from 'chess.js';
+import { Chess } from "chess.js";
 
 // Components
-import { MemorizerNav } from './MemorizerNav';
-import { Chessboard } from './Chessboard';
-import { SanInputForm } from './SanInputForm';
+import { MemorizerNav } from "./MemorizerNav";
+import { Chessboard } from "./Chessboard";
+import { SanInputForm } from "./SanInputForm";
 
 type GameMemorizerProps = {
-  pgn: string
+  pgn: string;
 };
 
 export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
@@ -23,7 +23,6 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
     setPosition(0);
   }, [pgn]);
 
-
   const chess = new Chess();
   chess.loadPgn(pgn);
   const moves = chess.history();
@@ -33,11 +32,11 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
     chess.move(moves[i]);
   }
 
-  const totalMoves = moves.length
+  const totalMoves = moves.length;
   const isLastPosition = position >= totalMoves;
 
   function onJump(steps: number) {
-    setPosition((p) => Math.min(totalMoves, Math.max(0, p + steps)))
+    setPosition((p) => Math.min(totalMoves, Math.max(0, p + steps)));
   }
 
   function onGuess(san: string) {
@@ -62,12 +61,11 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
     }
   }
 
-
   return (
-    <div className="flex flex-col">  
-      <div className="flex flex-col items-center">  
+    <div className="flex flex-col">
+      <div className="flex flex-col items-center">
         <div className="mb-2 w-full">
-          <Chessboard board={chess.board()}/>
+          <Chessboard board={chess.board()} />
         </div>
         <MemorizerNav
           totalMoves={totalMoves}
@@ -76,39 +74,28 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
           isRevealed={isRevealed}
           onRevealToggle={(revealed: boolean) => {
             if (revealed) {
-              setIsWrong(false)
+              setIsWrong(false);
             }
-            setIsRevealed(revealed)
+            setIsRevealed(revealed);
           }}
         />
       </div>
       <div className="mt-4 flex h-24 flex-col justify-center pb-4">
         {isLastPosition ? (
           <div className="text-center text-2xl font-bold">
-             🎉 End of game! 🎉
+            🎉 End of game! 🎉
           </div>
         ) : isRevealed ? (
           <div className="flex items-center justify-center">
             <div className="flex text-2xl">
-              <div className="mr-3">
-                Continuation
-              </div>
-              <div>
-                {moves[position]}
-              </div>
+              <div className="mr-3">Continuation</div>
+              <div>{moves[position]}</div>
             </div>
           </div>
         ) : (
-          <SanInputForm
-            onSubmit={onGuess}
-            isWrong={isWrong}
-            onReset={() => {
-              setIsWrong(false);
-            }}
-          />
+          <SanInputForm onSubmit={onGuess} isWrong={isWrong} />
         )}
       </div>
     </div>
   );
-}
-
+};

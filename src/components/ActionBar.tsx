@@ -25,7 +25,7 @@ export const ActionBar = ({
   sanEntry = false,
 }: ActionBarProps) => {
   return (
-    <div className="flex items-start justify-center gap-4 flex-wrap">
+    <div className="flex flex-wrap items-start justify-center gap-4">
       {sanEntry && (
         <SanInputForm
           onSubmit={onSanEntry}
@@ -39,7 +39,7 @@ export const ActionBar = ({
       )}
       {playerStatus != "gave-up" && (
         <button
-          className="rounded whitespace-nowrap bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
+          className="whitespace-nowrap rounded bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
           onClick={onGiveUp}
         >
           Give Up

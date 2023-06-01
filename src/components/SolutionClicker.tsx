@@ -198,14 +198,18 @@ export const SolutionClicker = ({
             {goodGuesses.length > 0 && (
               <div className="flex gap-2">
                 {goodGuesses.map((guess) => (
-                  <div className="text-green-500">{guess}</div>
+                  <div className="text-green-500" key={guess}>
+                    {guess}
+                  </div>
                 ))}
               </div>
             )}
             {badGuesses.length > 0 && (
               <div className="flex gap-2 line-through">
                 {badGuesses.map((guess) => (
-                  <div className="text-red-500">{guess}</div>
+                  <div className="text-red-500" key={guess}>
+                    {guess}
+                  </div>
                 ))}
               </div>
             )}

@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 
 type SanInputFormProps = {
   onSubmit: (san: string) => void;
-  onReset?: () => void;
   isWrong: boolean;
 };
 
@@ -11,11 +10,7 @@ type FormValues = {
   san: string;
 };
 
-export const SanInputForm = ({
-  onSubmit,
-  isWrong,
-  onReset,
-}: SanInputFormProps) => {
+export const SanInputForm = ({ onSubmit, isWrong }: SanInputFormProps) => {
   const {
     register,
     handleSubmit,
