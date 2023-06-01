@@ -56,8 +56,15 @@ export const SolutionClicker = ({
   const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
 
   let currentFen;
+  let flipped = false;
   if (puzzle) {
     currentFen = puzzle.fen;
+    try {
+      const chess = new Chess(currentFen);
+      flipped = chess.turn() == BLACK;
+    } catch (e) {
+      // some FENs are expectedly invalid (missing e.g. kings)
+    }
   }
 
   const playAgain = () => {
@@ -138,12 +145,6 @@ export const SolutionClicker = ({
     setPlayerStatus("gave-up");
     setGoodGuesses(puzzle?.solution || []);
   };
-
-  let flipped = false;
-  if (!currentFen) {
-    const chess = new Chess(currentFen);
-    flipped = chess.turn() == BLACK;
-  }
 
   return (
     <div className="flex h-full flex-col">

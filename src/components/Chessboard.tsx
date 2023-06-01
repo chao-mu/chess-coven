@@ -29,8 +29,8 @@ export function Chessboard({
   flipped = false,
 }: ChessboardProps) {
   if (flipped) {
-    board = board.reverse();
-    board = board.map((row) => row.reverse());
+    board = [...board].reverse();
+    board = board.map((row) => [...row].reverse());
   }
 
   return (
