@@ -22,4 +22,5 @@ export type PlayerStatus =
   | "premature-advancement"
   | "gave-up"
   | "playing"
-  | "idle";
+  | "idle"
+  | "wrong-guess";

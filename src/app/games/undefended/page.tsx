@@ -27,6 +27,7 @@ export default function Page() {
         story={STORY}
         rules={RULES}
         autoAdvance={false}
+        solutionType="square"
       />
     </div>
   );

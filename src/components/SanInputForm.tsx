@@ -8,20 +8,31 @@ type SanInputFormProps = {
 };
 
 type FormValues = {
-  san: string
-}
+  san: string;
+};
 
-
-export const SanInputForm = ({ onSubmit, isWrong, onReset }: SanInputFormProps) => {
-  const { register, handleSubmit, reset, formState: { errors }} = useForm<FormValues>();
+export const SanInputForm = ({
+  onSubmit,
+  isWrong,
+  onReset,
+}: SanInputFormProps) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>();
 
   const submit = ({ san }: FormValues) => {
     onSubmit(san);
     reset();
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="flex flex-col items-center justify-center gap-2">
+    <form
+      onSubmit={handleSubmit(submit)}
+      className="flex flex-col items-center justify-center gap-2"
+    >
       <div className="flex flex-wrap items-center gap-2">
         <label htmlFor="san" className="text-xl">
           Continuation
@@ -39,28 +50,13 @@ export const SanInputForm = ({ onSubmit, isWrong, onReset }: SanInputFormProps) 
           >
             Submit
           </button>
-          <button
-            type="reset"
-            className="border-2 border-amber-500 p-2 text-xl"
-            onClick={() => {
-              reset()
-              if (onReset) {
-                onReset()
-              }
-            }}
-          >
-            Reset
-          </button>
         </div>
-      {
-        errors.san ? (
+        {errors.san ? (
           <span className="text-red-500">{errors.san?.message}</span>
         ) : isWrong ? (
           <span className="text-red-500">Incorrect</span>
-        ) : null
-      }
+        ) : null}
       </div>
     </form>
-
   );
 };

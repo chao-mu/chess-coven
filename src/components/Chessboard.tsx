@@ -17,6 +17,7 @@ type ChessboardProps = {
   onSquareClick?: (square: string) => void;
   highlightedSquares?: string[];
   flipped?: boolean;
+  onMove?: (move: string) => void;
 };
 
 export function Chessboard({
