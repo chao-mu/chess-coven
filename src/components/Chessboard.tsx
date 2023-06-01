@@ -28,7 +28,6 @@ export function Chessboard({
   highlightedSquares = [],
   flipped = false,
 }: ChessboardProps) {
-  console.log(board);
   return (
     <div className={`flex ${flipped ? "flex-col-reverse" : "flex-col"}`}>
       <div className="border-2 border-black bg-red-400 px-4 py-1 text-right  text-lg text-black">

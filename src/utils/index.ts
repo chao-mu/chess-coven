@@ -28,7 +28,7 @@ export function parseFen(fen: string): Board {
       } else {
         rank.push({
           ...piece,
-          square: toSquareName(rowIdx, i, false) as Square,
+          square: toSquareName(rowIdx, i) as Square,
         });
       }
     });
