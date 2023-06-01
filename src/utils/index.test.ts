@@ -35,17 +35,17 @@ describe("parseFen", () => {
 
 describe("toSquareName", () => {
   test("returns correct square name", () => {
-    expect(toSquareName(0, 0, false)).toBe("a8");
-    expect(toSquareName(7, 0, false)).toBe("a1");
-    expect(toSquareName(0, 7, false)).toBe("h8");
-    expect(toSquareName(7, 7, false)).toBe("h1");
+    expect(toSquareName(0, 0)).toBe("a8");
+    expect(toSquareName(7, 0)).toBe("a1");
+    expect(toSquareName(0, 7)).toBe("h8");
+    expect(toSquareName(7, 7)).toBe("h1");
 
-    expect(toSquareName(0, 0, false)).toBe("a8");
-    expect(toSquareName(0, 1, false)).toBe("b8");
-    expect(toSquareName(0, 2, false)).toBe("c8");
-    expect(toSquareName(0, 3, false)).toBe("d8");
-    expect(toSquareName(0, 4, false)).toBe("e8");
-    expect(toSquareName(0, 5, false)).toBe("f8");
-    expect(toSquareName(0, 6, false)).toBe("g8");
+    expect(toSquareName(0, 0)).toBe("a8");
+    expect(toSquareName(0, 1)).toBe("b8");
+    expect(toSquareName(0, 2)).toBe("c8");
+    expect(toSquareName(0, 3)).toBe("d8");
+    expect(toSquareName(0, 4)).toBe("e8");
+    expect(toSquareName(0, 5)).toBe("f8");
+    expect(toSquareName(0, 6)).toBe("g8");
   });
 });

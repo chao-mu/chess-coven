@@ -37,15 +37,7 @@ export function parseFen(fen: string): Board {
   });
 }
 
-export function toSquareName(
-  rowIdx: number,
-  colIdx: number,
-  flipped: boolean
-): string {
-  if (flipped) {
-    rowIdx = 7 - rowIdx;
-  }
-
+export function toSquareName(rowIdx: number, colIdx: number): string {
   const squareLetter = ["a", "b", "c", "d", "e", "f", "g", "h"][colIdx];
   const squareNumber = (8 - rowIdx).toString();
 
