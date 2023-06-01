@@ -13,7 +13,7 @@ import { GameStartScreen } from "@/components/GameStartScreen";
 import { ActionBar } from "@/components/ActionBar";
 
 // Types
-import { Puzzle, PlayerStatus } from "@/types";
+import { Puzzle, PlayerStatus, Board, EmptyBoard } from "@/types";
 
 // Utils
 import { parseFen } from "@/utils";
@@ -45,7 +45,9 @@ export const SolutionClicker = ({
   autoAdvance,
   solutionType,
 }: SolutionClickerProps) => {
-  const [puzzle, setPuzzle] = useState<Puzzle | undefined>();
+  const [board, setBoard] = useState<Board>(EmptyBoard);
+  const [solutions, setSolutions] = useState<string[]>([]);
+  const [flipped, setFlipped] = useState(false);
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
   const [guessResults, setGuessResults] = useState<boolean[]>([]);
@@ -54,11 +56,6 @@ export const SolutionClicker = ({
   const [highScore, setHighScore] = useState(0);
   const [gameStatus, setGameStatus] = useState(GameStatus.START);
   const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
-
-  let currentFen;
-  if (puzzle) {
-    currentFen = puzzle.fen;
-  }
 
   const playAgain = () => {
     if (currentScore > highScore) {
@@ -77,7 +74,17 @@ export const SolutionClicker = ({
   const gotoNextPuzzle = () => {
     setGoodGuesses([]);
     setBadGuesses([]);
-    setPuzzle(nextPuzzle());
+
+    const puzzle = nextPuzzle();
+    setBoard(parseFen(puzzle.fen));
+    setSolutions(puzzle.solution);
+
+    try {
+      const chess = new Chess(puzzle.fen);
+      setFlipped(chess.turn() === BLACK);
+    } catch (e) {
+      // We support invalid FENs
+    }
   };
 
   const loseHealth = () => {
@@ -89,8 +96,6 @@ export const SolutionClicker = ({
   };
 
   const checkCompleted = () => {
-    const solutions = puzzle?.solution || [];
-
     if (playerStatus === "gave-up" || goodGuesses.length === solutions.length) {
       gotoNextPuzzle();
       setPlayerStatus("playing");
@@ -107,11 +112,10 @@ export const SolutionClicker = ({
 
     setPlayerStatus("playing");
 
-    if (!puzzle || goodGuesses.includes(guess) || badGuesses.includes(guess)) {
+    if (goodGuesses.includes(guess) || badGuesses.includes(guess)) {
       return;
     }
 
-    const solutions = puzzle.solution || [];
     const isCorrect = solutions.includes(guess);
     setGuessResults([...guessResults, isCorrect]);
 
@@ -136,14 +140,8 @@ export const SolutionClicker = ({
   const giveUp = () => {
     loseHealth();
     setPlayerStatus("gave-up");
-    setGoodGuesses(puzzle?.solution || []);
+    setGoodGuesses(solutions);
   };
-
-  let flipped = false;
-  if (!currentFen) {
-    const chess = new Chess(currentFen);
-    flipped = chess.turn() == BLACK;
-  }
 
   return (
     <div className="flex h-full flex-col">
@@ -169,10 +167,10 @@ export const SolutionClicker = ({
           onPlayAgain={playAgain}
         />
       )}
-      {gameStatus == GameStatus.PLAYING && currentFen && (
+      {gameStatus == GameStatus.PLAYING && (
         <div className="flex flex-col gap-2">
           <Chessboard
-            board={parseFen(currentFen)}
+            board={board}
             goodSquares={solutionType == "square" ? goodGuesses : []}
             badSquares={solutionType == "square" ? badGuesses : []}
             onSquareClick={
@@ -182,9 +180,7 @@ export const SolutionClicker = ({
             }
             onMove={(move) => checkGuess(move, "move")}
             flipped={flipped}
-            highlightedSquares={
-              playerStatus == "gave-up" ? puzzle?.solution : []
-            }
+            highlightedSquares={playerStatus == "gave-up" ? solutions : []}
           />
           <ActionBar
             autoAdvance={autoAdvance}

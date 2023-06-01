@@ -18,6 +18,8 @@ export type Rank = ({
 
 export type Board = Rank[];
 
+export const EmptyBoard: Board = Array(8).fill(Array(8).fill(null));
+
 export type PlayerStatus =
   | "premature-advancement"
   | "gave-up"
