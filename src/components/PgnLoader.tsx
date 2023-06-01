@@ -1,22 +1,26 @@
 // React
-import React from 'react';
+import React from "react";
 
 // React Hook Form
 import { useForm } from "react-hook-form";
 
 // chess.js
-import { Chess } from 'chess.js';
+import { Chess } from "chess.js";
 
 type PgnLoaderProps = {
-  onPgnLoaded: (pgn: string) => void
-}
+  onPgnLoaded: (pgn: string) => void;
+};
 
 type FormValues = {
-  pgn: string
-}
+  pgn: string;
+};
 
 export const PgnLoader = ({ onPgnLoaded }: PgnLoaderProps) => {
-  const { register, handleSubmit, formState: { errors }} = useForm<FormValues>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>();
 
   const validatePgn = (pgn: string) => {
     const chess = new Chess();
@@ -24,12 +28,15 @@ export const PgnLoader = ({ onPgnLoaded }: PgnLoaderProps) => {
       chess.loadPgn(pgn);
       return true;
     } catch (e) {
-      return 'Invalid PGN';
+      return "Invalid PGN";
     }
   };
-    
+
   return (
-    <form onSubmit={handleSubmit(({ pgn }) => onPgnLoaded(pgn))} className="flex flex-col items-start">
+    <form
+      onSubmit={handleSubmit(({ pgn }) => onPgnLoaded(pgn))}
+      className="flex flex-col items-start"
+    >
       <textarea
         {...register("pgn", { required: true, validate: validatePgn })}
         className="rounded-lg border border-gray-300 p-2"
@@ -42,11 +49,9 @@ export const PgnLoader = ({ onPgnLoaded }: PgnLoaderProps) => {
       >
         Submit
       </button>
-      {
-        errors.pgn && (
-          <span className="text-red-500">{errors.pgn?.message}</span>
-        )
-      }
+      {errors.pgn && (
+        <span className="text-red-500">{errors.pgn?.message}</span>
+      )}
     </form>
   );
 };

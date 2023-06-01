@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { SolutionClicker } from '@/components/SolutionClicker';
-import undefendedPieces from '@/assets/puzzles/undefended.json';
+import { SolutionClicker } from "@/components/SolutionClicker";
+import undefendedPieces from "@/assets/puzzles/undefended.json";
 
 const meta: Meta<typeof SolutionClicker> = {
   component: SolutionClicker,

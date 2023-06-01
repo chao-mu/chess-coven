@@ -1,33 +1,45 @@
 // React
-import React  from 'react';
+import React from "react";
 
 // react icons
-import { FaAngleLeft, FaAngleRight, FaDice, FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
+import {
+  FaAngleLeft,
+  FaAngleRight,
+  FaDice,
+  FaAngleDoubleLeft,
+  FaAngleDoubleRight,
+} from "react-icons/fa";
 
 // Components
-import { NavButton } from './NavButton';
+import { NavButton } from "./NavButton";
 
 type MemorizerNavProps = {
-  totalMoves: number
-  position: number
-  onJump: (steps: number) => void
-  onRevealToggle: (revealed: boolean) => void
-  isRevealed: boolean
-}
+  totalMoves: number;
+  position: number;
+  onJump: (steps: number) => void;
+  onRevealToggle: (revealed: boolean) => void;
+  isRevealed: boolean;
+};
 
-export const MemorizerNav = ({ totalMoves, position, onJump, isRevealed, onRevealToggle }: MemorizerNavProps) => {
+export const MemorizerNav = ({
+  totalMoves,
+  position,
+  onJump,
+  isRevealed,
+  onRevealToggle,
+}: MemorizerNavProps) => {
   const random = (min: number, max: number) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min
-  }
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
 
   const jumpRandomForward = () => {
-    onJump(random(1, totalMoves - position))
-  }
+    onJump(random(1, totalMoves - position));
+  };
 
   const jumpRandomBackward = () => {
-    if (position == 0) return
-    onJump(-random(1, position))
-  }
+    if (position == 0) return;
+    onJump(-random(1, position));
+  };
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -41,8 +53,12 @@ export const MemorizerNav = ({ totalMoves, position, onJump, isRevealed, onRevea
         <NavButton onClick={() => onJump(-1)}>
           <FaAngleLeft />
         </NavButton>
-        <NavButton onClick={() => {onRevealToggle(!isRevealed)}}>
-          {isRevealed ? 'hide' : 'show'}
+        <NavButton
+          onClick={() => {
+            onRevealToggle(!isRevealed);
+          }}
+        >
+          {isRevealed ? "hide" : "show"}
         </NavButton>
       </div>
       <div className="flex justify-between gap-2">

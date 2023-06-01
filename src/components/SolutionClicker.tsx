@@ -18,12 +18,15 @@ import { Puzzle, PlayerStatus } from "@/types";
 // Utils
 import { parseFen } from "@/utils";
 
+export type SolutionType = "move" | "square";
+
 type SolutionClickerProps = {
   nextPuzzle: () => Puzzle;
   title: string;
   rules: string;
   story: string;
   autoAdvance: boolean;
+  solutionType: SolutionType;
 };
 
 const GameStatus = {
@@ -40,6 +43,7 @@ export const SolutionClicker = ({
   rules,
   story,
   autoAdvance,
+  solutionType,
 }: SolutionClickerProps) => {
   const [puzzle, setPuzzle] = useState<Puzzle | undefined>();
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
@@ -96,19 +100,23 @@ export const SolutionClicker = ({
     }
   };
 
-  const checkGuess = (square: string) => {
+  const checkGuess = (guess: string, guessType: SolutionType) => {
+    if (guessType === "move") {
+      //guess = strippedSan(guess);
+    }
+
     setPlayerStatus("playing");
 
-    if (goodGuesses.includes(square) || badGuesses.includes(square)) {
+    if (!puzzle || goodGuesses.includes(guess) || badGuesses.includes(guess)) {
       return;
     }
 
-    const solutions = puzzle?.solution || [];
-    const isCorrect = solutions.includes(square);
+    const solutions = puzzle.solution || [];
+    const isCorrect = solutions.includes(guess);
     setGuessResults([...guessResults, isCorrect]);
 
     if (isCorrect) {
-      const newGoodGuesses = [...goodGuesses, square];
+      const newGoodGuesses = [...goodGuesses, guess];
       setGoodGuesses(newGoodGuesses);
 
       // Check if puzzle is complete
@@ -120,13 +128,15 @@ export const SolutionClicker = ({
       setCurrentScore((score) => score + 1);
     } else {
       loseHealth();
-      setBadGuesses([...badGuesses, square]);
+      setBadGuesses([...badGuesses, guess]);
+      setPlayerStatus("wrong-guess");
     }
   };
 
   const giveUp = () => {
     loseHealth();
     setPlayerStatus("gave-up");
+    setGoodGuesses(puzzle?.solution || []);
   };
 
   let flipped = false;
@@ -163,9 +173,14 @@ export const SolutionClicker = ({
         <div className="flex flex-col gap-2">
           <Chessboard
             board={parseFen(currentFen)}
-            goodSquares={goodGuesses}
-            badSquares={badGuesses}
-            onSquareClick={checkGuess}
+            goodSquares={solutionType == "square" ? goodGuesses : []}
+            badSquares={solutionType == "square" ? badGuesses : []}
+            onSquareClick={
+              solutionType == "square"
+                ? (square) => checkGuess(square, "square")
+                : undefined
+            }
+            onMove={(move) => checkGuess(move, "move")}
             flipped={flipped}
             highlightedSquares={
               playerStatus == "gave-up" ? puzzle?.solution : []
@@ -176,7 +191,29 @@ export const SolutionClicker = ({
             onAdvance={checkCompleted}
             onGiveUp={giveUp}
             playerStatus={playerStatus}
+            onSanEntry={(san) => checkGuess(san, "move")}
+            sanEntry={solutionType == "move"}
           />
+          <div className="flex flex-wrap gap-2 p-2">
+            {goodGuesses.length > 0 && (
+              <div className="flex gap-2">
+                {goodGuesses.map((guess) => (
+                  <div className="text-green-500" key={guess}>
+                    {guess}
+                  </div>
+                ))}
+              </div>
+            )}
+            {badGuesses.length > 0 && (
+              <div className="flex gap-2 line-through">
+                {badGuesses.map((guess) => (
+                  <div className="text-red-500" key={guess}>
+                    {guess}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
       {(gameStatus === GameStatus.PLAYING ||

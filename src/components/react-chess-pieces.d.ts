@@ -1,1 +1,1 @@
-declare module 'react-chess-pieces';
+declare module "react-chess-pieces";

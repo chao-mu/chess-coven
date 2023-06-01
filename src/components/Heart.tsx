@@ -1,24 +1,24 @@
 // React
-import React from 'react';
+import React from "react";
 
 // NextJs
-import Image from 'next/image';
+import Image from "next/image";
 
 // Images
-import heartFull from '@/public/images/heart-full.svg';
-import heartEmpty from '@/public/images/heart-empty.svg';
+import heartFull from "@/public/images/heart-full.svg";
+import heartEmpty from "@/public/images/heart-empty.svg";
 
 type HeartProps = {
-  full: boolean
-}
+  full: boolean;
+};
 
 export function Heart({ full }: HeartProps) {
   return (
     <Image
-      alt={`${ full ? 'full' : 'empty'} heart`}
+      alt={`${full ? "full" : "empty"} heart`}
       src={full ? heartFull : heartEmpty}
       width={40}
       height={40}
     />
-  )
+  );
 }
