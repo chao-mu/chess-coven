@@ -189,27 +189,9 @@ export const SolutionClicker = ({
             playerStatus={playerStatus}
             onSanEntry={(san) => checkGuess(san, "move")}
             sanEntry={solutionType == "move"}
+            goodGuesses={goodGuesses}
+            badGuesses={badGuesses}
           />
-          <div className="flex flex-wrap gap-2 p-2">
-            {goodGuesses.length > 0 && (
-              <div className="flex gap-2">
-                {goodGuesses.map((guess) => (
-                  <div className="text-green-500" key={guess}>
-                    {guess}
-                  </div>
-                ))}
-              </div>
-            )}
-            {badGuesses.length > 0 && (
-              <div className="flex gap-2 line-through">
-                {badGuesses.map((guess) => (
-                  <div className="text-red-500" key={guess}>
-                    {guess}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
       )}
       {(gameStatus === GameStatus.PLAYING ||
