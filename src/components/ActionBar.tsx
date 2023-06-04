@@ -26,7 +26,7 @@ export const ActionBar = ({
 }: ActionBarProps) => {
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 p-4">
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex flex-wrap gap-2">
         <div className="flex flex-wrap gap-2 p-2">
           {goodGuesses && goodGuesses.length > 0 && (
             <div className="flex gap-2">
