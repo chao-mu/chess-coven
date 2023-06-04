@@ -139,7 +139,9 @@ export const SolutionClicker = ({
   };
 
   const giveUp = () => {
-    loseHealth();
+    if (playerStatus != "premature-advancement") {
+      loseHealth();
+    }
     setPlayerStatus("gave-up");
     let displayedSolutions = Object.values(solutionAliases);
     if (displayedSolutions.length === 0) {
