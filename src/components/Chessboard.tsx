@@ -1,11 +1,11 @@
 // React
-import React from "react";
+import React, { useState } from "react";
 
 // Components
 import { ChessboardSquare } from "@/components/ChessboardSquare";
 
 // Types
-import { Board } from "@/types";
+import { Board, SquareInfo } from "@/types";
 
 // Utils
 import { toSquareName } from "@/utils";
@@ -25,9 +25,39 @@ export function Chessboard({
   board,
   goodSquares = [],
   badSquares = [],
+  onMove,
   highlightedSquares = [],
   flipped = false,
 }: ChessboardProps) {
+  const [pendingMove, setPendingMove] = useState<string | null>(null);
+
+  const updatePendingMove = (square: string, pieceClicked: boolean) => {
+    if (!pendingMove) {
+      if (pieceClicked) {
+        setPendingMove(square);
+      }
+
+      return;
+    }
+
+    if (pendingMove == square) {
+      setPendingMove(null);
+      return;
+    }
+
+    const move = `${pendingMove}${square}`;
+    setPendingMove(null);
+    onMove && onMove(move);
+  };
+
+  const handleSquareClick = (square: string, squareInfo: SquareInfo | null) => {
+    if (onSquareClick) {
+      onSquareClick(square);
+    } else {
+      updatePendingMove(square, squareInfo != null);
+    }
+  };
+
   return (
     <div className={`flex ${flipped ? "flex-col-reverse" : "flex-col"}`}>
       <div className="border-2 border-black bg-red-400 px-4 py-1 text-right  text-lg text-black">
@@ -45,7 +75,7 @@ export function Chessboard({
               return (
                 <button
                   id={`square-${square}`}
-                  onClick={() => onSquareClick && onSquareClick(square)}
+                  onClick={() => handleSquareClick(square, squareInfo)}
                   key={rowIdx}
                   className="h-full w-full"
                 >
@@ -55,6 +85,7 @@ export function Chessboard({
                     isGood={goodSquares.includes(square)}
                     isBad={badSquares.includes(square)}
                     isHighlighted={highlightedSquares.includes(square)}
+                    isSelected={!!pendingMove?.startsWith(square)}
                   />
                 </button>
               );

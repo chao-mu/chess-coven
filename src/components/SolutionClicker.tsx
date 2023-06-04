@@ -47,6 +47,9 @@ export const SolutionClicker = ({
 }: SolutionClickerProps) => {
   const [board, setBoard] = useState<Board>(EmptyBoard);
   const [solutions, setSolutions] = useState<string[]>([]);
+  const [solutionAliases, setSolutionAliases] = useState<
+    Record<string, string>
+  >({});
   const [flipped, setFlipped] = useState(false);
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
@@ -78,6 +81,7 @@ export const SolutionClicker = ({
     const puzzle = nextPuzzle();
     setBoard(parseFen(puzzle.fen));
     setSolutions(puzzle.solution);
+    setSolutionAliases(puzzle.solutionAliases || {});
 
     try {
       const chess = new Chess(puzzle.fen);
@@ -105,11 +109,7 @@ export const SolutionClicker = ({
     }
   };
 
-  const checkGuess = (guess: string, guessType: SolutionType) => {
-    if (guessType === "move") {
-      //guess = strippedSan(guess);
-    }
-
+  const checkGuess = (guess: string) => {
     setPlayerStatus("playing");
 
     if (goodGuesses.includes(guess) || badGuesses.includes(guess)) {
@@ -120,7 +120,8 @@ export const SolutionClicker = ({
     setGuessResults([...guessResults, isCorrect]);
 
     if (isCorrect) {
-      const newGoodGuesses = [...goodGuesses, guess];
+      const alias = solutionAliases[guess];
+      const newGoodGuesses = [...goodGuesses, alias || guess];
       setGoodGuesses(newGoodGuesses);
 
       // Check if puzzle is complete
@@ -140,7 +141,7 @@ export const SolutionClicker = ({
   const giveUp = () => {
     loseHealth();
     setPlayerStatus("gave-up");
-    setGoodGuesses(solutions);
+    setGoodGuesses(Object.values(solutionAliases) || solutions);
   };
 
   return (
@@ -175,10 +176,10 @@ export const SolutionClicker = ({
             badSquares={solutionType == "square" ? badGuesses : []}
             onSquareClick={
               solutionType == "square"
-                ? (square) => checkGuess(square, "square")
+                ? (square) => checkGuess(square)
                 : undefined
             }
-            onMove={(move) => checkGuess(move, "move")}
+            onMove={(move) => checkGuess(move)}
             flipped={flipped}
             highlightedSquares={playerStatus == "gave-up" ? solutions : []}
           />

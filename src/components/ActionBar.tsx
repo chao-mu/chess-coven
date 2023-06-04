@@ -30,31 +30,27 @@ export const ActionBar = ({
 }: ActionBarProps) => {
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 p-4">
-      {sanEntry && (
-        <SanInputForm
-          onSubmit={onSanEntry}
-          isWrong={playerStatus == "wrong-guess"}
-        />
-      )}
-      <div className="flex flex-wrap gap-2 p-2">
-        {goodGuesses && goodGuesses.length > 0 && (
-          <div className="flex gap-2">
-            {goodGuesses.map((guess) => (
-              <div className="text-green-500" key={guess}>
-                {guess}
-              </div>
-            ))}
-          </div>
-        )}
-        {badGuesses && badGuesses.length > 0 && (
-          <div className="flex gap-2 line-through">
-            {badGuesses.map((guess) => (
-              <div className="text-red-500" key={guess}>
-                {guess}
-              </div>
-            ))}
-          </div>
-        )}
+      <div className="flex gap-2 flex-wrap">
+        <div className="flex flex-wrap gap-2 p-2">
+          {goodGuesses && goodGuesses.length > 0 && (
+            <div className="flex gap-2">
+              {goodGuesses.map((guess) => (
+                <div className="text-green-500" key={guess}>
+                  {guess}
+                </div>
+              ))}
+            </div>
+          )}
+          {badGuesses && badGuesses.length > 0 && (
+            <div className="flex gap-2 line-through">
+              {badGuesses.map((guess) => (
+                <div className="text-red-500" key={guess}>
+                  {guess}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex gap-2">
         {playerStatus == "premature-advancement" && (

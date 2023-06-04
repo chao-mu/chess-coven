@@ -13,10 +13,15 @@ export type ChessboardSquareProps = {
   isGood: boolean;
   isBad: boolean;
   isHighlighted: boolean;
+  isSelected: boolean;
 };
 
 export function ChessboardSquare(props: ChessboardSquareProps) {
-  const fill = props.isLight ? "bg-red-100" : "bg-red-400";
+  let fill = props.isLight ? "bg-red-100" : "bg-red-400";
+
+  if (props.isSelected) {
+    fill += "/50";
+  }
 
   let piece: string | null = null;
   if (props.piece) {
