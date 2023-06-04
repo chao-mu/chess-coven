@@ -8,13 +8,16 @@ export type Game = {
 export type Puzzle = {
   fen: string;
   solution: string[];
+  solutionAliases?: Record<string, string>;
 };
 
-export type Rank = ({
+export type SquareInfo = {
   color: Color;
   type: PieceSymbol;
   square: Square;
-} | null)[];
+};
+
+export type Rank = (SquareInfo | null)[];
 
 export type Board = Rank[];
 
@@ -25,4 +28,5 @@ export type PlayerStatus =
   | "gave-up"
   | "playing"
   | "idle"
-  | "wrong-guess";
+  | "wrong-guess"
+  | "dead";

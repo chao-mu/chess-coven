@@ -4,9 +4,6 @@ import React from "react";
 // Types
 import { PlayerStatus } from "@/types";
 
-// Components
-import { SanInputForm } from "@/components/SanInputForm";
-
 export type ActionBarProps = {
   playerStatus: PlayerStatus;
   autoAdvance: boolean;
@@ -16,6 +13,7 @@ export type ActionBarProps = {
   sanEntry: boolean;
   goodGuesses?: string[];
   badGuesses?: string[];
+  onContinue?: () => void;
 };
 
 export const ActionBar = ({
@@ -23,38 +21,32 @@ export const ActionBar = ({
   playerStatus,
   onGiveUp,
   onAdvance,
-  onSanEntry,
   goodGuesses = [],
   badGuesses = [],
-  sanEntry = false,
 }: ActionBarProps) => {
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 p-4">
-      {sanEntry && (
-        <SanInputForm
-          onSubmit={onSanEntry}
-          isWrong={playerStatus == "wrong-guess"}
-        />
-      )}
-      <div className="flex flex-wrap gap-2 p-2">
-        {goodGuesses && goodGuesses.length > 0 && (
-          <div className="flex gap-2">
-            {goodGuesses.map((guess) => (
-              <div className="text-green-500" key={guess}>
-                {guess}
-              </div>
-            ))}
-          </div>
-        )}
-        {badGuesses && badGuesses.length > 0 && (
-          <div className="flex gap-2 line-through">
-            {badGuesses.map((guess) => (
-              <div className="text-red-500" key={guess}>
-                {guess}
-              </div>
-            ))}
-          </div>
-        )}
+      <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 p-2">
+          {goodGuesses && goodGuesses.length > 0 && (
+            <div className="flex gap-2">
+              {goodGuesses.map((guess) => (
+                <div className="text-green-500" key={guess}>
+                  {guess}
+                </div>
+              ))}
+            </div>
+          )}
+          {badGuesses && badGuesses.length > 0 && (
+            <div className="flex gap-2 line-through">
+              {badGuesses.map((guess) => (
+                <div className="text-red-500" key={guess}>
+                  {guess}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex gap-2">
         {playerStatus == "premature-advancement" && (
