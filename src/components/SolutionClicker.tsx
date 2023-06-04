@@ -141,7 +141,12 @@ export const SolutionClicker = ({
   const giveUp = () => {
     loseHealth();
     setPlayerStatus("gave-up");
-    setGoodGuesses(Object.values(solutionAliases) || solutions);
+    let displayedSolutions = Object.values(solutionAliases);
+    if (displayedSolutions.length === 0) {
+      displayedSolutions = solutions;
+    }
+
+    setGoodGuesses(displayedSolutions);
   };
 
   return (
@@ -188,7 +193,7 @@ export const SolutionClicker = ({
             onAdvance={checkCompleted}
             onGiveUp={giveUp}
             playerStatus={playerStatus}
-            onSanEntry={(san) => checkGuess(san, "move")}
+            onSanEntry={(san) => checkGuess(san)}
             sanEntry={solutionType == "move"}
             goodGuesses={goodGuesses}
             badGuesses={badGuesses}

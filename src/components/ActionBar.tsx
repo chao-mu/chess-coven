@@ -4,9 +4,6 @@ import React from "react";
 // Types
 import { PlayerStatus } from "@/types";
 
-// Components
-import { SanInputForm } from "@/components/SanInputForm";
-
 export type ActionBarProps = {
   playerStatus: PlayerStatus;
   autoAdvance: boolean;
@@ -16,6 +13,7 @@ export type ActionBarProps = {
   sanEntry: boolean;
   goodGuesses?: string[];
   badGuesses?: string[];
+  onContinue?: () => void;
 };
 
 export const ActionBar = ({
@@ -23,10 +21,8 @@ export const ActionBar = ({
   playerStatus,
   onGiveUp,
   onAdvance,
-  onSanEntry,
   goodGuesses = [],
   badGuesses = [],
-  sanEntry = false,
 }: ActionBarProps) => {
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 p-4">

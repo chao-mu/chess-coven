@@ -28,4 +28,5 @@ export type PlayerStatus =
   | "gave-up"
   | "playing"
   | "idle"
-  | "wrong-guess";
+  | "wrong-guess"
+  | "dead";
