@@ -112,7 +112,11 @@ export const SolutionClicker = ({
   const checkGuess = (guess: string) => {
     setPlayerStatus("playing");
 
-    if (goodGuesses.includes(guess) || badGuesses.includes(guess)) {
+    if (
+      goodGuesses.includes(guess) ||
+      goodGuesses.includes(solutionAliases[guess]) ||
+      badGuesses.includes(guess)
+    ) {
       return;
     }
 
