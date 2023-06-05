@@ -17,8 +17,8 @@ export function Heart({ full }: HeartProps) {
     <Image
       alt={`${full ? "full" : "empty"} heart`}
       src={full ? heartFull : heartEmpty}
-      width={40}
-      height={40}
+      width={30}
+      height={30}
     />
   );
 }

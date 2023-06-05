@@ -181,6 +181,18 @@ export const SolutionClicker = ({
       )}
       {gameStatus == GameStatus.PLAYING && (
         <div className="flex flex-col gap-2">
+          {(gameStatus === GameStatus.PLAYING ||
+            gameStatus === GameStatus.OVER) && (
+            <div className="flex flex-row items-center justify-between gap-4 px-6 text-xl">
+              <div>Score: {currentScore}</div>
+              <div>High Score: {highScore}</div>
+              <div className="flex gap-2">
+                {[...Array(MAX_HEALTH)].map((_, index) => (
+                  <Heart key={index} full={index < health} />
+                ))}
+              </div>
+            </div>
+          )}
           <Chessboard
             board={board}
             goodSquares={solutionType == "square" ? goodGuesses : []}
@@ -204,18 +216,6 @@ export const SolutionClicker = ({
             goodGuesses={goodGuesses}
             badGuesses={badGuesses}
           />
-        </div>
-      )}
-      {(gameStatus === GameStatus.PLAYING ||
-        gameStatus === GameStatus.OVER) && (
-        <div className="flex flex-row items-center justify-between gap-4 p-6 text-xl">
-          <div>Score: {currentScore}</div>
-          <div>High Score: {highScore}</div>
-          <div className="flex gap-2">
-            {[...Array(MAX_HEALTH)].map((_, index) => (
-              <Heart key={index} full={index < health} />
-            ))}
-          </div>
         </div>
       )}
     </div>
