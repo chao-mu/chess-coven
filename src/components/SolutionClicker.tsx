@@ -183,7 +183,7 @@ export const SolutionClicker = ({
         <div className="flex flex-col">
           {(gameStatus === GameStatus.PLAYING ||
             gameStatus === GameStatus.OVER) && (
-            <div className="flex flex-row items-center justify-between gap-4 pb-4 px-6 text-xl">
+            <div className="flex flex-row items-center justify-between gap-4 px-6 pb-4 text-xl">
               <div>Score: {currentScore}</div>
               <div>High Score: {highScore}</div>
               <div className="flex gap-2">
