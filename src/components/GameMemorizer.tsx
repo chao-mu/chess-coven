@@ -65,7 +65,7 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
     <div className="flex flex-col">
       <div className="flex flex-col">
         <div>
-          <div className="mb-2 w-full max-w-[66vh] mx-auto">
+          <div className="mx-auto mb-2 w-full max-w-[66vh]">
             <Chessboard board={chess.board()} onMove={onGuess} />
           </div>
         </div>

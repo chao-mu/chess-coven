@@ -184,14 +184,14 @@ export const SolutionClicker = ({
           <div className="flex flex-row items-center justify-between gap-4 px-6 pb-4 text-xl">
             <div>Score: {currentScore}</div>
             <div>High Score: {highScore}</div>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex flex-wrap gap-2">
               {[...Array(MAX_HEALTH)].map((_, index) => (
                 <Heart key={index} full={index < health} />
               ))}
             </div>
           </div>
           <div>
-            <div className="w-full max-w-[66vh] mx-auto">
+            <div className="mx-auto w-full max-w-[66vh]">
               <Chessboard
                 board={board}
                 goodSquares={solutionType == "square" ? goodGuesses : []}
