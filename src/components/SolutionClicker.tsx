@@ -190,19 +190,23 @@ export const SolutionClicker = ({
               ))}
             </div>
           </div>
-          <Chessboard
-            board={board}
-            goodSquares={solutionType == "square" ? goodGuesses : []}
-            badSquares={solutionType == "square" ? badGuesses : []}
-            onSquareClick={
-              solutionType == "square"
-                ? (square) => checkGuess(square)
-                : undefined
-            }
-            onMove={(move) => checkGuess(move)}
-            flipped={flipped}
-            highlightedSquares={playerStatus == "gave-up" ? solutions : []}
-          />
+          <div>
+            <div className="w-full max-w-[66vh] mx-auto">
+              <Chessboard
+                board={board}
+                goodSquares={solutionType == "square" ? goodGuesses : []}
+                badSquares={solutionType == "square" ? badGuesses : []}
+                onSquareClick={
+                  solutionType == "square"
+                    ? (square) => checkGuess(square)
+                    : undefined
+                }
+                onMove={(move) => checkGuess(move)}
+                flipped={flipped}
+                highlightedSquares={playerStatus == "gave-up" ? solutions : []}
+              />
+            </div>
+          </div>
           <ActionBar
             autoAdvance={autoAdvance}
             onAdvance={checkCompleted}

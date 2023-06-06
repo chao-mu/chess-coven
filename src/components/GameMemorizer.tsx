@@ -63,24 +63,28 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col items-center">
-        <div className="mb-2 w-full">
-          <Chessboard board={chess.board()} onMove={onGuess} />
+      <div className="flex flex-col">
+        <div>
+          <div className="mb-2 w-full max-w-[66vh] mx-auto">
+            <Chessboard board={chess.board()} onMove={onGuess} />
+          </div>
         </div>
-        <MemorizerNav
-          totalMoves={totalMoves}
-          position={position}
-          onJump={onJump}
-          isRevealed={isRevealed}
-          onRevealToggle={(revealed: boolean) => {
-            if (revealed) {
-              setIsWrong(false);
-            }
-            setIsRevealed(revealed);
-          }}
-        />
+        <div className="flex justify-center">
+          <MemorizerNav
+            totalMoves={totalMoves}
+            position={position}
+            onJump={onJump}
+            isRevealed={isRevealed}
+            onRevealToggle={(revealed: boolean) => {
+              if (revealed) {
+                setIsWrong(false);
+              }
+              setIsRevealed(revealed);
+            }}
+          />
+        </div>
       </div>
-      <div className="mt-4 flex h-24 flex-col justify-center pb-4">
+      <div className="flex h-24 flex-col justify-center pb-4">
         {isLastPosition ? (
           <div className="text-center text-2xl font-bold">
             🎉 End of game! 🎉
