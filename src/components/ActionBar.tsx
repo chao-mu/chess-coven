@@ -31,20 +31,20 @@ export const ActionBar = ({
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 px-4 pb-4 pt-2">
       <div className="flex items-center gap-2">
-        {playerStatus != "gave-up" && (
-          <button
-            className="whitespace-nowrap rounded bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
-            onClick={onGiveUp}
-          >
-            Give Up
-          </button>
-        )}
         {(!autoAdvance || playerStatus == "gave-up") && (
           <button
             className="rounded bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
             onClick={onAdvance}
           >
             Advance
+          </button>
+        )}
+        {playerStatus != "gave-up" && (
+          <button
+            className="whitespace-nowrap rounded bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
+            onClick={onGiveUp}
+          >
+            Give Up
           </button>
         )}
       </div>
