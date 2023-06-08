@@ -21,7 +21,7 @@ export default function RootLayout({
         <div className="flex flex-col items-center p-8">
           <Link
             href="/"
-            className="mb-6 whitespace-nowrap font-header text-3xl font-bold text-amber-300"
+            className="mb-2 whitespace-nowrap font-header text-2xl font-bold text-amber-300"
           >
             Tactical Elements
           </Link>
@@ -29,7 +29,7 @@ export default function RootLayout({
         </div>
       </div>
       <div className="w-full xl:w-auto">
-        <div className="mx-auto max-w-lg">{children}</div>
+        <div className="mx-auto max-w-sm">{children}</div>
       </div>
       <div className="flex-1"></div>
     </div>

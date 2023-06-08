@@ -29,19 +29,19 @@ export const SanInputForm = ({ onSubmit, isWrong }: SanInputFormProps) => {
       className="flex flex-col items-center justify-center gap-2"
     >
       <div className="flex flex-wrap items-center gap-2">
-        <label htmlFor="san" className="text-xl">
+        <label htmlFor="san" className="text-lg">
           Continuation
         </label>
         <div className="flex gap-2">
           <input
             {...register("san")}
-            className="w-24 border-2 border-amber-500 bg-transparent p-2 text-xl"
+            className="w-24 border-2 border-amber-500 bg-transparent p-1 text-xl"
             placeholder="SAN"
             autoComplete="off"
           />
           <button
             type="submit"
-            className="border-2 border-amber-500 p-2 text-xl"
+            className="border-2 border-amber-500 p-1 text-lg"
           >
             Submit
           </button>

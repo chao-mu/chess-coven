@@ -86,13 +86,13 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
       </div>
       <div className="flex h-24 flex-col justify-center pb-4">
         {isLastPosition ? (
-          <div className="text-center text-2xl font-bold">
+          <div className="text-center text-lg font-bold">
             🎉 End of game! 🎉
           </div>
         ) : isRevealed ? (
           <div className="flex items-center justify-center">
-            <div className="flex text-2xl">
-              <div className="mr-3">Continuation</div>
+            <div className="flex text-lg">
+              <div className="mr-2">Continuation</div>
               <div>{moves[position]}</div>
             </div>
           </div>

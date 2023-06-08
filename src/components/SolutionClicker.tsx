@@ -177,7 +177,7 @@ export const SolutionClicker = ({
         />
       )}
       {gameStatus == GameStatus.PLAYING && (
-        <div className="flex flex-col max-h-screen">
+        <div className="flex flex-col">
           <div className="flex flex-row items-center justify-between gap-4 px-6 pb-2">
             <div>Score: {currentScore}</div>
             <div>High Score: {highScore}</div>
