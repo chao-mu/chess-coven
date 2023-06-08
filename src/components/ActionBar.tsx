@@ -29,7 +29,7 @@ export const ActionBar = ({
     (badGuesses && badGuesses.length > 0);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 px-4 pb-4 pt-2">
+    <div className="flex flex-wrap items-center justify-between gap-4">
       <div className="flex items-center gap-2">
         {(!autoAdvance || playerStatus == "gave-up") && (
           <button

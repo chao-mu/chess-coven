@@ -159,10 +159,7 @@ export const SolutionClicker = ({
     <div className="flex h-full flex-col">
       {(gameStatus === GameStatus.PLAYING ||
         gameStatus === GameStatus.OVER) && (
-        <div className="p-6">
-          <div className="text-3xl font-bold">{title}</div>
-          <div className="mt-2 text-xl">{rules}</div>
-        </div>
+        <div className="text-center m-2 text-2xl font-bold">{title}</div>
       )}
       {gameStatus === GameStatus.START && (
         <GameStartScreen
@@ -180,8 +177,8 @@ export const SolutionClicker = ({
         />
       )}
       {gameStatus == GameStatus.PLAYING && (
-        <div className="flex flex-col">
-          <div className="flex flex-row items-center justify-between gap-4 px-6 pb-4 text-xl">
+        <div className="flex flex-col max-h-screen">
+          <div className="flex flex-row items-center justify-between gap-4 px-6 pb-2">
             <div>Score: {currentScore}</div>
             <div>High Score: {highScore}</div>
             <div className="flex flex-wrap gap-2">
@@ -191,7 +188,7 @@ export const SolutionClicker = ({
             </div>
           </div>
           <div>
-            <div className="mx-auto w-full max-w-[66vh]">
+            <div className="mx-auto">
               <Chessboard
                 board={board}
                 goodSquares={solutionType == "square" ? goodGuesses : []}
@@ -217,6 +214,7 @@ export const SolutionClicker = ({
             goodGuesses={goodGuesses}
             badGuesses={badGuesses}
           />
+          <div className="mt-2 p-4">{rules}</div>
         </div>
       )}
     </div>
