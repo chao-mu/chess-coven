@@ -60,7 +60,7 @@ export function Chessboard({
 
   return (
     <div className={`flex ${flipped ? "flex-col-reverse" : "flex-col"}`}>
-      <div className="border-2 border-black bg-red-400 px-4 py-1 text-right  text-lg text-black">
+      <div className="border-2 border-black bg-red-400 px-4 py-1 text-right text-black">
         Black
       </div>
       <div className={`flex ${flipped ? "flex-col-reverse" : "flex-col"}`}>
@@ -77,7 +77,7 @@ export function Chessboard({
                   id={`square-${square}`}
                   onClick={() => handleSquareClick(square, squareInfo)}
                   key={rowIdx}
-                  className="h-full w-full"
+                  className="w-full max-h-full aspect-square"
                 >
                   <ChessboardSquare
                     piece={squareInfo}

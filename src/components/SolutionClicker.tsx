@@ -159,10 +159,7 @@ export const SolutionClicker = ({
     <div className="flex h-full flex-col">
       {(gameStatus === GameStatus.PLAYING ||
         gameStatus === GameStatus.OVER) && (
-        <div className="p-6">
-          <div className="text-3xl font-bold">{title}</div>
-          <div className="mt-2 text-xl">{rules}</div>
-        </div>
+        <div className="text-center m-2 text-2xl font-bold">{title}</div>
       )}
       {gameStatus === GameStatus.START && (
         <GameStartScreen
@@ -181,31 +178,32 @@ export const SolutionClicker = ({
       )}
       {gameStatus == GameStatus.PLAYING && (
         <div className="flex flex-col">
-          {(gameStatus === GameStatus.PLAYING ||
-            gameStatus === GameStatus.OVER) && (
-            <div className="flex flex-row items-center justify-between gap-4 px-6 pb-4 text-xl">
-              <div>Score: {currentScore}</div>
-              <div>High Score: {highScore}</div>
-              <div className="flex gap-2">
-                {[...Array(MAX_HEALTH)].map((_, index) => (
-                  <Heart key={index} full={index < health} />
-                ))}
-              </div>
+          <div className="flex flex-row items-center justify-between gap-4 px-6 pb-2">
+            <div>Score: {currentScore}</div>
+            <div>High Score: {highScore}</div>
+            <div className="flex flex-wrap gap-2">
+              {[...Array(MAX_HEALTH)].map((_, index) => (
+                <Heart key={index} full={index < health} />
+              ))}
             </div>
-          )}
-          <Chessboard
-            board={board}
-            goodSquares={solutionType == "square" ? goodGuesses : []}
-            badSquares={solutionType == "square" ? badGuesses : []}
-            onSquareClick={
-              solutionType == "square"
-                ? (square) => checkGuess(square)
-                : undefined
-            }
-            onMove={(move) => checkGuess(move)}
-            flipped={flipped}
-            highlightedSquares={playerStatus == "gave-up" ? solutions : []}
-          />
+          </div>
+          <div>
+            <div className="mx-auto">
+              <Chessboard
+                board={board}
+                goodSquares={solutionType == "square" ? goodGuesses : []}
+                badSquares={solutionType == "square" ? badGuesses : []}
+                onSquareClick={
+                  solutionType == "square"
+                    ? (square) => checkGuess(square)
+                    : undefined
+                }
+                onMove={(move) => checkGuess(move)}
+                flipped={flipped}
+                highlightedSquares={playerStatus == "gave-up" ? solutions : []}
+              />
+            </div>
+          </div>
           <ActionBar
             autoAdvance={autoAdvance}
             onAdvance={checkCompleted}
@@ -216,6 +214,7 @@ export const SolutionClicker = ({
             goodGuesses={goodGuesses}
             badGuesses={badGuesses}
           />
+          <div className="mt-2 p-4">{rules}</div>
         </div>
       )}
     </div>

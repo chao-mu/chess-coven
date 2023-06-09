@@ -24,10 +24,32 @@ export const ActionBar = ({
   goodGuesses = [],
   badGuesses = [],
 }: ActionBarProps) => {
+  const showGuesses =
+    (goodGuesses && goodGuesses.length > 0) ||
+    (badGuesses && badGuesses.length > 0);
+
   return (
-    <div className="flex flex-wrap items-start justify-between gap-4 p-2">
-      <div className="flex flex-wrap gap-2">
-        <div className="flex flex-wrap gap-2 p-2">
+    <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex items-center gap-2">
+        {(!autoAdvance || playerStatus == "gave-up") && (
+          <button
+            className="rounded bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
+            onClick={onAdvance}
+          >
+            Advance
+          </button>
+        )}
+        {playerStatus != "gave-up" && (
+          <button
+            className="whitespace-nowrap rounded bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
+            onClick={onGiveUp}
+          >
+            Give Up
+          </button>
+        )}
+      </div>
+      {showGuesses && (
+        <div className="flex flex-wrap items-center justify-center gap-2">
           {goodGuesses && goodGuesses.length > 0 && (
             <div className="flex gap-2">
               {goodGuesses.map((guess) => (
@@ -47,30 +69,12 @@ export const ActionBar = ({
             </div>
           )}
         </div>
-      </div>
-      <div className="flex gap-2">
-        {playerStatus == "premature-advancement" && (
-          <div className="p-2 text-center text-xl font-bold text-amber-400">
-            Still more to go!
-          </div>
-        )}
-        {playerStatus != "gave-up" && (
-          <button
-            className="whitespace-nowrap rounded bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
-            onClick={onGiveUp}
-          >
-            Give Up
-          </button>
-        )}
-        {(!autoAdvance || playerStatus == "gave-up") && (
-          <button
-            className="rounded bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
-            onClick={onAdvance}
-          >
-            Advance
-          </button>
-        )}
-      </div>
+      )}
+      {playerStatus == "premature-advancement" && (
+        <div className="flex items-center justify-center font-bold text-amber-400">
+          Still more to go!
+        </div>
+      )}
     </div>
   );
 };

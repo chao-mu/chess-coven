@@ -15,7 +15,7 @@ export const LinkButton = ({ children, href }: LinkButtonProps) => {
   return (
     <Link
       href={href}
-      className="rounded-full bg-gray-800/50 px-6 py-4 text-center text-xl  text-white hover:bg-amber-800/100"
+      className="rounded-full bg-gray-800/50 px-4 py-2 text-center  text-white hover:bg-amber-800/100"
     >
       {children}
     </Link>

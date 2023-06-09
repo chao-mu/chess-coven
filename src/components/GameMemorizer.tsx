@@ -63,32 +63,36 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col items-center">
-        <div className="mb-2 w-full">
-          <Chessboard board={chess.board()} onMove={onGuess} />
+      <div className="flex flex-col">
+        <div>
+          <div className="mx-auto mb-2 w-full max-w-[66vh]">
+            <Chessboard board={chess.board()} onMove={onGuess} />
+          </div>
         </div>
-        <MemorizerNav
-          totalMoves={totalMoves}
-          position={position}
-          onJump={onJump}
-          isRevealed={isRevealed}
-          onRevealToggle={(revealed: boolean) => {
-            if (revealed) {
-              setIsWrong(false);
-            }
-            setIsRevealed(revealed);
-          }}
-        />
+        <div className="flex justify-center">
+          <MemorizerNav
+            totalMoves={totalMoves}
+            position={position}
+            onJump={onJump}
+            isRevealed={isRevealed}
+            onRevealToggle={(revealed: boolean) => {
+              if (revealed) {
+                setIsWrong(false);
+              }
+              setIsRevealed(revealed);
+            }}
+          />
+        </div>
       </div>
-      <div className="mt-4 flex h-24 flex-col justify-center pb-4">
+      <div className="flex h-24 flex-col justify-center pb-4">
         {isLastPosition ? (
-          <div className="text-center text-2xl font-bold">
+          <div className="text-center text-lg font-bold">
             🎉 End of game! 🎉
           </div>
         ) : isRevealed ? (
           <div className="flex items-center justify-center">
-            <div className="flex text-2xl">
-              <div className="mr-3">Continuation</div>
+            <div className="flex text-lg">
+              <div className="mr-2">Continuation</div>
               <div>{moves[position]}</div>
             </div>
           </div>
