@@ -44,7 +44,7 @@ export function ChessboardSquare(props: ChessboardSquareProps) {
 
   return (
     <div
-      className={`${fill} flex aspect-square w-full max-h-full items-center justify-center`}
+      className={`${fill} flex aspect-square max-h-full w-full items-center justify-center`}
     >
       <div className={`${circleClass} relative h-full w-full`}>
         {piece && <ChessPiece piece={piece} />}

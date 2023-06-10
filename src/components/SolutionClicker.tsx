@@ -45,6 +45,7 @@ export const SolutionClicker = ({
   autoAdvance,
   solutionType,
 }: SolutionClickerProps) => {
+  const [gameUrl, setGameUrl] = useState<string | undefined>();
   const [board, setBoard] = useState<Board>(EmptyBoard);
   const [solutions, setSolutions] = useState<string[]>([]);
   const [solutionAliases, setSolutionAliases] = useState<
@@ -70,7 +71,6 @@ export const SolutionClicker = ({
     setCurrentScore(0);
     setGameStatus(GameStatus.PLAYING);
     setPlayerStatus("playing");
-
     gotoNextPuzzle();
   };
 
@@ -82,6 +82,9 @@ export const SolutionClicker = ({
     setBoard(parseFen(puzzle.fen));
     setSolutions(puzzle.solution);
     setSolutionAliases(puzzle.solutionAliases || {});
+    if (puzzle.site) {
+      setGameUrl(puzzle.site);
+    }
 
     try {
       const chess = new Chess(puzzle.fen);
@@ -159,7 +162,7 @@ export const SolutionClicker = ({
     <div className="flex h-full flex-col">
       {(gameStatus === GameStatus.PLAYING ||
         gameStatus === GameStatus.OVER) && (
-        <div className="text-center m-2 text-2xl font-bold">{title}</div>
+        <div className="m-2 text-center text-2xl font-bold">{title}</div>
       )}
       {gameStatus === GameStatus.START && (
         <GameStartScreen
@@ -191,6 +194,7 @@ export const SolutionClicker = ({
             <div className="mx-auto">
               <Chessboard
                 board={board}
+                gameUrl={gameUrl}
                 goodSquares={solutionType == "square" ? goodGuesses : []}
                 badSquares={solutionType == "square" ? badGuesses : []}
                 onSquareClick={
