@@ -1,6 +1,9 @@
 // React
 import React, { useState } from "react";
 
+// NextJS
+import Link from "next/link";
+
 // Components
 import { ChessboardSquare } from "@/components/ChessboardSquare";
 
@@ -18,11 +21,13 @@ type ChessboardProps = {
   highlightedSquares?: string[];
   flipped?: boolean;
   onMove?: (move: string) => void;
+  gameUrl?: string;
 };
 
 export function Chessboard({
   onSquareClick,
   board,
+  gameUrl,
   goodSquares = [],
   badSquares = [],
   onMove,
@@ -58,10 +63,20 @@ export function Chessboard({
     }
   };
 
+  let gameSourceEl = null;
+  if (gameUrl) {
+    gameSourceEl = (
+      <Link href={gameUrl} className="text-blue-800" target="_blank">
+        View on Lichess
+      </Link>
+    );
+  }
+
   return (
     <div className={`flex ${flipped ? "flex-col-reverse" : "flex-col"}`}>
-      <div className="border-2 border-black bg-red-400 px-4 py-1 text-right text-black">
-        Black
+      <div className="flex items-center justify-between border-2 border-black bg-red-400 px-4 py-1 text-black">
+        <div>Black</div>
+        {!flipped && gameSourceEl}
       </div>
       <div className={`flex ${flipped ? "flex-col-reverse" : "flex-col"}`}>
         {board.map((row, colIdx) => (
@@ -77,11 +92,11 @@ export function Chessboard({
                   id={`square-${square}`}
                   onClick={() => handleSquareClick(square, squareInfo)}
                   key={rowIdx}
-                  className="w-full max-h-full aspect-square"
+                  className="aspect-square max-h-full w-full"
                 >
                   <ChessboardSquare
                     piece={squareInfo}
-                    isLight={(colIdx + rowIdx) % 2 == (flipped ? 1 : 0)}
+                    isLight={(colIdx + rowIdx) % 2 == 0}
                     isGood={goodSquares.includes(square)}
                     isBad={badSquares.includes(square)}
                     isHighlighted={highlightedSquares.includes(square)}
@@ -93,8 +108,9 @@ export function Chessboard({
           </div>
         ))}
       </div>
-      <div className="border-2 border-black bg-red-100 px-4 py-1 text-left text-lg text-black">
-        White
+      <div className="flex justify-between border-2 border-black bg-red-100 px-4 py-1 text-lg text-black">
+        <div>White</div>
+        {flipped && gameSourceEl}
       </div>
     </div>
   );

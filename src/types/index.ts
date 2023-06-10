@@ -8,7 +8,10 @@ export type Game = {
 export type Puzzle = {
   fen: string;
   solution: string[];
-  solutionAliases?: Record<string, string>;
+  solutionCount?: number;
+  solutionAliases?: { [key: string]: string };
+  moveNumber?: number;
+  site?: string;
 };
 
 export type SquareInfo = {

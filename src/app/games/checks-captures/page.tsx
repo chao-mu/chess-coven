@@ -9,17 +9,25 @@ import { SolutionClicker } from "@/components/SolutionClicker";
 // Assets
 import checksCaptures from "@/assets/puzzles/checks-captures.json";
 
+// Types
+import { Puzzle } from "@/types";
+
 const TITLE = "Checks/Captures";
 
 const RULES =
-  "By clicking squares, perform all legal moves for either side that would result in a capture of a major or minor piece (i.e. non-pawns) or check.";
+  "By clicking squares, perform all legal capturs and checks for either side.";
 
 const STORY =
   "Tomorrow the war reaches your small village. Analyze the crawling battlefield to determine where destruction is innevitable.";
 
+console.log(checksCaptures);
+
 export default function Page() {
-  const randomPuzzle = () =>
-    checksCaptures[Math.floor(Math.random() * checksCaptures.length)];
+  const randomPuzzle = () => {
+    return (checksCaptures as unknown[])[
+      Math.floor(Math.random() * checksCaptures.length)
+    ] as Puzzle;
+  };
 
   return (
     <div className="flex flex-col bg-gray-800/50">

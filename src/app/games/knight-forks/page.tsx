@@ -7,7 +7,7 @@ import React from "react";
 import { SolutionClicker } from "@/components/SolutionClicker";
 
 // Assets
-import forkables from "@/assets/puzzles/knight-forkable.json";
+import forkables from "@/assets/puzzles/knight-forkables.json";
 
 const TITLE = "Catapult Knights";
 

@@ -29,7 +29,7 @@ export default function RootLayout({
         </div>
       </div>
       <div className="w-full xl:w-auto">
-        <div className="mx-auto max-w-sm">{children}</div>
+        <div className="mx-auto max-w-md">{children}</div>
       </div>
       <div className="flex-1"></div>
     </div>

@@ -19,7 +19,7 @@ export default function MemorizerPage() {
 
   return (
     <div className="flex flex-col bg-gray-800/50">
-      <div className="text-center m-2 text-2xl font-bold">Game Memorizer</div>
+      <div className="m-2 text-center text-2xl font-bold">Game Memorizer</div>
       <div className="p-2 pt-1">
         <GameSelect setGame={setGame} games={games} />
       </div>
