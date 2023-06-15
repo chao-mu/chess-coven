@@ -26,6 +26,7 @@
     "react-chess-pieces": "^1.0.5",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
+    "react-ga": "^3.3.1",
     "react-hook-form": "^7.43.9",
     "react-icons": "^4.8.0",
     "storybook-addon-next": "^1.8.0",
