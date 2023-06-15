@@ -1,5 +1,3 @@
-"use client";
-
 // React
 import React from "react";
 
@@ -17,12 +15,15 @@ const RULES =
 const STORY =
   "The monarchies of the world have been overthrown by the people. The kings have been imprisoned in their own castles. The people have decided to let the monarchs live, but they must be kept in check.";
 
+export const metadata = {
+  title: "Tactical Elements - " + TITLE,
+  description: RULES,
+};
+
 export default function Page() {
-  const randomPuzzle = () =>
-    checkables[Math.floor(Math.random() * checkables.length)];
   return (
     <SolutionClicker
-      nextPuzzle={randomPuzzle}
+      puzzles={checkables}
       title={TITLE}
       story={STORY}
       rules={RULES}

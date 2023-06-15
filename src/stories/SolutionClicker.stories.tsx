@@ -11,5 +11,5 @@ export default meta;
 type Story = StoryObj<typeof SolutionClicker>;
 
 export const Example: Story = {
-  args: { nextPuzzle: () => undefendedPieces[0] },
+  args: { puzzles: undefendedPieces },
 };

@@ -1,3 +1,5 @@
+"use client"
+
 // React
 import React from "react";
 import { useState } from "react";
@@ -21,7 +23,7 @@ import { parseFen } from "@/utils";
 export type SolutionType = "move" | "square";
 
 type SolutionClickerProps = {
-  nextPuzzle: () => Puzzle;
+  puzzles: Puzzle[];
   title: string;
   rules: string;
   story: string;
@@ -38,7 +40,7 @@ const GameStatus = {
 const MAX_HEALTH = 3;
 
 export const SolutionClicker = ({
-  nextPuzzle,
+  puzzles,
   title,
   rules,
   story,
@@ -60,6 +62,10 @@ export const SolutionClicker = ({
   const [highScore, setHighScore] = useState(0);
   const [gameStatus, setGameStatus] = useState(GameStatus.START);
   const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
+
+  const nextPuzzle = () => {
+    return puzzles[Math.floor(Math.random() * puzzles.length)] as Puzzle;
+  };
 
   const playAgain = () => {
     if (currentScore > highScore) {

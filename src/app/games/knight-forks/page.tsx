@@ -1,5 +1,3 @@
-"use client";
-
 // React
 import React from "react";
 
@@ -17,12 +15,15 @@ const RULES =
 const STORY =
   "The king and queen of the enemy army think they're safe chilling at the local outdoor pub. Catapult a knight across the kingdom (it's a Tactical Elements brand catapult) and cause mayhem!";
 
+export const metadata = {
+  title: "Tactical Elements - " + TITLE,
+  description: RULES,
+};
+
 export default function Page() {
-  const randomPuzzle = () =>
-    forkables[Math.floor(Math.random() * forkables.length)];
   return (
     <SolutionClicker
-      nextPuzzle={randomPuzzle}
+      puzzles={forkables}
       title={TITLE}
       story={STORY}
       rules={RULES}

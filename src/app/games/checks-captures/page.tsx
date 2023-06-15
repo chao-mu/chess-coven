@@ -1,5 +1,3 @@
-"use client";
-
 // React
 import React from "react";
 
@@ -20,16 +18,15 @@ const RULES =
 const STORY =
   "Tomorrow the war reaches your small village. Analyze the crawling battlefield to determine where destruction is innevitable.";
 
-export default function Page() {
-  const randomPuzzle = () => {
-    return (checksCaptures as unknown[])[
-      Math.floor(Math.random() * checksCaptures.length)
-    ] as Puzzle;
-  };
+export const metadata = {
+  title: "Tactical Elements - " + TITLE,
+  description: RULES,
+};
 
+export default function Page() {
   return (
     <SolutionClicker
-      nextPuzzle={randomPuzzle}
+      puzzles={checksCaptures as unknown[] as Puzzle[]}
       title={TITLE}
       story={STORY}
       rules={RULES}
