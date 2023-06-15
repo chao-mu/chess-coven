@@ -12,7 +12,7 @@ type Story = StoryObj<typeof GameOverScreen>;
 export const HighScore: Story = {
   args: {
     finalScore: 23,
-    newHighScore: true,
+    previousHighScore: 50,
     onPlayAgain: () => {
       console.log("onPlayAgain");
     },

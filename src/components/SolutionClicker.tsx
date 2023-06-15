@@ -7,8 +7,8 @@ import { Chess, BLACK } from "chess.js";
 
 // Components
 import { Chessboard } from "@/components/Chessboard";
-import { Heart } from "@/components/Heart";
 import { GameOverScreen } from "@/components/GameOverScreen";
+import { GameHUD } from "@/components/GameHUD";
 import { GameStartScreen } from "@/components/GameStartScreen";
 import { ActionBar } from "@/components/ActionBar";
 
@@ -159,68 +159,60 @@ export const SolutionClicker = ({
   };
 
   return (
-    <div className="flex h-full flex-col">
-      {(gameStatus === GameStatus.PLAYING ||
-        gameStatus === GameStatus.OVER) && (
-        <div className="m-2 text-center text-2xl font-bold">{title}</div>
-      )}
+    <div className="flex h-[95vh] min-w-[33vw] flex-col bg-gray-800/50">
       {gameStatus === GameStatus.START && (
         <GameStartScreen
           title={title}
           story={story}
           rules={rules}
-          onGameStart={() => playAgain()}
+          onGameStart={playAgain}
         />
       )}
       {gameStatus === GameStatus.OVER && (
         <GameOverScreen
+          title={title}
+          rules={rules}
           finalScore={currentScore}
-          newHighScore={currentScore > highScore}
+          previousHighScore={highScore}
           onPlayAgain={playAgain}
         />
       )}
       {gameStatus == GameStatus.PLAYING && (
-        <div className="flex flex-col">
-          <div className="flex flex-row items-center justify-between gap-4 px-6 pb-2">
-            <div>Score: {currentScore}</div>
-            <div>High Score: {highScore}</div>
-            <div className="flex flex-wrap gap-2">
-              {[...Array(MAX_HEALTH)].map((_, index) => (
-                <Heart key={index} full={index < health} />
-              ))}
-            </div>
-          </div>
+        <>
           <div>
-            <div className="mx-auto">
-              <Chessboard
-                board={board}
-                gameUrl={gameUrl}
-                goodSquares={solutionType == "square" ? goodGuesses : []}
-                badSquares={solutionType == "square" ? badGuesses : []}
-                onSquareClick={
-                  solutionType == "square"
-                    ? (square) => checkGuess(square)
-                    : undefined
-                }
-                onMove={(move) => checkGuess(move)}
-                flipped={flipped}
-                highlightedSquares={playerStatus == "gave-up" ? solutions : []}
-              />
-            </div>
+            <div className="m-2 text-center font-header text-2xl font-bold">{title}</div>
+            <GameHUD score={currentScore} health={health} highScore={highScore} maxHealth={MAX_HEALTH} />
           </div>
-          <ActionBar
-            autoAdvance={autoAdvance}
-            onAdvance={checkCompleted}
-            onGiveUp={giveUp}
-            playerStatus={playerStatus}
-            onSanEntry={(san) => checkGuess(san)}
-            sanEntry={solutionType == "move"}
-            goodGuesses={goodGuesses}
-            badGuesses={badGuesses}
+          <Chessboard
+            draggable={solutionType == "move"}
+            board={board}
+            gameUrl={gameUrl}
+            goodSquares={solutionType == "square" ? goodGuesses : []}
+            badSquares={solutionType == "square" ? badGuesses : []}
+            onSquareClick={
+              solutionType == "square"
+                ? (square) => checkGuess(square)
+                : undefined
+            }
+            onMove={(move) => checkGuess(move)}
+            flipped={flipped}
+            highlightedSquares={playerStatus == "gave-up" ? solutions : []}
           />
-          <div className="mt-2 p-4">{rules}</div>
-        </div>
+          <div>
+            <ActionBar
+              autoAdvance={autoAdvance}
+              onAdvance={checkCompleted}
+              onGiveUp={giveUp}
+              playerStatus={playerStatus}
+              onSanEntry={(san) => checkGuess(san)}
+              sanEntry={solutionType == "move"}
+              goodGuesses={goodGuesses}
+              badGuesses={badGuesses}
+            />
+            <div className="mt-2 p-4">{rules}</div>
+          </div>
+        </>
       )}
     </div>
-  );
-};
+  )
+}

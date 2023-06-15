@@ -35,7 +35,7 @@ export const SanInputForm = ({ onSubmit, isWrong }: SanInputFormProps) => {
         <div className="flex gap-2">
           <input
             {...register("san")}
-            className="w-24 border-2 border-amber-500 bg-transparent p-1 text-xl"
+            className="w-24 border-2 border-amber-500 bg-transparent p-1 text-lg"
             placeholder="SAN"
             autoComplete="off"
           />
