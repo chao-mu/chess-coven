@@ -20,8 +20,6 @@ const RULES =
 const STORY =
   "Tomorrow the war reaches your small village. Analyze the crawling battlefield to determine where destruction is innevitable.";
 
-console.log(checksCaptures);
-
 export default function Page() {
   const randomPuzzle = () => {
     return (checksCaptures as unknown[])[
@@ -30,15 +28,13 @@ export default function Page() {
   };
 
   return (
-    <div className="flex flex-col bg-gray-800/50">
-      <SolutionClicker
-        nextPuzzle={randomPuzzle}
-        title={TITLE}
-        story={STORY}
-        rules={RULES}
-        autoAdvance={false}
-        solutionType="move"
-      />
-    </div>
+    <SolutionClicker
+      nextPuzzle={randomPuzzle}
+      title={TITLE}
+      story={STORY}
+      rules={RULES}
+      autoAdvance={false}
+      solutionType="move"
+    />
   );
 }

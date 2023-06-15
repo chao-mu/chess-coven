@@ -5,19 +5,26 @@ import { useState, useEffect } from "react";
 // chess.js
 import { Chess } from "chess.js";
 
+// Assets
+import games from "@/assets/games.json";
+
 // Components
 import { MemorizerNav } from "./MemorizerNav";
 import { Chessboard } from "./Chessboard";
 import { SanInputForm } from "./SanInputForm";
 
-type GameMemorizerProps = {
-  pgn: string;
-};
+// Types
+import { Game } from "@/types"
 
-export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
+import { GameSelect } from "@/components/GameSelect";
+
+export const GameMemorizer = () => {
   const [position, setPosition] = useState(0);
   const [isRevealed, setIsRevealed] = useState(false);
   const [isWrong, setIsWrong] = useState(false);
+  const [game, setGame] = useState<Game>(games[0]);
+
+  const pgn = game.pgn
 
   useEffect(() => {
     setPosition(0);
@@ -62,29 +69,25 @@ export const GameMemorizer = ({ pgn }: GameMemorizerProps) => {
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-col">
-        <div>
-          <div className="mx-auto mb-2 w-full max-w-[66vh]">
-            <Chessboard board={chess.board()} onMove={onGuess} />
-          </div>
-        </div>
-        <div className="flex justify-center">
-          <MemorizerNav
-            totalMoves={totalMoves}
-            position={position}
-            onJump={onJump}
-            isRevealed={isRevealed}
-            onRevealToggle={(revealed: boolean) => {
-              if (revealed) {
-                setIsWrong(false);
-              }
-              setIsRevealed(revealed);
-            }}
-          />
-        </div>
+    <div className="flex flex-col bg-gray-800/50  h-[95vh] min-w-[33vw]">
+      <div className="m-2 text-center text-2xl font-header font-bold">Game Memorizer</div>
+      <GameSelect setGame={setGame} games={games} />
+      <Chessboard draggable board={chess.board()} onMove={onGuess} />
+      <div className="flex justify-center mt-1">
+        <MemorizerNav
+          totalMoves={totalMoves}
+          position={position}
+          onJump={onJump}
+          isRevealed={isRevealed}
+          onRevealToggle={(revealed: boolean) => {
+            if (revealed) {
+              setIsWrong(false);
+            }
+            setIsRevealed(revealed);
+          }}
+        />
       </div>
-      <div className="flex h-24 flex-col justify-center pb-4">
+      <div className="flex h-24 flex-col justify-center pb-2">
         {isLastPosition ? (
           <div className="text-center text-lg font-bold">
             🎉 End of game! 🎉

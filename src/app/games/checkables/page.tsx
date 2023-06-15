@@ -21,15 +21,13 @@ export default function Page() {
   const randomPuzzle = () =>
     checkables[Math.floor(Math.random() * checkables.length)];
   return (
-    <div className="flex flex-col bg-gray-800/50">
-      <SolutionClicker
-        nextPuzzle={randomPuzzle}
-        title={TITLE}
-        story={STORY}
-        rules={RULES}
-        autoAdvance={false}
-        solutionType="square"
-      />
-    </div>
+    <SolutionClicker
+      nextPuzzle={randomPuzzle}
+      title={TITLE}
+      story={STORY}
+      rules={RULES}
+      autoAdvance={false}
+      solutionType="square"
+    />
   );
 }

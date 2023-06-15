@@ -85,7 +85,7 @@ export function Chessboard({
 
   return (
     <div className={`flex min-h-0 ${flipped ? "flex-col-reverse" : "flex-col"}`}>
-      <div className="flex items-center justify-between border-2 border-black bg-red-400 px-4 py-1 text-black">
+      <div className="flex items-center justify-between border-2 border-black bg-red-400 px-4 text-black">
         <div>Black</div>
         {!flipped && gameSourceEl}
       </div>
@@ -125,7 +125,7 @@ export function Chessboard({
           ))}
         </div>
       </div>
-      <div className="flex justify-between border-2 border-black bg-red-100 px-4 py-1 text-lg text-black">
+      <div className="flex justify-between border-2 border-black bg-red-100 px-4 text-black">
         <div>White</div>
         {flipped && gameSourceEl}
       </div>

@@ -12,7 +12,7 @@ export const NavButton = ({ text, onClick, children }: NavButtonProps) => {
     // Text in center of circle
     <button
       onClick={onClick}
-      className="flex items-center bg-amber-600 px-2 py-1 font-mono text-lg font-bold hover:cursor-pointer hover:bg-amber-700"
+      className="flex items-center bg-amber-600 px-2 font-mono hover:cursor-pointer hover:bg-amber-700"
     >
       {children || text}
     </button>

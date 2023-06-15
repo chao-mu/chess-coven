@@ -33,11 +33,14 @@ export const MemorizerNav = ({
   };
 
   const jumpRandomForward = () => {
-    onJump(random(1, totalMoves - position));
+    const max = totalMoves - position - 1
+    if (max == 0) {
+      return
+    }
+    onJump(random(1, max));
   };
 
   const jumpRandomBackward = () => {
-    if (position == 0) return;
     onJump(-random(1, position));
   };
 

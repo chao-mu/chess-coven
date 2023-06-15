@@ -21,15 +21,13 @@ export default function Page() {
   const randomPuzzle = () =>
     forkables[Math.floor(Math.random() * forkables.length)];
   return (
-    <div className="flex flex-col bg-gray-800/50">
-      <SolutionClicker
-        nextPuzzle={randomPuzzle}
-        title={TITLE}
-        story={STORY}
-        rules={RULES}
-        autoAdvance={true}
-        solutionType="square"
-      />
-    </div>
+    <SolutionClicker
+      nextPuzzle={randomPuzzle}
+      title={TITLE}
+      story={STORY}
+      rules={RULES}
+      autoAdvance={true}
+      solutionType="square"
+    />
   );
 }
