@@ -15,7 +15,7 @@ import { Puzzle } from "@/types";
 const TITLE = "Checks/Captures";
 
 const RULES =
-  "By clicking squares, perform all legal capturs and checks for either side.";
+  "By clicking squares, perform all legal captures and checks for either side.";
 
 const STORY =
   "Tomorrow the war reaches your small village. Analyze the crawling battlefield to determine where destruction is innevitable.";
