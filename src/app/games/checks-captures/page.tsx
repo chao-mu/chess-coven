@@ -20,8 +20,6 @@ const RULES =
 const STORY =
   "Tomorrow the war reaches your small village. Analyze the crawling battlefield to determine where destruction is innevitable.";
 
-console.log(checksCaptures);
-
 export default function Page() {
   const randomPuzzle = () => {
     return (checksCaptures as unknown[])[

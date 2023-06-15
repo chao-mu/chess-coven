@@ -14,6 +14,7 @@ import { Board, SquareInfo } from "@/types";
 import { toSquareName } from "@/utils";
 
 type ChessboardProps = {
+  draggable?: boolean
   board: Board;
   goodSquares?: string[];
   badSquares?: string[];
@@ -28,17 +29,27 @@ export function Chessboard({
   onSquareClick,
   board,
   gameUrl,
+  onMove,
   goodSquares = [],
   badSquares = [],
-  onMove,
   highlightedSquares = [],
   flipped = false,
+  draggable = false,
 }: ChessboardProps) {
   const [pendingMove, setPendingMove] = useState<string | null>(null);
 
-  const updatePendingMove = (square: string, pieceClicked: boolean) => {
+  const onDrag = (square: string) => {
+    setPendingMove("")
+    updatePendingMove(square, true)
+  }
+
+  const onDrop = (square: string) => {
+    updatePendingMove(square, true)
+  }
+
+  const updatePendingMove = (square: string, pieceSelected: boolean) => {
     if (!pendingMove) {
-      if (pieceClicked) {
+      if (pieceSelected) {
         setPendingMove(square);
       }
 
@@ -73,40 +84,46 @@ export function Chessboard({
   }
 
   return (
-    <div className={`flex ${flipped ? "flex-col-reverse" : "flex-col"}`}>
+    <div className={`flex min-h-0 ${flipped ? "flex-col-reverse" : "flex-col"}`}>
       <div className="flex items-center justify-between border-2 border-black bg-red-400 px-4 py-1 text-black">
         <div>Black</div>
         {!flipped && gameSourceEl}
       </div>
-      <div className={`flex ${flipped ? "flex-col-reverse" : "flex-col"}`}>
-        {board.map((row, colIdx) => (
-          <div
-            className={`flex ${flipped ? "flex-row-reverse" : "flex-row"}`}
-            key={colIdx}
-          >
-            {row.map((squareInfo, rowIdx) => {
-              const square = toSquareName(colIdx, rowIdx);
+      <div className="relative aspect-square min-h-0 m-auto flex flex-col">
+        <canvas width="10000" height="10000" className="max-h-full max-w-full" />
+        <div className={`absolute inset-0 flex ${flipped ? "flex-col-reverse" : "flex-col"}`}>
+          {board.map((row, colIdx) => (
+            <div
+              className={`h-full full flex ${flipped ? "flex-row-reverse" : "flex-row"}`}
+              key={colIdx}
+            >
+              {row.map((squareInfo, rowIdx) => {
+                const square = toSquareName(colIdx, rowIdx);
 
-              return (
-                <button
-                  id={`square-${square}`}
-                  onClick={() => handleSquareClick(square, squareInfo)}
-                  key={rowIdx}
-                  className="aspect-square max-h-full w-full"
-                >
-                  <ChessboardSquare
-                    piece={squareInfo}
-                    isLight={(colIdx + rowIdx) % 2 == 0}
-                    isGood={goodSquares.includes(square)}
-                    isBad={badSquares.includes(square)}
-                    isHighlighted={highlightedSquares.includes(square)}
-                    isSelected={!!pendingMove?.startsWith(square)}
-                  />
-                </button>
-              );
-            })}
-          </div>
-        ))}
+                return (
+                  <button
+                    id={`square-${square}`}
+                    onClick={() => handleSquareClick(square, squareInfo)}
+                    key={rowIdx}
+                    className="w-full h-full"
+                  >
+                    <ChessboardSquare
+                      draggable={draggable}
+                      piece={squareInfo}
+                      isLight={(colIdx + rowIdx) % 2 == 0}
+                      isGood={goodSquares.includes(square)}
+                      isBad={badSquares.includes(square)}
+                      isHighlighted={highlightedSquares.includes(square)}
+                      isSelected={!!pendingMove?.startsWith(square)}
+                      onPieceDrag={() => onDrag(square)}
+                      onPieceDrop={() => onDrop(square)}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+        </div>
       </div>
       <div className="flex justify-between border-2 border-black bg-red-100 px-4 py-1 text-lg text-black">
         <div>White</div>

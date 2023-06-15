@@ -3,27 +3,41 @@ import React from "react";
 
 type GameOverScreenProps = {
   finalScore: number;
-  newHighScore: boolean;
+  previousHighScore: number;
+  title: string;
+  rules: string;
   onPlayAgain: () => void;
 };
 
 export function GameOverScreen({
   finalScore,
-  newHighScore,
+  previousHighScore,
+  title,
+  rules,
   onPlayAgain,
 }: GameOverScreenProps) {
+  const newHighScore = finalScore > previousHighScore
+
   return (
-    <div className="flex aspect-square items-center justify-center">
-      <div className="flex flex-col items-start">
-        <div className="mb-4 text-3xl font-bold">Game Over!</div>
-        <div className="mb-2 text-2xl">Final Score: {finalScore}</div>
-        {newHighScore && <div className="mb-2 text-2xl">New High Score!</div>}
+    <div className="h-full grow flex items-center justify-center">
+      <div className="my-auto flex flex-col items-center justify-center">
+        <h1 className="mb-4 text-center text-2xl font-header w-full">{title}</h1>
+        <div>
+          <div className="text-xl font-bold">Game Over</div>
+          <div className="text-lg">Final Score: {finalScore}</div>
+          {newHighScore ? (
+            <div className="text-lg">New High Score!</div>
+          ) : (
+            <div className="text-lg">High Score: {previousHighScore}</div>
+          )}
+        </div>
         <button
-          className="rounded-full bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
+          className="m-4 rounded-full bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
           onClick={() => onPlayAgain()}
         >
           Play Again
         </button>
+        <p className="text-justify indent-6 p-6">{rules}</p>
       </div>
     </div>
   );
