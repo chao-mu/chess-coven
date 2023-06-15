@@ -159,7 +159,7 @@ export const SolutionClicker = ({
   };
 
   return (
-    <div className="flex flex-col h-[95vh] min-w-[33vw] bg-gray-800/50">
+    <div className="flex h-[95vh] min-w-[33vw] flex-col bg-gray-800/50">
       {gameStatus === GameStatus.START && (
         <GameStartScreen
           title={title}
@@ -180,7 +180,7 @@ export const SolutionClicker = ({
       {gameStatus == GameStatus.PLAYING && (
         <>
           <div>
-            <div className="font-header m-2 text-center text-2xl font-bold">{title}</div>
+            <div className="m-2 text-center font-header text-2xl font-bold">{title}</div>
             <GameHUD score={currentScore} health={health} highScore={highScore} maxHealth={MAX_HEALTH} />
           </div>
           <Chessboard

@@ -89,12 +89,12 @@ export function Chessboard({
         <div>Black</div>
         {!flipped && gameSourceEl}
       </div>
-      <div className="relative aspect-square min-h-0 m-auto flex flex-col">
+      <div className="relative m-auto flex aspect-square min-h-0 flex-col">
         <canvas width="10000" height="10000" className="max-h-full max-w-full" />
         <div className={`absolute inset-0 flex ${flipped ? "flex-col-reverse" : "flex-col"}`}>
           {board.map((row, colIdx) => (
             <div
-              className={`h-full full flex ${flipped ? "flex-row-reverse" : "flex-row"}`}
+              className={`flex h-full ${flipped ? "flex-row-reverse" : "flex-row"}`}
               key={colIdx}
             >
               {row.map((squareInfo, rowIdx) => {
@@ -105,7 +105,7 @@ export function Chessboard({
                     id={`square-${square}`}
                     onClick={() => handleSquareClick(square, squareInfo)}
                     key={rowIdx}
-                    className="w-full h-full"
+                    className="h-full w-full"
                   >
                     <ChessboardSquare
                       draggable={draggable}

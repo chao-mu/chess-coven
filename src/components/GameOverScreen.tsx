@@ -19,9 +19,9 @@ export function GameOverScreen({
   const newHighScore = finalScore > previousHighScore
 
   return (
-    <div className="h-full grow flex items-center justify-center">
+    <div className="flex h-full grow items-center justify-center">
       <div className="my-auto flex flex-col items-center justify-center">
-        <h1 className="mb-4 text-center text-2xl font-header w-full">{title}</h1>
+        <h1 className="mb-4 w-full text-center font-header text-2xl">{title}</h1>
         <div>
           <div className="text-xl font-bold">Game Over</div>
           <div className="text-lg">Final Score: {finalScore}</div>
@@ -37,7 +37,7 @@ export function GameOverScreen({
         >
           Play Again
         </button>
-        <p className="text-justify indent-6 p-6">{rules}</p>
+        <p className="p-6 text-justify indent-6">{rules}</p>
       </div>
     </div>
   );

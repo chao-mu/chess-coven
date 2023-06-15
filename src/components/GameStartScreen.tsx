@@ -15,7 +15,7 @@ export const GameStartScreen = ({
   title,
 }: GameStartScreenProps) => {
   return (
-    <div className="flex flex-col p-6 justify-center h-full grow">
+    <div className="flex h-full grow flex-col justify-center p-6">
       <h1 className="mb-4 text-center text-2xl">{title}</h1>
       <div>
         <div className="mb-1 text-center text-lg font-bold">Story</div>
