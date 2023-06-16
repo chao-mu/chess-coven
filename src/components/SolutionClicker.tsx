@@ -187,6 +187,7 @@ export const SolutionClicker = ({
         <>
           <div>
             <div className="m-2 text-center font-header text-2xl font-bold">{title}</div>
+            <div className="mt-2 p-4">{rules}</div>
             <GameHUD score={currentScore} health={health} highScore={highScore} maxHealth={MAX_HEALTH} />
           </div>
           <Chessboard
@@ -203,7 +204,33 @@ export const SolutionClicker = ({
             onMove={(move) => checkGuess(move)}
             flipped={flipped}
             highlightedSquares={playerStatus == "gave-up" ? solutions : []}
-          />
+          >
+            <div className="flex h-full flex-wrap items-center justify-between gap-2 px-2">
+              <div>
+                {goodGuesses && goodGuesses.length > 0 && (
+                  <div className="flex gap-2 bg-gray-800/50 px-2">
+                    {goodGuesses.map((guess) => (
+                      <div className="text-green-500" key={guess}>
+                        {guess}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div>
+                {badGuesses && badGuesses.length > 0 && (
+                  <div className="flex gap-2 bg-gray-800/50 px-2 line-through">
+                    {badGuesses.map((guess) => (
+                      <div className="text-red-500" key={guess}>
+                        {guess}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+          </Chessboard>
           <div>
             <ActionBar
               autoAdvance={autoAdvance}
@@ -212,10 +239,7 @@ export const SolutionClicker = ({
               playerStatus={playerStatus}
               onSanEntry={(san) => checkGuess(san)}
               sanEntry={solutionType == "move"}
-              goodGuesses={goodGuesses}
-              badGuesses={badGuesses}
             />
-            <div className="mt-2 p-4">{rules}</div>
           </div>
         </>
       )}

@@ -11,8 +11,6 @@ export type ActionBarProps = {
   onGiveUp?: () => void;
   onSanEntry: (san: string) => void;
   sanEntry: boolean;
-  goodGuesses?: string[];
-  badGuesses?: string[];
   onContinue?: () => void;
 };
 
@@ -21,13 +19,7 @@ export const ActionBar = ({
   playerStatus,
   onGiveUp,
   onAdvance,
-  goodGuesses = [],
-  badGuesses = [],
 }: ActionBarProps) => {
-  const showGuesses =
-    (goodGuesses && goodGuesses.length > 0) ||
-    (badGuesses && badGuesses.length > 0);
-
   return (
     <div className="flex flex-wrap items-center justify-between gap-4">
       <div className="flex items-center gap-1">
@@ -48,30 +40,8 @@ export const ActionBar = ({
           </button>
         )}
       </div>
-      {showGuesses && (
-        <div className="flex flex-wrap items-center justify-center gap-2 pr-4">
-          {goodGuesses && goodGuesses.length > 0 && (
-            <div className="flex gap-2">
-              {goodGuesses.map((guess) => (
-                <div className="text-green-500" key={guess}>
-                  {guess}
-                </div>
-              ))}
-            </div>
-          )}
-          {badGuesses && badGuesses.length > 0 && (
-            <div className="flex gap-2 line-through">
-              {badGuesses.map((guess) => (
-                <div className="text-red-500" key={guess}>
-                  {guess}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
       {playerStatus == "premature-advancement" && (
-        <div className="flex items-center justify-center font-bold text-amber-400">
+        <div className="flex items-center justify-center pr-6 font-bold text-amber-400">
           Still more to go!
         </div>
       )}
