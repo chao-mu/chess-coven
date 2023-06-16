@@ -48,30 +48,8 @@ export const ActionBar = ({
           </button>
         )}
       </div>
-      {showGuesses && (
-        <div className="flex flex-wrap items-center justify-center gap-2 pr-4">
-          {goodGuesses && goodGuesses.length > 0 && (
-            <div className="flex gap-2">
-              {goodGuesses.map((guess) => (
-                <div className="text-green-500" key={guess}>
-                  {guess}
-                </div>
-              ))}
-            </div>
-          )}
-          {badGuesses && badGuesses.length > 0 && (
-            <div className="flex gap-2 line-through">
-              {badGuesses.map((guess) => (
-                <div className="text-red-500" key={guess}>
-                  {guess}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
       {playerStatus == "premature-advancement" && (
-        <div className="flex items-center justify-center font-bold text-amber-400">
+        <div className="flex items-center justify-center font-bold text-amber-400 pr-6">
           Still more to go!
         </div>
       )}
