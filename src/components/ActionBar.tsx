@@ -11,8 +11,6 @@ export type ActionBarProps = {
   onGiveUp?: () => void;
   onSanEntry: (san: string) => void;
   sanEntry: boolean;
-  goodGuesses?: string[];
-  badGuesses?: string[];
   onContinue?: () => void;
 };
 
@@ -21,13 +19,7 @@ export const ActionBar = ({
   playerStatus,
   onGiveUp,
   onAdvance,
-  goodGuesses = [],
-  badGuesses = [],
 }: ActionBarProps) => {
-  const showGuesses =
-    (goodGuesses && goodGuesses.length > 0) ||
-    (badGuesses && badGuesses.length > 0);
-
   return (
     <div className="flex flex-wrap items-center justify-between gap-4">
       <div className="flex items-center gap-1">
@@ -49,7 +41,7 @@ export const ActionBar = ({
         )}
       </div>
       {playerStatus == "premature-advancement" && (
-        <div className="flex items-center justify-center font-bold text-amber-400 pr-6">
+        <div className="flex items-center justify-center pr-6 font-bold text-amber-400">
           Still more to go!
         </div>
       )}

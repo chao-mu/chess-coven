@@ -23,7 +23,7 @@ type ChessboardProps = {
   flipped?: boolean;
   onMove?: (move: string) => void;
   gameUrl?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 function ChessboardWrapper(
@@ -102,7 +102,7 @@ export function Chessboard({
 
   return (
     <div className="flex min-h-0 flex-col">
-      <div className={`border-2 border-black ${topColor} text-black min-h-[2rem]`}>
+      <div className={`border-2 border-black ${topColor} min-h-[2rem] text-black`}>
         {children}
       </div>
       <ChessboardWrapper flipped={flipped}>
@@ -140,7 +140,7 @@ export function Chessboard({
           ))}
         </>
       </ChessboardWrapper>
-      <div className={`flex items-center justify-center border-2 border-black ${bottomColor} text-black min-h-[2rem] pr-6`}>
+      <div className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-[2rem] pr-6 text-black`}>
         {gameSourceEl}
       </div >
     </div>
