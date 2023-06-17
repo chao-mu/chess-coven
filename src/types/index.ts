@@ -33,3 +33,12 @@ export type PlayerStatus =
   | "idle"
   | "wrong-guess"
   | "dead";
+
+export type PuzzleCollection = {
+  title: string;
+  rules: string;
+  story: string;
+  solutionType: "move" | "square";
+  puzzles: Puzzle[];
+  autoAdvance: boolean;
+}

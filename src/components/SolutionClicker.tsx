@@ -15,7 +15,7 @@ import { GameStartScreen } from "@/components/GameStartScreen";
 import { ActionBar } from "@/components/ActionBar";
 
 // Types
-import { Puzzle, PlayerStatus, Board, EmptyBoard } from "@/types";
+import { Puzzle, PlayerStatus, Board, EmptyBoard, PuzzleCollection } from "@/types";
 
 // Utils
 import { parseFen } from "@/utils";
@@ -23,12 +23,7 @@ import { parseFen } from "@/utils";
 export type SolutionType = "move" | "square";
 
 type SolutionClickerProps = {
-  puzzles: Puzzle[];
-  title: string;
-  rules: string;
-  story: string;
-  autoAdvance: boolean;
-  solutionType: SolutionType;
+  collection: PuzzleCollection
 };
 
 const GameStatus = {
@@ -40,12 +35,7 @@ const GameStatus = {
 const MAX_HEALTH = 3;
 
 export const SolutionClicker = ({
-  puzzles,
-  title,
-  rules,
-  story,
-  autoAdvance,
-  solutionType,
+  collection
 }: SolutionClickerProps) => {
   const [gameUrl, setGameUrl] = useState<string | undefined>();
   const [board, setBoard] = useState<Board>(EmptyBoard);
@@ -62,6 +52,8 @@ export const SolutionClicker = ({
   const [highScore, setHighScore] = useState(0);
   const [gameStatus, setGameStatus] = useState(GameStatus.START);
   const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
+
+  const { puzzles, title, rules, story, autoAdvance, solutionType } = collection;
 
   const nextPuzzle = () => {
     return puzzles[Math.floor(Math.random() * puzzles.length)] as Puzzle;
