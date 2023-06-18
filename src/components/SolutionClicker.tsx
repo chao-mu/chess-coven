@@ -46,7 +46,6 @@ export const SolutionClicker = ({
   const [flipped, setFlipped] = useState(false);
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
-  const [guessResults, setGuessResults] = useState<boolean[]>([]);
   const [health, setHealth] = useState(MAX_HEALTH);
   const [currentScore, setCurrentScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
@@ -59,17 +58,19 @@ export const SolutionClicker = ({
     return puzzles[Math.floor(Math.random() * puzzles.length)] as Puzzle;
   };
 
-  const playAgain = () => {
+  const playAgain = (advance) => {
     if (currentScore > highScore) {
       setHighScore(currentScore);
     }
 
-    setGuessResults([]);
     setHealth(MAX_HEALTH);
     setCurrentScore(0);
     setGameStatus(GameStatus.PLAYING);
     setPlayerStatus("playing");
-    gotoNextPuzzle();
+
+    if (advance) {
+      gotoNextPuzzle();
+    }
   };
 
   const gotoNextPuzzle = () => {
@@ -122,7 +123,6 @@ export const SolutionClicker = ({
     }
 
     const isCorrect = solutions.includes(guess);
-    setGuessResults([...guessResults, isCorrect]);
 
     if (isCorrect) {
       const alias = solutionAliases[guess];
@@ -162,8 +162,8 @@ export const SolutionClicker = ({
         <GameStartScreen
           title={title}
           story={story}
+          onGameStart={() => playAgain(true)}
           rules={rules}
-          onGameStart={playAgain}
         />
       )}
       {gameStatus === GameStatus.OVER && (
@@ -172,7 +172,8 @@ export const SolutionClicker = ({
           rules={rules}
           finalScore={currentScore}
           previousHighScore={highScore}
-          onPlayAgain={playAgain}
+          onPlayAgain={() => playAgain(true)}
+          onBack={() => playAgain(false)}
         />
       )}
       {gameStatus == GameStatus.PLAYING && (
