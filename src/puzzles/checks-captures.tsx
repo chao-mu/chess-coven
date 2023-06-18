@@ -11,4 +11,5 @@ export default {
   autoAdvance: false,
   solutionType: "move",
   puzzles: puzzles as unknown as Puzzle[],
+  noSolution: false,
 } as PuzzleCollection

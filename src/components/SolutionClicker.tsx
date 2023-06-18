@@ -228,6 +228,7 @@ export const SolutionClicker = ({
               autoAdvance={autoAdvance}
               onAdvance={checkCompleted}
               onGiveUp={giveUp}
+              allowNoSolution={collection.noSolution}
               playerStatus={playerStatus}
               onSanEntry={(san) => checkGuess(san)}
               sanEntry={solutionType == "move"}

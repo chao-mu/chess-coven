@@ -7,16 +7,18 @@ import { PlayerStatus } from "@/types";
 export type ActionBarProps = {
   playerStatus: PlayerStatus;
   autoAdvance: boolean;
+  sanEntry: boolean;
+  allowNoSolution: boolean;
   onAdvance?: () => void;
   onGiveUp?: () => void;
   onSanEntry: (san: string) => void;
-  sanEntry: boolean;
   onContinue?: () => void;
 };
 
 export const ActionBar = ({
   autoAdvance,
   playerStatus,
+  allowNoSolution,
   onGiveUp,
   onAdvance,
 }: ActionBarProps) => {
@@ -32,12 +34,21 @@ export const ActionBar = ({
           </button>
         )}
         {playerStatus != "gave-up" && (
-          <button
-            className="whitespace-nowrap rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
-            onClick={onGiveUp}
-          >
-            Give Up
-          </button>
+          <>
+            {allowNoSolution && (
+              <button
+                className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
+                onClick={onAdvance}>
+                No Solution
+              </button>
+            )}
+            <button
+              className="whitespace-nowrap rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
+              onClick={onGiveUp}
+            >
+              Give Up
+            </button>
+          </>
         )}
       </div>
       {playerStatus == "premature-advancement" && (
