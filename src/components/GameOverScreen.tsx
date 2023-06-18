@@ -23,7 +23,7 @@ export function GameOverScreen({
   return (
     <div className="flex h-full grow items-center justify-center">
       <div className="my-auto flex flex-col items-center justify-center gap-2">
-        <div className="text-4xl font-bold p-6">Game Over</div>
+        <div className="p-6 text-4xl font-bold">Game Over</div>
         <div className="w-full text-center font-header text-2xl">{title}</div>
         <p className="px-6 text-justify indent-6">{rules}</p>
         <div>

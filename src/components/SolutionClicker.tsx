@@ -58,7 +58,7 @@ export const SolutionClicker = ({
     return puzzles[Math.floor(Math.random() * puzzles.length)] as Puzzle;
   };
 
-  const playAgain = (advance) => {
+  const playAgain = (advance: boolean) => {
     if (currentScore > highScore) {
       setHighScore(currentScore);
     }
