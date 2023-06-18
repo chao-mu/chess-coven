@@ -12,9 +12,10 @@ export function SiteNav() {
       <LinkButton href="/games/knight-forks">Knight Forks</LinkButton>
       <LinkButton href="/games/checks-captures">Checks/Captures</LinkButton>
       <LinkButton href="/games/undefended">Undefended Pieces</LinkButton>
-      <div className="border-b-2 border-amber-300">
+      <div className="min-h-0 border-b-2 border-amber-300">
       </div>
       <LinkButton href="/games/memorizer">Game Memorizer</LinkButton>
+      <LinkButton href="https://www.patreon.com/user?u=84821837">Help Cover Costs</LinkButton>
     </div>
   );
 }
