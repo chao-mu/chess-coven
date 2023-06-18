@@ -35,11 +35,13 @@ export const ActionBar = ({
         )}
         {playerStatus != "gave-up" && (
           <>
-            <button
-              className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
-              onClick={onAdvance}>
-              No Solution
-            </button>
+            {allowNoSolution && (
+              <button
+                className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
+                onClick={onAdvance}>
+                No Solution
+              </button>
+            )}
             <button
               className="whitespace-nowrap rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
               onClick={onGiveUp}

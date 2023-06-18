@@ -9,5 +9,5 @@ export default {
   autoAdvance: true,
   solutionType: "square",
   puzzles: puzzles,
-  noSolution: false,
+  noSolution: true,
 } as PuzzleCollection
