@@ -41,4 +41,5 @@ export type PuzzleCollection = {
   solutionType: "move" | "square";
   puzzles: Puzzle[];
   autoAdvance: boolean;
+  noSolution: boolean;
 }
