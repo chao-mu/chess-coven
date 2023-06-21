@@ -58,7 +58,7 @@ export const SolutionClicker = ({
     return puzzles[Math.floor(Math.random() * puzzles.length)] as Puzzle;
   };
 
-  const playAgain = (advance: boolean) => {
+  const playAgain = (newGame: boolean) => {
     if (currentScore > highScore) {
       setHighScore(currentScore);
     }
@@ -68,8 +68,10 @@ export const SolutionClicker = ({
     setGameStatus(GameStatus.PLAYING);
     setPlayerStatus("playing");
 
-    if (advance) {
+    if (newGame) {
       gotoNextPuzzle();
+    } else {
+      setPlayerStatus("respawn")
     }
   };
 
@@ -144,16 +146,24 @@ export const SolutionClicker = ({
   };
 
   const giveUp = () => {
-    if (playerStatus != "premature-advancement") {
+    if (playerStatus != "premature-advancement" && playerStatus != "respawn") {
       loseHealth();
     }
-    setPlayerStatus("gave-up");
-    let displayedSolutions = Object.values(solutionAliases);
-    if (displayedSolutions.length === 0) {
-      displayedSolutions = solutions;
-    }
 
-    setGoodGuesses(displayedSolutions);
+    setPlayerStatus("gave-up");
+    solutions.forEach((s) => {
+      if (goodGuesses.includes(s)) {
+        return
+      }
+
+      if (solutionAliases[s]) {
+        s = solutionAliases[s]
+      }
+
+      goodGuesses.push(s)
+    })
+
+    setGoodGuesses(goodGuesses);
   };
 
   return (
@@ -172,8 +182,7 @@ export const SolutionClicker = ({
           rules={rules}
           finalScore={currentScore}
           previousHighScore={highScore}
-          onPlayAgain={() => playAgain(true)}
-          onBack={() => playAgain(false)}
+          onContinue={() => playAgain(false)}
         />
       )}
       {gameStatus == GameStatus.PLAYING && (

@@ -6,8 +6,7 @@ type GameOverScreenProps = {
   previousHighScore: number;
   title: string;
   rules: string;
-  onBack: () => void;
-  onPlayAgain: () => void;
+  onContinue: () => void;
 };
 
 export function GameOverScreen({
@@ -15,8 +14,7 @@ export function GameOverScreen({
   previousHighScore,
   title,
   rules,
-  onBack,
-  onPlayAgain,
+  onContinue,
 }: GameOverScreenProps) {
   const newHighScore = finalScore > previousHighScore
 
@@ -37,15 +35,9 @@ export function GameOverScreen({
         <div className="flex gap-2">
           <button
             className="rounded-full bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
-            onClick={() => onBack()}
+            onClick={onContinue}
           >
-            Back
-          </button>
-          <button
-            className="rounded-full bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
-            onClick={() => onPlayAgain()}
-          >
-            Play Again
+            Continue
           </button>
         </div>
       </div>

@@ -32,6 +32,7 @@ export type PlayerStatus =
   | "playing"
   | "idle"
   | "wrong-guess"
+  | "respawn"
   | "dead";
 
 export type PuzzleCollection = {
