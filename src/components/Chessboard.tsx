@@ -1,5 +1,5 @@
 // React
-import React from "react";
+import React, { useReducer } from "react";
 
 // NextJS
 import Link from "next/link";
@@ -53,6 +53,7 @@ export function Chessboard({
       </Link>
     );
   }
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
   const topColor = flipped ? 'bg-red-100' : 'bg-red-400'
   const bottomColor = flipped ? 'bg-red-400' : 'bg-red-100'
@@ -67,11 +68,14 @@ export function Chessboard({
           <Chessground contained config={{
             ...(fen ? { fen: fen } : {}),
             orientation: flipped ? "black" : "white",
+            movable: {
+              free: true,
+            },
             events: {
               move: (orig, dest) => {
                 onMove && onMove(orig + dest)
+                forceUpdate()
               }
-
             }
           }} />
         ) : (

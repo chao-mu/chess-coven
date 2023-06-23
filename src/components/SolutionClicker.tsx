@@ -15,10 +15,7 @@ import { GameStartScreen } from "@/components/GameStartScreen";
 import { ActionBar } from "@/components/ActionBar";
 
 // Types
-import { Puzzle, PlayerStatus, Board, EmptyBoard, PuzzleCollection } from "@/types";
-
-// Utils
-import { parseFen } from "@/utils";
+import { Puzzle, PlayerStatus, PuzzleCollection } from "@/types";
 
 export type SolutionType = "move" | "square";
 
@@ -193,11 +190,12 @@ export const SolutionClicker = ({
             <GameHUD score={currentScore} health={health} highScore={highScore} maxHealth={MAX_HEALTH} />
           </div>
           <Chessboard
-            draggable={solutionType == "move"}
+            moveable={solutionType == "move"}
             fen={fen}
             gameUrl={gameUrl}
             goodSquares={solutionType == "square" ? goodGuesses : []}
             badSquares={solutionType == "square" ? badGuesses : []}
+            highlightedSquares={playerStatus == "gave-up" ? solutions : []}
             onSquareClick={
               solutionType == "square"
                 ? (square) => checkGuess(square)
@@ -205,7 +203,6 @@ export const SolutionClicker = ({
             }
             onMove={(move) => checkGuess(move)}
             flipped={flipped}
-            highlightedSquares={playerStatus == "gave-up" ? solutions : []}
           >
             <div className="flex h-full flex-wrap items-center justify-between gap-2 px-2">
               <div>
