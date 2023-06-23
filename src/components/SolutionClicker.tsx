@@ -204,7 +204,11 @@ export const SolutionClicker = ({
                 ? (square) => checkGuess(square)
                 : undefined
             }
-            onMove={(move) => checkGuess(move)}
+            onMove={
+              solutionType == "move"
+                ? (move: string) => checkGuess(move)
+                : undefined
+            }
             flipped={flipped}
           >
             <div className="flex h-full flex-wrap items-center justify-between gap-2 px-2">
@@ -245,7 +249,8 @@ export const SolutionClicker = ({
             />
           </div>
         </>
-      )}
-    </div>
+      )
+      }
+    </div >
   )
 }
