@@ -1,28 +1,23 @@
 // React
-import React, { useState } from "react";
+import React from "react";
 
 // NextJS
 import Link from "next/link";
 
-// Components
-import { ChessboardSquare } from "@/components/ChessboardSquare";
-
-// Types
-import { Board, SquareInfo } from "@/types";
-
-// Utils
-import { toSquareName } from "@/utils";
+// Chessground
+import Chessground from "@react-chess/chessground";
+import { Key } from "chessground/types"
 
 type ChessboardProps = {
-  draggable?: boolean
-  board: Board;
-  goodSquares?: string[];
-  badSquares?: string[];
-  onSquareClick?: (square: string) => void;
-  highlightedSquares?: string[];
+  moveable?: boolean
+  fen?: string;
+  goodSquares?: Key[];
+  badSquares?: Key[];
+  highlightedSquares?: Key[];
   flipped?: boolean;
-  onMove?: (move: string) => void;
   gameUrl?: string;
+  onMove?: (move: string) => void;
+  onSquareClick?: (square: string) => void;
   children?: React.ReactNode;
 };
 
@@ -39,55 +34,17 @@ function ChessboardWrapper(
 }
 
 export function Chessboard({
-  onSquareClick,
-  board,
   gameUrl,
+  fen,
   onMove,
+  onSquareClick,
   goodSquares = [],
   badSquares = [],
   highlightedSquares = [],
   flipped = false,
-  draggable = false,
+  moveable = false,
   children,
 }: ChessboardProps) {
-  const [pendingMove, setPendingMove] = useState<string | null>(null);
-
-  const onDrag = (square: string) => {
-    setPendingMove("")
-    updatePendingMove(square, true)
-  }
-
-  const onDrop = (square: string) => {
-    updatePendingMove(square, true)
-  }
-
-  const updatePendingMove = (square: string, pieceSelected: boolean) => {
-    if (!pendingMove) {
-      if (pieceSelected) {
-        setPendingMove(square);
-      }
-
-      return;
-    }
-
-    if (pendingMove == square) {
-      setPendingMove(null);
-      return;
-    }
-
-    const move = `${pendingMove}${square}`;
-    setPendingMove(null);
-    onMove && onMove(move);
-  };
-
-  const handleSquareClick = (square: string, squareInfo: SquareInfo | null) => {
-    if (onSquareClick) {
-      onSquareClick(square);
-    } else {
-      updatePendingMove(square, squareInfo != null);
-    }
-  };
-
   let gameSourceEl = null;
   if (gameUrl) {
     gameSourceEl = (
@@ -106,39 +63,35 @@ export function Chessboard({
         {children}
       </div>
       <ChessboardWrapper flipped={flipped}>
-        <>
-          {board.map((row, colIdx) => (
-            <div
-              className={`flex h-full ${flipped ? "flex-row-reverse" : "flex-row"}`}
-              key={colIdx}
-            >
-              {row.map((squareInfo, rowIdx) => {
-                const square = toSquareName(colIdx, rowIdx);
+        {moveable ? (
+          <Chessground contained config={{
+            ...(fen ? { fen: fen } : {}),
+            orientation: flipped ? "black" : "white",
+            events: {
+              move: (orig, dest) => {
+                onMove && onMove(orig + dest)
+              }
 
-                return (
-                  <button
-                    id={`square-${square}`}
-                    onClick={() => handleSquareClick(square, squareInfo)}
-                    key={rowIdx}
-                    className="h-full w-full"
-                  >
-                    <ChessboardSquare
-                      draggable={draggable}
-                      piece={squareInfo}
-                      isLight={(colIdx + rowIdx) % 2 == 0}
-                      isGood={goodSquares.includes(square)}
-                      isBad={badSquares.includes(square)}
-                      isHighlighted={highlightedSquares.includes(square)}
-                      isSelected={!!pendingMove?.startsWith(square)}
-                      onPieceDrag={() => onDrag(square)}
-                      onPieceDrop={() => onDrop(square)}
-                    />
-                  </button>
-                );
-              })}
-            </div>
-          ))}
-        </>
+            }
+          }} />
+        ) : (
+          <Chessground contained config={{
+            ...(fen ? { fen: fen } : {}),
+            orientation: flipped ? "black" : "white",
+            events: {
+              select: (k: Key) => onSquareClick && onSquareClick(k.toString())
+            },
+            movable: { free: false },
+            draggable: { enabled: false },
+            drawable: {
+              enabled: false,
+              autoShapes: goodSquares.map(s => ({ orig: s, brush: "green" })).concat(
+                badSquares.map(s => ({ orig: s, brush: "red" }))).concat(
+                  highlightedSquares.map(s => ({ orig: s, brush: "yellow" })))
+
+            }
+          }} />
+        )}
       </ChessboardWrapper>
       <div className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-[2rem] pr-6 text-black`}>
         {gameSourceEl}

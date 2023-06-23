@@ -38,7 +38,7 @@ export const SolutionClicker = ({
   collection
 }: SolutionClickerProps) => {
   const [gameUrl, setGameUrl] = useState<string | undefined>();
-  const [board, setBoard] = useState<Board>(EmptyBoard);
+  const [fen, setFen] = useState<string>();
   const [solutions, setSolutions] = useState<string[]>([]);
   const [solutionAliases, setSolutionAliases] = useState<
     Record<string, string>
@@ -80,7 +80,7 @@ export const SolutionClicker = ({
     setBadGuesses([]);
 
     const puzzle = nextPuzzle();
-    setBoard(parseFen(puzzle.fen));
+    setFen(puzzle.fen);
     setSolutions(puzzle.solution);
     setSolutionAliases(puzzle.solutionAliases || {});
     if (puzzle.site) {
@@ -194,7 +194,7 @@ export const SolutionClicker = ({
           </div>
           <Chessboard
             draggable={solutionType == "move"}
-            board={board}
+            fen={fen}
             gameUrl={gameUrl}
             goodSquares={solutionType == "square" ? goodGuesses : []}
             badSquares={solutionType == "square" ? badGuesses : []}
