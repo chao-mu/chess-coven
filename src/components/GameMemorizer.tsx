@@ -2,7 +2,7 @@
 
 // React
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // chess.js
 import { Chess } from "chess.js";
@@ -20,7 +20,7 @@ import { Game } from "@/types"
 
 import { GameSelect } from "@/components/GameSelect";
 
-const useChess = (pgn: string, position: number) => {
+const getChess = (pgn: string, position: number) => {
   const chess = new Chess();
   chess.loadPgn(pgn);
   const moves = chess.history();
@@ -33,8 +33,8 @@ const useChess = (pgn: string, position: number) => {
   return {
     fen: chess.fen(),
     isLastPosition: position >= moves.length,
-    totalMoves: moves.length,
     chess: chess,
+    moves: moves,
   }
 }
 
@@ -45,19 +45,19 @@ export const GameMemorizer = () => {
   const [isWrong, setIsWrong] = useState(false);
   const [game, setGame] = useState<Game>(games[0]);
 
-  const { fen, isLastPosition, totalMoves } = useChess(game.pgn, position)
+  const { fen, isLastPosition, moves } = getChess(game.pgn, position)
 
   function onJump(steps: number) {
-    setPosition((p) => Math.min(totalMoves, Math.max(0, p + steps)));
+    setPosition((p) => Math.min(moves.length, Math.max(0, p + steps)));
   }
 
   function onGuess(san: string) {
-    const { chess, isLastPosition } = useChess(game.pgn, position)
+    const { chess, isLastPosition } = getChess(game.pgn, position)
     if (isLastPosition) {
       return
     }
 
-    const { fen: chessSolution } = useChess(game.pgn, position + 1)
+    const { fen: chessSolution } = getChess(game.pgn, position + 1)
 
     try {
       chess.move(san);
@@ -80,7 +80,7 @@ export const GameMemorizer = () => {
       <Chessboard moveable fen={fen} onMove={onGuess} />
       <div className="mt-1 flex justify-center">
         <MemorizerNav
-          totalMoves={totalMoves}
+          totalMoves={moves.length}
           position={position}
           onJump={onJump}
           isRevealed={isRevealed}

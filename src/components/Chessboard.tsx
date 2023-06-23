@@ -53,7 +53,7 @@ export function Chessboard({
       </Link>
     );
   }
-  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+  const forceUpdate = useReducer(x => x + 1, 0)[1];
 
   const topColor = flipped ? 'bg-red-100' : 'bg-red-400'
   const bottomColor = flipped ? 'bg-red-400' : 'bg-red-100'

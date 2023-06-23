@@ -7,6 +7,9 @@ import { useState } from "react";
 // Chess.js
 import { Chess, BLACK } from "chess.js";
 
+// Chessground
+import { Key } from "chessground/types"
+
 // Components
 import { Chessboard } from "@/components/Chessboard";
 import { GameOverScreen } from "@/components/GameOverScreen";
@@ -193,9 +196,9 @@ export const SolutionClicker = ({
             moveable={solutionType == "move"}
             fen={fen}
             gameUrl={gameUrl}
-            goodSquares={solutionType == "square" ? goodGuesses : []}
-            badSquares={solutionType == "square" ? badGuesses : []}
-            highlightedSquares={playerStatus == "gave-up" ? solutions : []}
+            goodSquares={solutionType == "square" ? goodGuesses as Key[] : []}
+            badSquares={solutionType == "square" ? badGuesses as Key[] : []}
+            highlightedSquares={playerStatus == "gave-up" ? solutions as Key[] : []}
             onSquareClick={
               solutionType == "square"
                 ? (square) => checkGuess(square)
