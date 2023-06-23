@@ -10,9 +10,6 @@ import { useForm } from "react-hook-form";
 // Components
 import { Chessboard } from "@/components/Chessboard";
 
-// Utils
-import { parseFen } from "@/utils";
-
 type FormValues = {
   fens: string;
 };
@@ -66,7 +63,7 @@ export default function Page() {
             Submit
           </button>
         </form>
-        {index !== undefined && <Chessboard board={parseFen(fenList[index])} />}
+        {index !== undefined && <Chessboard fen={fenList[index]} />}
         {fenList.length > 1 && (
           <div className="flex flex-col gap-2">
             <button onClick={gotoPrevious}>Previous</button>

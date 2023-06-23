@@ -7,6 +7,9 @@ import { useState } from "react";
 // Chess.js
 import { Chess, BLACK } from "chess.js";
 
+// Chessground
+import { Key } from "chessground/types"
+
 // Components
 import { Chessboard } from "@/components/Chessboard";
 import { GameOverScreen } from "@/components/GameOverScreen";
@@ -15,10 +18,7 @@ import { GameStartScreen } from "@/components/GameStartScreen";
 import { ActionBar } from "@/components/ActionBar";
 
 // Types
-import { Puzzle, PlayerStatus, Board, EmptyBoard, PuzzleCollection } from "@/types";
-
-// Utils
-import { parseFen } from "@/utils";
+import { Puzzle, PlayerStatus, PuzzleCollection } from "@/types";
 
 export type SolutionType = "move" | "square";
 
@@ -38,7 +38,7 @@ export const SolutionClicker = ({
   collection
 }: SolutionClickerProps) => {
   const [gameUrl, setGameUrl] = useState<string | undefined>();
-  const [board, setBoard] = useState<Board>(EmptyBoard);
+  const [fen, setFen] = useState<string>();
   const [solutions, setSolutions] = useState<string[]>([]);
   const [solutionAliases, setSolutionAliases] = useState<
     Record<string, string>
@@ -80,7 +80,7 @@ export const SolutionClicker = ({
     setBadGuesses([]);
 
     const puzzle = nextPuzzle();
-    setBoard(parseFen(puzzle.fen));
+    setFen(puzzle.fen);
     setSolutions(puzzle.solution);
     setSolutionAliases(puzzle.solutionAliases || {});
     if (puzzle.site) {
@@ -193,11 +193,12 @@ export const SolutionClicker = ({
             <GameHUD score={currentScore} health={health} highScore={highScore} maxHealth={MAX_HEALTH} />
           </div>
           <Chessboard
-            draggable={solutionType == "move"}
-            board={board}
+            moveable={solutionType == "move"}
+            fen={fen}
             gameUrl={gameUrl}
-            goodSquares={solutionType == "square" ? goodGuesses : []}
-            badSquares={solutionType == "square" ? badGuesses : []}
+            goodSquares={solutionType == "square" ? goodGuesses as Key[] : []}
+            badSquares={solutionType == "square" ? badGuesses as Key[] : []}
+            highlightedSquares={playerStatus == "gave-up" ? solutions as Key[] : []}
             onSquareClick={
               solutionType == "square"
                 ? (square) => checkGuess(square)
@@ -205,7 +206,6 @@ export const SolutionClicker = ({
             }
             onMove={(move) => checkGuess(move)}
             flipped={flipped}
-            highlightedSquares={playerStatus == "gave-up" ? solutions : []}
           >
             <div className="flex h-full flex-wrap items-center justify-between gap-2 px-2">
               <div>

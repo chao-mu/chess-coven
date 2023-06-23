@@ -2,7 +2,7 @@
 
 // React
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // chess.js
 import { Chess } from "chess.js";
@@ -20,18 +20,7 @@ import { Game } from "@/types"
 
 import { GameSelect } from "@/components/GameSelect";
 
-export const GameMemorizer = () => {
-  const [position, setPosition] = useState(0);
-  const [isRevealed, setIsRevealed] = useState(false);
-  const [isWrong, setIsWrong] = useState(false);
-  const [game, setGame] = useState<Game>(games[0]);
-
-  const pgn = game.pgn
-
-  useEffect(() => {
-    setPosition(0);
-  }, [pgn]);
-
+const getChess = (pgn: string, position: number) => {
   const chess = new Chess();
   chess.loadPgn(pgn);
   const moves = chess.history();
@@ -41,17 +30,34 @@ export const GameMemorizer = () => {
     chess.move(moves[i]);
   }
 
-  const totalMoves = moves.length;
-  const isLastPosition = position >= totalMoves;
+  return {
+    fen: chess.fen(),
+    isLastPosition: position >= moves.length,
+    chess: chess,
+    moves: moves,
+  }
+}
+
+
+export const GameMemorizer = () => {
+  const [position, setPosition] = useState(0);
+  const [isRevealed, setIsRevealed] = useState(false);
+  const [isWrong, setIsWrong] = useState(false);
+  const [game, setGame] = useState<Game>(games[0]);
+
+  const { fen, isLastPosition, moves } = getChess(game.pgn, position)
 
   function onJump(steps: number) {
-    setPosition((p) => Math.min(totalMoves, Math.max(0, p + steps)));
+    setPosition((p) => Math.min(moves.length, Math.max(0, p + steps)));
   }
 
   function onGuess(san: string) {
-    chess.move(moves[position]);
-    const solutionFen = chess.fen();
-    chess.undo();
+    const { chess, isLastPosition } = getChess(game.pgn, position)
+    if (isLastPosition) {
+      return
+    }
+
+    const { fen: chessSolution } = getChess(game.pgn, position + 1)
 
     try {
       chess.move(san);
@@ -60,11 +66,8 @@ export const GameMemorizer = () => {
       return;
     }
 
-    const guessFen = chess.fen();
-
-    const isCorrect = solutionFen === guessFen;
+    const isCorrect = chess.fen() == chessSolution
     setIsWrong(!isCorrect);
-
     if (isCorrect) {
       onJump(1);
     }
@@ -74,10 +77,10 @@ export const GameMemorizer = () => {
     <div className="flex h-[95vh] min-w-[33vw]  flex-col bg-gray-800/50">
       <div className="m-2 text-center font-header text-2xl font-bold">Game Memorizer</div>
       <GameSelect setGame={setGame} games={games} />
-      <Chessboard draggable board={chess.board()} onMove={onGuess} />
+      <Chessboard moveable fen={fen} onMove={onGuess} />
       <div className="mt-1 flex justify-center">
         <MemorizerNav
-          totalMoves={totalMoves}
+          totalMoves={moves.length}
           position={position}
           onJump={onJump}
           isRevealed={isRevealed}
