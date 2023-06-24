@@ -55,36 +55,46 @@ export function Chessboard({
       return
     }
 
-    const config: Config = moveable ? {
+    let config: Config = {
       fen: fen,
-      movable: {
-        free: true,
-        events: {
-          after: (orig: Key, dest: Key) => {
-            onMove && onMove(orig + dest)
-            board?.set({ fen: fen })
-          }
+      orientation: flipped ? "black" : "white",
+    }
+
+    if (moveable) {
+      config = {
+        ...config,
+        movable: {
+          free: true,
+          events: {
+            after: (orig: Key, dest: Key) => {
+              onMove && onMove(orig + dest)
+              board?.cancelMove()
+            }
+          },
         },
-      },
-    } : {
-      fen: fen,
-      events: {
-        select: (k: Key) => onSquareClick && onSquareClick(k.toString())
-      },
-      drawable: {
-        enabled: false,
-        autoShapes: goodSquares.map(s => ({ orig: s, brush: "green" })).concat
-          (
-            badSquares.map(s => ({ orig: s, brush: "red" }))).concat(
-              highlightedSquares.map(s => ({ orig: s, brush: "yellow" })))
+      }
+    } else {
+      config = {
+        ...config,
+        events: {
+          select: (k: Key) => onSquareClick && onSquareClick(k.toString())
+        },
+        movable: { free: false },
+        draggable: { enabled: false },
+        drawable: {
+          enabled: false,
+          autoShapes: goodSquares.map(s => ({ orig: s, brush: "green" })).concat
+            (
+              badSquares.map(s => ({ orig: s, brush: "red" }))).concat(
+                highlightedSquares.map(s => ({ orig: s, brush: "yellow" })))
+        }
       }
     }
 
     if (board) {
       board.set(config)
     } else {
-      const chessgroundApi = Chessground(boardRef.current);
-      chessgroundApi.set(config)
+      const chessgroundApi = Chessground(boardRef.current, config);
       setBoard(chessgroundApi);
     }
   }, [boardRef, board, fen, moveable, onSquareClick, onMove, goodSquares, badSquares, highlightedSquares]);
@@ -107,7 +117,7 @@ export function Chessboard({
         {children}
       </div>
       <ChessboardWrapper flipped={flipped}>
-        <div ref={boardRef} style={{ width: '100%', height: '100%' }} />
+        <div ref={boardRef} className="w-full h-full" />
       </ChessboardWrapper>
       <div className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-[2rem] pr-6 text-black`}>
         {gameSourceEl}
