@@ -121,7 +121,7 @@ export function Chessboard({
         {children}
       </div>
       <ChessboardWrapper flipped={flipped}>
-        <div ref={boardRef} className="w-full h-full" />
+        <div ref={boardRef} className="h-full w-full" />
       </ChessboardWrapper>
       <div className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-[2rem] pr-6 text-black`}>
         {gameSourceEl}
