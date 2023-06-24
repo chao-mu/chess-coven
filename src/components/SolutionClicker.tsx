@@ -193,13 +193,13 @@ export const SolutionClicker = ({
             <GameHUD score={currentScore} health={health} highScore={highScore} maxHealth={MAX_HEALTH} />
           </div>
           <Chessboard
-            moveable={solutionType == "move"}
+            movable={solutionType == "move"}
             fen={fen}
             gameUrl={gameUrl}
             goodSquares={solutionType == "square" ? goodGuesses as Key[] : []}
             badSquares={solutionType == "square" ? badGuesses as Key[] : []}
             highlightedSquares={playerStatus == "gave-up" ? solutions as Key[] : []}
-            onSquareClick={
+            onSelect={
               solutionType == "square"
                 ? (square) => checkGuess(square)
                 : undefined

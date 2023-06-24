@@ -77,7 +77,7 @@ export const GameMemorizer = () => {
     <div className="flex h-[95vh] min-w-[33vw]  flex-col bg-gray-800/50">
       <div className="m-2 text-center font-header text-2xl font-bold">Game Memorizer</div>
       <GameSelect setGame={setGame} games={games} />
-      <Chessboard moveable fen={fen} onMove={onGuess} />
+      <Chessboard movable fen={fen} onMove={onGuess} />
       <div className="mt-1 flex justify-center">
         <MemorizerNav
           totalMoves={moves.length}

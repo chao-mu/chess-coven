@@ -11,7 +11,7 @@ import { Key } from 'chessground/types';
 import { Config } from 'chessground/config'
 
 type ChessboardProps = {
-  moveable?: boolean
+  movable?: boolean
   fen?: string;
   goodSquares?: Key[];
   badSquares?: Key[];
@@ -19,7 +19,7 @@ type ChessboardProps = {
   flipped?: boolean;
   gameUrl?: string;
   onMove?: (san: string) => void;
-  onSquareClick?: (square: string) => void;
+  onSelect?: (square: string) => void;
   children?: React.ReactNode;
 };
 
@@ -39,13 +39,13 @@ export function Chessboard({
   gameUrl,
   fen,
   onMove,
-  onSquareClick,
+  onSelect,
+  children,
   goodSquares = [],
   badSquares = [],
   highlightedSquares = [],
   flipped = false,
-  moveable = false,
-  children,
+  movable = false,
 }: ChessboardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
   const [board, setBoard] = useState<BoardApi | null>(null);
@@ -58,9 +58,10 @@ export function Chessboard({
     let config: Config = {
       fen: fen,
       orientation: flipped ? "black" : "white",
+      animation: { enabled: true },
     }
 
-    if (moveable) {
+    if (movable) {
       config = {
         ...config,
         movable: {
@@ -77,7 +78,7 @@ export function Chessboard({
       config = {
         ...config,
         events: {
-          select: (k: Key) => onSquareClick && onSquareClick(k.toString())
+          select: (k: Key) => onSelect && onSelect(k.toString())
         },
         movable: { free: false },
         draggable: { enabled: false },
@@ -100,7 +101,7 @@ export function Chessboard({
       );
       setBoard(chessgroundApi);
     }
-  }, [boardRef, board, fen, moveable, onSquareClick, onMove, goodSquares, badSquares, highlightedSquares]);
+  }, [board, boardRef, fen, flipped, movable, goodSquares, badSquares, highlightedSquares, onMove, onSelect])
 
   let gameSourceEl = null;
   if (gameUrl) {
