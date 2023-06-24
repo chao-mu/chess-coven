@@ -94,7 +94,10 @@ export function Chessboard({
     if (board) {
       board.set(config)
     } else {
-      const chessgroundApi = Chessground(boardRef.current, config);
+      const chessgroundApi = Chessground(
+        boardRef.current,
+        { ...config, animation: { enabled: false } }
+      );
       setBoard(chessgroundApi);
     }
   }, [boardRef, board, fen, moveable, onSquareClick, onMove, goodSquares, badSquares, highlightedSquares]);
