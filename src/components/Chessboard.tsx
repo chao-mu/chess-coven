@@ -87,7 +87,7 @@ export function Chessboard({
       chessgroundApi.set(config)
       setBoard(chessgroundApi);
     }
-  }, [boardRef, board, onMove, goodSquares, badSquares, highlightedSquares]);
+  }, [boardRef, board, fen, moveable, onSquareClick, onMove, goodSquares, badSquares, highlightedSquares]);
 
   let gameSourceEl = null;
   if (gameUrl) {
