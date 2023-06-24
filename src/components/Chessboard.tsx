@@ -1,12 +1,14 @@
 // React
-import React, { useReducer } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // NextJS
 import Link from "next/link";
 
 // Chessground
-import Chessground from "@react-chess/chessground";
-import { Key } from "chessground/types"
+import { Chessground } from 'chessground';
+import { Api as BoardApi } from 'chessground/api';
+import { Key } from 'chessground/types';
+import { Config } from 'chessground/config'
 
 type ChessboardProps = {
   moveable?: boolean
@@ -16,7 +18,7 @@ type ChessboardProps = {
   highlightedSquares?: Key[];
   flipped?: boolean;
   gameUrl?: string;
-  onMove?: (move: string) => void;
+  onMove?: (san: string) => void;
   onSquareClick?: (square: string) => void;
   children?: React.ReactNode;
 };
@@ -45,6 +47,48 @@ export function Chessboard({
   moveable = false,
   children,
 }: ChessboardProps) {
+  const boardRef = useRef<HTMLDivElement>(null);
+  const [board, setBoard] = useState<BoardApi | null>(null);
+
+  useEffect(() => {
+    if (!boardRef.current) {
+      return
+    }
+
+    const config: Config = moveable ? {
+      fen: fen,
+      movable: {
+        free: true,
+        events: {
+          after: (orig: Key, dest: Key) => {
+            onMove && onMove(orig + dest)
+            board?.set({ fen: fen })
+          }
+        },
+      },
+    } : {
+      fen: fen,
+      events: {
+        select: (k: Key) => onSquareClick && onSquareClick(k.toString())
+      },
+      drawable: {
+        enabled: false,
+        autoShapes: goodSquares.map(s => ({ orig: s, brush: "green" })).concat
+          (
+            badSquares.map(s => ({ orig: s, brush: "red" }))).concat(
+              highlightedSquares.map(s => ({ orig: s, brush: "yellow" })))
+      }
+    }
+
+    if (board) {
+      board.set(config)
+    } else {
+      const chessgroundApi = Chessground(boardRef.current);
+      chessgroundApi.set(config)
+      setBoard(chessgroundApi);
+    }
+  }, [boardRef, board, onMove, goodSquares, badSquares, highlightedSquares]);
+
   let gameSourceEl = null;
   if (gameUrl) {
     gameSourceEl = (
@@ -53,7 +97,6 @@ export function Chessboard({
       </Link>
     );
   }
-  const forceUpdate = useReducer(x => x + 1, 0)[1];
 
   const topColor = flipped ? 'bg-red-100' : 'bg-red-400'
   const bottomColor = flipped ? 'bg-red-400' : 'bg-red-100'
@@ -64,38 +107,7 @@ export function Chessboard({
         {children}
       </div>
       <ChessboardWrapper flipped={flipped}>
-        {moveable ? (
-          <Chessground contained config={{
-            ...(fen ? { fen: fen } : {}),
-            orientation: flipped ? "black" : "white",
-            movable: {
-              free: true,
-            },
-            events: {
-              move: (orig, dest) => {
-                onMove && onMove(orig + dest)
-                forceUpdate()
-              }
-            }
-          }} />
-        ) : (
-          <Chessground contained config={{
-            ...(fen ? { fen: fen } : {}),
-            orientation: flipped ? "black" : "white",
-            events: {
-              select: (k: Key) => onSquareClick && onSquareClick(k.toString())
-            },
-            movable: { free: false },
-            draggable: { enabled: false },
-            drawable: {
-              enabled: false,
-              autoShapes: goodSquares.map(s => ({ orig: s, brush: "green" })).concat(
-                badSquares.map(s => ({ orig: s, brush: "red" }))).concat(
-                  highlightedSquares.map(s => ({ orig: s, brush: "yellow" })))
-
-            }
-          }} />
-        )}
+        <div ref={boardRef} style={{ width: '100%', height: '100%' }} />
       </ChessboardWrapper>
       <div className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-[2rem] pr-6 text-black`}>
         {gameSourceEl}
