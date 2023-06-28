@@ -114,6 +114,7 @@ export const SolutionClicker = ({
   };
 
   const checkGuess = (guess: string) => {
+    console.log("checkGuess " + fen);
     setPlayerStatus("playing");
 
     if (
@@ -199,16 +200,8 @@ export const SolutionClicker = ({
             goodSquares={solutionType == "square" ? goodGuesses as Key[] : []}
             badSquares={solutionType == "square" ? badGuesses as Key[] : []}
             highlightedSquares={playerStatus == "gave-up" ? solutions as Key[] : []}
-            onSelect={
-              solutionType == "square"
-                ? (square) => checkGuess(square)
-                : undefined
-            }
-            onMove={
-              solutionType == "move"
-                ? (move: string) => checkGuess(move)
-                : undefined
-            }
+            onSelect={checkGuess}
+            onMove={checkGuess}
             flipped={flipped}
           >
             <div className="flex h-full flex-wrap items-center justify-between gap-2 px-2">

@@ -19,7 +19,7 @@ export const GameHUD = ({
   highScore
 }: GameHUDProps) => {
   return (
-    <div className="flex flex-row items-center justify-between gap-4 px-6 pb-2">
+    <div className="flex flex-row items-center justify-between gap-4 px-4 pb-2">
       <div>Score: {score}</div>
       <div>High Score: {highScore}</div>
       <div className="flex flex-wrap gap-2">

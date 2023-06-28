@@ -35,6 +35,21 @@ function ChessboardWrapper(
   )
 }
 
+function onSelectFactory(now: number, f: ((s: Key) => void) | undefined) {
+  if (!f) {
+    return () => { }
+  }
+
+  let last = now
+  return (s: Key) => {
+    const now = Date.now()
+    if (now - last > 300) {
+      last = now
+      f(s)
+    }
+  }
+}
+
 export function Chessboard({
   gameUrl,
   fen,
@@ -78,7 +93,7 @@ export function Chessboard({
       config = {
         ...config,
         events: {
-          select: (k: Key) => onSelect && onSelect(k.toString())
+          select: onSelectFactory(Date.now(), onSelect)
         },
         movable: { free: false },
         draggable: { enabled: false },
