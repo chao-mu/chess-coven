@@ -37,7 +37,7 @@ function ChessboardWrapper(
 
 function onSelectFactory(now: number, f: ((s: Key) => void) | undefined) {
   if (!f) {
-    return () => { }
+    return undefined
   }
 
   let last = now
@@ -93,7 +93,7 @@ export function Chessboard({
       config = {
         ...config,
         events: {
-          select: onSelectFactory(Date.now(), onSelect)
+          select: onSelectFactory(onSelect)
         },
         movable: { free: false },
         draggable: { enabled: false },
