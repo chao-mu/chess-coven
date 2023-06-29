@@ -35,12 +35,12 @@ function ChessboardWrapper(
   )
 }
 
-function onSelectFactory(now: number, f: ((s: Key) => void) | undefined) {
+function onSelectFactory(f: ((s: Key) => void) | undefined) {
   if (!f) {
     return undefined
   }
 
-  let last = now
+  let last = Date.now()
   return (s: Key) => {
     const now = Date.now()
     if (now - last > 300) {
