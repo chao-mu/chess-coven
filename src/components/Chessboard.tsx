@@ -18,7 +18,7 @@ type ChessboardProps = {
   highlightedSquares?: Key[];
   flipped?: boolean;
   gameUrl?: string;
-  onMove?: (san: string) => void;
+  onMove?: (san: string) => boolean;
   onSelect?: (square: string) => void;
   children?: React.ReactNode;
 };
@@ -83,8 +83,15 @@ export function Chessboard({
           free: true,
           events: {
             after: (orig: Key, dest: Key) => {
-              onMove && onMove(orig + dest)
-              board?.cancelMove()
+              if (!onMove) {
+                return
+              }
+
+              const allow = onMove(orig + dest)
+              if (!allow) {
+                board?.cancelMove()
+                board?.set(config)
+              }
             }
           },
         },

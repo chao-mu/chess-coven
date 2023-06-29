@@ -54,7 +54,7 @@ export const GameMemorizer = () => {
   function onGuess(san: string) {
     const { chess, isLastPosition } = getChess(game.pgn, position)
     if (isLastPosition) {
-      return
+      return false
     }
 
     const { fen: chessSolution } = getChess(game.pgn, position + 1)
@@ -63,7 +63,7 @@ export const GameMemorizer = () => {
       chess.move(san);
     } catch (e) {
       setIsWrong(true);
-      return;
+      return false;
     }
 
     const isCorrect = chess.fen() == chessSolution
@@ -71,6 +71,8 @@ export const GameMemorizer = () => {
     if (isCorrect) {
       onJump(1);
     }
+
+    return isCorrect
   }
 
   return (

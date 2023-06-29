@@ -114,7 +114,6 @@ export const SolutionClicker = ({
   };
 
   const checkGuess = (guess: string) => {
-    console.log("checkGuess " + fen);
     setPlayerStatus("playing");
 
     if (
@@ -122,7 +121,7 @@ export const SolutionClicker = ({
       goodGuesses.includes(solutionAliases[guess]) ||
       badGuesses.includes(guess)
     ) {
-      return;
+      return false;
     }
 
     const isCorrect = solutions.includes(guess);
@@ -144,6 +143,8 @@ export const SolutionClicker = ({
       setBadGuesses([...badGuesses, guess]);
       setPlayerStatus("wrong-guess");
     }
+
+    return isCorrect
   };
 
   const giveUp = () => {
