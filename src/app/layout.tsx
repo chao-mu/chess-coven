@@ -41,7 +41,7 @@ export default function RootLayout({
             `,
         }}
       />
-      <body className="bg-gray-950 bg-forest bg-cover font-body text-white">
+      <body className="bg-gray-950 bg-forest bg-left-top font-body text-white">
         <div className="flex h-full min-h-screen flex-col">
           {children}
           <Footer />

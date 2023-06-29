@@ -15,7 +15,7 @@ export default function Page() {
             <h1 className="font-header text-6xl font-bold text-amber-300">
               Tactical Elements
             </h1>
-            <p className="max-w-2xl text-2xl">
+            <p className="max-w-2xl text-xl">
               Survive in the wilderness of Chessimprovia, using your tactical
               wits and board vision to survive
             </p>
