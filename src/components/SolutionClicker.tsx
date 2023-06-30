@@ -103,10 +103,15 @@ export const SolutionClicker = ({
     }
   };
 
+  const gainPoints = () => {
+    setCurrentScore((score) => score + 1);
+  }
+
   const checkCompleted = () => {
     if (playerStatus === "gave-up" || goodGuesses.length === solutions.length) {
       gotoNextPuzzle();
       setPlayerStatus("playing");
+      gainPoints();
     } else {
       setPlayerStatus("premature-advancement");
       loseHealth();
@@ -137,7 +142,7 @@ export const SolutionClicker = ({
       }
 
       // Update score
-      setCurrentScore((score) => score + 1);
+      gainPoints();
     } else {
       loseHealth();
       setBadGuesses([...badGuesses, guess]);
