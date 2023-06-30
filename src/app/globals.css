@@ -10,5 +10,5 @@
 @import '../../node_modules/chessground/assets/chessground.cburnett.css';
 
 cg-board {
-  background-image: url("/images/chessboard.svg")
+  background-image: url("~/public/images/chessboard.svg");
 }
