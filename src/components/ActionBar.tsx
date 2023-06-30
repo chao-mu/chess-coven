@@ -1,4 +1,4 @@
-// React")e
+// React
 import React from "react";
 
 // Types
@@ -9,6 +9,7 @@ export type ActionBarProps = {
   autoAdvance: boolean;
   sanEntry: boolean;
   allowNoSolution: boolean;
+  pulseNoSolution: boolean;
   onAdvance?: () => void;
   onGiveUp?: () => void;
   onSanEntry: (san: string) => void;
@@ -19,6 +20,7 @@ export const ActionBar = ({
   autoAdvance,
   playerStatus,
   allowNoSolution,
+  pulseNoSolution = false,
   onGiveUp,
   onAdvance,
 }: ActionBarProps) => {
@@ -27,8 +29,8 @@ export const ActionBar = ({
       <div className="flex items-center gap-1">
         {(!autoAdvance || playerStatus == "gave-up") && (
           <button
-            className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
             onClick={onAdvance}
+            className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
           >
             Advance
           </button>
@@ -37,7 +39,7 @@ export const ActionBar = ({
           <>
             {allowNoSolution && (
               <button
-                className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
+                className={`${pulseNoSolution ? 'animate-pulse' : ''} rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700`}
                 onClick={onAdvance}>
                 No Solution
               </button>
