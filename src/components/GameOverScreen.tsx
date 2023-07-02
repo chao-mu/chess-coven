@@ -16,7 +16,7 @@ export function GameOverScreen({
   rules,
   onContinue,
 }: GameOverScreenProps) {
-  const newHighScore = finalScore > previousHighScore
+  const newHighScore = finalScore > previousHighScore;
 
   return (
     <div className="flex h-full grow items-center justify-center">

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 // React
 import React from "react";
@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Chess, BLACK } from "chess.js";
 
 // Chessground
-import { Key } from "chessground/types"
+import { Key } from "chessground/types";
 
 // Components
 import { Chessboard } from "@/components/Chessboard";
@@ -23,7 +23,7 @@ import { Puzzle, PlayerStatus, PuzzleCollection } from "@/types";
 export type SolutionType = "move" | "square";
 
 type SolutionClickerProps = {
-  collection: PuzzleCollection
+  collection: PuzzleCollection;
 };
 
 const GameStatus = {
@@ -34,9 +34,7 @@ const GameStatus = {
 
 const MAX_HEALTH = 3;
 
-export const SolutionClicker = ({
-  collection
-}: SolutionClickerProps) => {
+export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
   const [gameUrl, setGameUrl] = useState<string | undefined>();
   const [fen, setFen] = useState<string>();
   const [solutions, setSolutions] = useState<string[]>([]);
@@ -51,11 +49,12 @@ export const SolutionClicker = ({
   const [highScore, setHighScore] = useState(0);
   const [gameStatus, setGameStatus] = useState(GameStatus.START);
   const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
-  const [advanced, setAdvanced] = useState(false)
+  const [advanced, setAdvanced] = useState(false);
 
-  const { puzzles, title, rules, story, autoAdvance, solutionType } = collection;
+  const { puzzles, title, rules, story, autoAdvance, solutionType } =
+    collection;
 
-  const readyToAdvance = goodGuesses.length == solutions.length
+  const readyToAdvance = goodGuesses.length == solutions.length;
 
   const nextPuzzle = () => {
     return puzzles[Math.floor(Math.random() * puzzles.length)] as Puzzle;
@@ -74,7 +73,7 @@ export const SolutionClicker = ({
     if (newGame) {
       gotoNextPuzzle();
     } else {
-      setPlayerStatus("respawn")
+      setPlayerStatus("respawn");
     }
   };
 
@@ -108,12 +107,12 @@ export const SolutionClicker = ({
 
   const gainPoints = () => {
     setCurrentScore((score) => score + 1);
-  }
+  };
 
   const checkCompleted = () => {
     if (playerStatus === "gave-up" || readyToAdvance) {
       if (solutions.length == 0) {
-        setAdvanced(true)
+        setAdvanced(true);
       }
       gotoNextPuzzle();
       setPlayerStatus("playing");
@@ -154,7 +153,7 @@ export const SolutionClicker = ({
       setPlayerStatus("wrong-guess");
     }
 
-    return isCorrect
+    return isCorrect;
   };
 
   const giveUp = () => {
@@ -165,15 +164,15 @@ export const SolutionClicker = ({
     setPlayerStatus("gave-up");
     solutions.forEach((s) => {
       if (goodGuesses.includes(s)) {
-        return
+        return;
       }
 
       if (solutionAliases[s]) {
-        s = solutionAliases[s]
+        s = solutionAliases[s];
       }
 
-      goodGuesses.push(s)
-    })
+      goodGuesses.push(s);
+    });
 
     setGoodGuesses(goodGuesses);
   };
@@ -200,17 +199,26 @@ export const SolutionClicker = ({
       {gameStatus == GameStatus.PLAYING && (
         <>
           <div>
-            <div className="m-2 text-center font-header text-2xl font-bold">{title}</div>
+            <div className="m-2 text-center font-header text-2xl font-bold">
+              {title}
+            </div>
             <div className="mt-2 p-4">{rules}</div>
-            <GameHUD score={currentScore} health={health} highScore={highScore} maxHealth={MAX_HEALTH} />
+            <GameHUD
+              score={currentScore}
+              health={health}
+              highScore={highScore}
+              maxHealth={MAX_HEALTH}
+            />
           </div>
           <Chessboard
             movable={solutionType == "move"}
             fen={fen}
             gameUrl={gameUrl}
-            goodSquares={solutionType == "square" ? goodGuesses as Key[] : []}
-            badSquares={solutionType == "square" ? badGuesses as Key[] : []}
-            highlightedSquares={playerStatus == "gave-up" ? solutions as Key[] : []}
+            goodSquares={solutionType == "square" ? (goodGuesses as Key[]) : []}
+            badSquares={solutionType == "square" ? (badGuesses as Key[]) : []}
+            highlightedSquares={
+              playerStatus == "gave-up" ? (solutions as Key[]) : []
+            }
             onSelect={checkGuess}
             onMove={checkGuess}
             flipped={flipped}
@@ -239,7 +247,6 @@ export const SolutionClicker = ({
                 )}
               </div>
             </div>
-
           </Chessboard>
           <div>
             <ActionBar
@@ -254,8 +261,7 @@ export const SolutionClicker = ({
             />
           </div>
         </>
-      )
-      }
-    </div >
-  )
-}
+      )}
+    </div>
+  );
+};

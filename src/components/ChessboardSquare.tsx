@@ -1,5 +1,5 @@
 // React draggable
-import React, { DragEvent } from 'react';
+import React, { DragEvent } from "react";
 
 // chess.js
 import { WHITE, Piece } from "chess.js";
@@ -47,15 +47,21 @@ export function ChessboardSquare(props: ChessboardSquareProps) {
 
   const onDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    e.preventDefault()
-  }
+    e.preventDefault();
+  };
 
   return (
-    <div className={`${fill} relative flex h-full w-full items-center justify-center`}>
-      <div className={`${circleClass} absolute h-full w-full`}>
-      </div>
-      <div draggable={!!piece && !!props.draggable}
-        className="absolute h-full w-full" onDragOver={onDragOver} onDragStart={props.onPieceDrag} onDrop={props.onPieceDrop}>
+    <div
+      className={`${fill} relative flex h-full w-full items-center justify-center`}
+    >
+      <div className={`${circleClass} absolute h-full w-full`}></div>
+      <div
+        draggable={!!piece && !!props.draggable}
+        className="absolute h-full w-full"
+        onDragOver={onDragOver}
+        onDragStart={props.onPieceDrag}
+        onDrop={props.onPieceDrop}
+      >
         {piece && <ChessPiece piece={piece} />}
       </div>
     </div>

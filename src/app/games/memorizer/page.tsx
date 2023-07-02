@@ -10,7 +10,5 @@ export const metadata = {
 };
 
 export default function MemorizerPage() {
-  return (
-    <GameMemorizer />
-  );
+  return <GameMemorizer />;
 }

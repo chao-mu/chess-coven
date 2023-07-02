@@ -13,6 +13,7 @@
     //"spellcheck"
   ],
   "rules": {
+    "semi": "error"
     /*"spellcheck/spell-checker": [1,
       {
         "identifiers": false,
