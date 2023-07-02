@@ -5,7 +5,7 @@ import React from "react";
 import { SolutionClicker } from "@/components/SolutionClicker";
 
 // Game
-import collection from "@/puzzles/checks-captures"
+import collection from "@/puzzles/checks-captures";
 
 export const metadata = {
   title: "Tactical Elements - " + collection.title,

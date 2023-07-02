@@ -1,6 +1,6 @@
-import { PuzzleCollection } from '@/types'
+import { PuzzleCollection } from '@/types';
 
-import puzzles from '@/assets/puzzles/knight-forkables.json'
+import puzzles from '@/assets/puzzles/knight-forkables.json';
 
 export default {
   title: "Catapult Knights",
@@ -10,4 +10,4 @@ export default {
   solutionType: "square",
   puzzles: puzzles,
   noSolution: true,
-} as PuzzleCollection
+} as PuzzleCollection;

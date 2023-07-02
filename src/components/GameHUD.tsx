@@ -29,5 +29,5 @@ export const GameHUD = ({
       </div>
     </div>
 
-  )
-}
+  );
+};

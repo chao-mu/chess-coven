@@ -2,7 +2,7 @@
 import React from "react";
 
 // NextJS
-import Script from "next/script"
+import Script from "next/script";
 
 
 // Vercel

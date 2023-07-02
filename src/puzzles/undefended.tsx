@@ -1,5 +1,5 @@
 // Types
-import { PuzzleCollection } from "@/types"
+import { PuzzleCollection } from "@/types";
 
 // Assets
 import undefendedPieces from "@/assets/puzzles/undefended.json";

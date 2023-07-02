@@ -1,8 +1,8 @@
-import { PuzzleCollection } from '@/types'
+import { PuzzleCollection } from '@/types';
 
-import puzzles from '@/assets/puzzles/checks-captures.json'
+import puzzles from '@/assets/puzzles/checks-captures.json';
 
-import { Puzzle } from '@/types'
+import { Puzzle } from '@/types';
 
 export default {
   title: "Checks/Captures",
@@ -12,4 +12,4 @@ export default {
   solutionType: "move",
   puzzles: puzzles as unknown as Puzzle[],
   noSolution: false,
-} as PuzzleCollection
+} as PuzzleCollection;

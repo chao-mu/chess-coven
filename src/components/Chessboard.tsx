@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Chessground } from 'chessground';
 import { Api as BoardApi } from 'chessground/api';
 import { Key } from 'chessground/types';
-import { Config } from 'chessground/config'
+import { Config } from 'chessground/config';
 
 type ChessboardProps = {
   movable?: boolean
@@ -32,22 +32,22 @@ function ChessboardWrapper(
         {children}
       </div>
     </div>
-  )
+  );
 }
 
 function onSelectFactory(f: ((s: Key) => void) | undefined) {
   if (!f) {
-    return undefined
+    return undefined;
   }
 
-  let last = Date.now()
+  let last = Date.now();
   return (s: Key) => {
-    const now = Date.now()
+    const now = Date.now();
     if (now - last > 300) {
-      last = now
-      f(s)
+      last = now;
+      f(s);
     }
-  }
+  };
 }
 
 export function Chessboard({
@@ -67,14 +67,14 @@ export function Chessboard({
 
   useEffect(() => {
     if (!boardRef.current) {
-      return
+      return;
     }
 
     let config: Config = {
       fen: fen,
       orientation: flipped ? "black" : "white",
       animation: { enabled: true },
-    }
+    };
 
     if (movable) {
       config = {
@@ -84,18 +84,18 @@ export function Chessboard({
           events: {
             after: (orig: Key, dest: Key) => {
               if (!onMove) {
-                return
+                return;
               }
 
-              const allow = onMove(orig + dest)
+              const allow = onMove(orig + dest);
               if (!allow) {
-                board?.cancelMove()
-                board?.set(config)
+                board?.cancelMove();
+                board?.set(config);
               }
             }
           },
         },
-      }
+      };
     } else {
       config = {
         ...config,
@@ -111,11 +111,11 @@ export function Chessboard({
               badSquares.map(s => ({ orig: s, brush: "red" }))).concat(
                 highlightedSquares.map(s => ({ orig: s, brush: "yellow" })))
         }
-      }
+      };
     }
 
     if (board) {
-      board.set(config)
+      board.set(config);
     } else {
       const chessgroundApi = Chessground(
         boardRef.current,
@@ -123,7 +123,7 @@ export function Chessboard({
       );
       setBoard(chessgroundApi);
     }
-  }, [board, boardRef, fen, flipped, movable, goodSquares, badSquares, highlightedSquares, onMove, onSelect])
+  }, [board, boardRef, fen, flipped, movable, goodSquares, badSquares, highlightedSquares, onMove, onSelect]);
 
   let gameSourceEl = null;
   if (gameUrl) {
@@ -134,8 +134,8 @@ export function Chessboard({
     );
   }
 
-  const topColor = flipped ? 'bg-red-100' : 'bg-red-400'
-  const bottomColor = flipped ? 'bg-red-400' : 'bg-red-100'
+  const topColor = flipped ? 'bg-red-100' : 'bg-red-400';
+  const bottomColor = flipped ? 'bg-red-400' : 'bg-red-100';
 
   return (
     <div className="flex min-h-0 flex-col">

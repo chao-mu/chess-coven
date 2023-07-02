@@ -47,8 +47,8 @@ export function ChessboardSquare(props: ChessboardSquareProps) {
 
   const onDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    e.preventDefault()
-  }
+    e.preventDefault();
+  };
 
   return (
     <div className={`${fill} relative flex h-full w-full items-center justify-center`}>

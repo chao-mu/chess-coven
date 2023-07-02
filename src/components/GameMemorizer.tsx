@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 // React
 import React from "react";
@@ -16,7 +16,7 @@ import { Chessboard } from "./Chessboard";
 import { SanInputForm } from "./SanInputForm";
 
 // Types
-import { Game } from "@/types"
+import { Game } from "@/types";
 
 import { GameSelect } from "@/components/GameSelect";
 
@@ -35,8 +35,8 @@ const getChess = (pgn: string, position: number) => {
     isLastPosition: position >= moves.length,
     chess: chess,
     moves: moves,
-  }
-}
+  };
+};
 
 
 export const GameMemorizer = () => {
@@ -45,19 +45,19 @@ export const GameMemorizer = () => {
   const [isWrong, setIsWrong] = useState(false);
   const [game, setGame] = useState<Game>(games[0]);
 
-  const { fen, isLastPosition, moves } = getChess(game.pgn, position)
+  const { fen, isLastPosition, moves } = getChess(game.pgn, position);
 
   function onJump(steps: number) {
     setPosition((p) => Math.min(moves.length, Math.max(0, p + steps)));
   }
 
   function onGuess(san: string) {
-    const { chess, isLastPosition } = getChess(game.pgn, position)
+    const { chess, isLastPosition } = getChess(game.pgn, position);
     if (isLastPosition) {
-      return false
+      return false;
     }
 
-    const { fen: chessSolution } = getChess(game.pgn, position + 1)
+    const { fen: chessSolution } = getChess(game.pgn, position + 1);
 
     try {
       chess.move(san);
@@ -66,13 +66,13 @@ export const GameMemorizer = () => {
       return false;
     }
 
-    const isCorrect = chess.fen() == chessSolution
+    const isCorrect = chess.fen() == chessSolution;
     setIsWrong(!isCorrect);
     if (isCorrect) {
       onJump(1);
     }
 
-    return isCorrect
+    return isCorrect;
   }
 
   return (
