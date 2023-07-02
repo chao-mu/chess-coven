@@ -171,6 +171,10 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
         s = solutionAliases[s];
       }
 
+      if (goodGuesses.includes(s)) {
+        return;
+      }
+
       goodGuesses.push(s);
     });
 
