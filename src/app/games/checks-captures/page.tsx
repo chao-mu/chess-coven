@@ -13,8 +13,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return (
-    <SolutionClicker collection={collection} />
-  );
+  return <SolutionClicker collection={collection} />;
 }
-

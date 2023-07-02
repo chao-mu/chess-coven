@@ -5,18 +5,17 @@ import React from "react";
 import { Heart } from "@/components/Heart";
 
 type GameHUDProps = {
-  maxHealth: number
-  health: number
-  score: number
-  highScore: number
-}
-
+  maxHealth: number;
+  health: number;
+  score: number;
+  highScore: number;
+};
 
 export const GameHUD = ({
   maxHealth,
   health,
   score,
-  highScore
+  highScore,
 }: GameHUDProps) => {
   return (
     <div className="flex flex-row items-center justify-between gap-4 px-4 pb-2">
@@ -28,6 +27,5 @@ export const GameHUD = ({
         ))}
       </div>
     </div>
-
   );
 };

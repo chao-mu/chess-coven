@@ -4,7 +4,6 @@ import React from "react";
 // NextJS
 import Script from "next/script";
 
-
 // Vercel
 import { Analytics } from "@vercel/analytics/react";
 
@@ -26,9 +25,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-K97HLBR0H0" />
       <Script
-        id='google-analytics'
+        strategy="afterInteractive"
+        src="https://www.googletagmanager.com/gtag/js?id=G-K97HLBR0H0"
+      />
+      <Script
+        id="google-analytics"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `

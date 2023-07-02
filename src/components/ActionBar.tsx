@@ -39,8 +39,11 @@ export const ActionBar = ({
           <>
             {allowNoSolution && (
               <button
-                className={`${pulseNoSolution ? 'animate-pulse' : ''} rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700`}
-                onClick={onAdvance}>
+                className={`${
+                  pulseNoSolution ? "animate-pulse" : ""
+                } rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700`}
+                onClick={onAdvance}
+              >
                 No Solution
               </button>
             )}

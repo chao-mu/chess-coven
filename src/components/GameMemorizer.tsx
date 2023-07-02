@@ -38,7 +38,6 @@ const getChess = (pgn: string, position: number) => {
   };
 };
 
-
 export const GameMemorizer = () => {
   const [position, setPosition] = useState(0);
   const [isRevealed, setIsRevealed] = useState(false);
@@ -77,7 +76,9 @@ export const GameMemorizer = () => {
 
   return (
     <div className="flex h-[95vh] min-w-[33vw]  flex-col bg-gray-800/50">
-      <div className="m-2 text-center font-header text-2xl font-bold">Game Memorizer</div>
+      <div className="m-2 text-center font-header text-2xl font-bold">
+        Game Memorizer
+      </div>
       <GameSelect setGame={setGame} games={games} />
       <Chessboard movable fen={fen} onMove={onGuess} />
       <div className="mt-1 flex justify-center">

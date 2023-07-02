@@ -30,6 +30,6 @@ export const WithPiecesFlipped: Story = {
 
 export const WithPiecesAsymetric: Story = {
   args: {
-    fen: "r1bBk2r/pppn1ppp/8/3n4/1b1P4/8/PP1QPPPP/R3KBNR b KQkq - 2 8"
+    fen: "r1bBk2r/pppn1ppp/8/3n4/1b1P4/8/PP1QPPPP/R3KBNR b KQkq - 2 8",
   },
 };

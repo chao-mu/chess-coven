@@ -43,4 +43,4 @@ export type PuzzleCollection = {
   puzzles: Puzzle[];
   autoAdvance: boolean;
   noSolution: boolean;
-}
+};

@@ -13,7 +13,9 @@ export const HighScore: Story = {
   args: {
     finalScore: 50,
     previousHighScore: 23,
-    onContinue: () => { return; },
+    onContinue: () => {
+      return;
+    },
   },
 };
 
@@ -21,6 +23,8 @@ export const LowScore: Story = {
   args: {
     finalScore: 23,
     previousHighScore: 50,
-    onContinue: () => { return; },
+    onContinue: () => {
+      return;
+    },
   },
 };
