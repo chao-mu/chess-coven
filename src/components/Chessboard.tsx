@@ -150,8 +150,12 @@ export function Chessboard({
   let gameSourceEl = null;
   if (gameUrl) {
     gameSourceEl = (
-      <Link href={gameUrl} className="text-blue-800" target="_blank">
-        View on Lichess
+      <Link
+        href={gameUrl}
+        className="bg-backdrop px-2 text-white"
+        target="_blank"
+      >
+        View Game
       </Link>
     );
   }
