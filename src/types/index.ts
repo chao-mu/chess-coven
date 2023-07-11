@@ -7,10 +7,7 @@ export type Game = {
 
 export type Puzzle = {
   fen: string;
-  solution: string[];
-  solutionCount?: number;
-  solutionAliases?: { [key: string]: string };
-  moveNumber?: number;
+  solutions: { [key: string]: string };
   site?: string;
 };
 

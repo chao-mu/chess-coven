@@ -37,10 +37,7 @@ const MAX_HEALTH = 3;
 export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
   const [gameUrl, setGameUrl] = useState<string | undefined>();
   const [fen, setFen] = useState<string>();
-  const [solutions, setSolutions] = useState<string[]>([]);
-  const [solutionAliases, setSolutionAliases] = useState<
-    Record<string, string>
-  >({});
+  const [solutions, setSolutions] = useState<Map<string, string>>(new Map());
   const [flipped, setFlipped] = useState(false);
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
@@ -54,7 +51,7 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
   const { puzzles, title, rules, story, autoAdvance, solutionType } =
     collection;
 
-  const readyToAdvance = goodGuesses.length == solutions.length;
+  const readyToAdvance = goodGuesses.length == solutions.size;
 
   const nextPuzzle = () => {
     return puzzles[Math.floor(Math.random() * puzzles.length)] as Puzzle;
@@ -83,8 +80,9 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
 
     const puzzle = nextPuzzle();
     setFen(puzzle.fen);
-    setSolutions(puzzle.solution);
-    setSolutionAliases(puzzle.solutionAliases || {});
+    console.log(puzzle);
+    setSolutions(new Map(Object.entries(puzzle.solutions)));
+
     if (puzzle.site) {
       setGameUrl(puzzle.site);
     }
@@ -111,7 +109,7 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
 
   const checkCompleted = () => {
     if (playerStatus === "gave-up" || readyToAdvance) {
-      if (solutions.length == 0) {
+      if (solutions.size == 0) {
         setAdvanced(true);
       }
       gotoNextPuzzle();
@@ -128,21 +126,21 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
 
     if (
       goodGuesses.includes(guess) ||
-      goodGuesses.includes(solutionAliases[guess]) ||
+      goodGuesses.includes(solutions.get(guess) || "") ||
       badGuesses.includes(guess)
     ) {
       return false;
     }
 
-    const isCorrect = solutions.includes(guess);
+    const isCorrect =
+      solutions.has(guess) || Object.values(solutions).includes(guess);
 
     if (isCorrect) {
-      const alias = solutionAliases[guess];
-      const newGoodGuesses = [...goodGuesses, alias || guess];
+      const newGoodGuesses = [...goodGuesses, solutions.get(guess) || guess];
       setGoodGuesses(newGoodGuesses);
 
       // Check if puzzle is complete
-      if (newGoodGuesses.length === solutions.length && autoAdvance) {
+      if (newGoodGuesses.length === solutions.size && autoAdvance) {
         gotoNextPuzzle();
       }
 
@@ -162,23 +160,11 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
     }
 
     setPlayerStatus("gave-up");
-    solutions.forEach((s) => {
-      if (goodGuesses.includes(s)) {
-        return;
+    solutions.forEach((alias, solution) => {
+      if (!goodGuesses.includes(solution) && !goodGuesses.includes(alias)) {
+        setGoodGuesses((guesses) => [...guesses, alias]);
       }
-
-      if (solutionAliases[s]) {
-        s = solutionAliases[s];
-      }
-
-      if (goodGuesses.includes(s)) {
-        return;
-      }
-
-      goodGuesses.push(s);
     });
-
-    setGoodGuesses(goodGuesses);
   };
 
   return (
@@ -221,7 +207,9 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
             goodSquares={solutionType == "square" ? (goodGuesses as Key[]) : []}
             badSquares={solutionType == "square" ? (badGuesses as Key[]) : []}
             highlightedSquares={
-              playerStatus == "gave-up" ? (solutions as Key[]) : []
+              playerStatus == "gave-up"
+                ? (Object.values(solutions) as Key[])
+                : []
             }
             onSelect={checkGuess}
             onMove={checkGuess}
@@ -255,7 +243,7 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
           <div>
             <ActionBar
               autoAdvance={autoAdvance}
-              pulseNoSolution={!advanced && solutions.length == 0}
+              pulseNoSolution={!advanced && solutions.size == 0}
               onAdvance={checkCompleted}
               onGiveUp={giveUp}
               allowNoSolution={collection.noSolution}

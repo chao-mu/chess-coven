@@ -2,9 +2,9 @@
 module.exports = {
   mode: "jit",
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./public/**/*.html",
+    "./src/**/*.{js,jsx,ts,tsx,vue}",
   ],
   theme: {
     extend: {
@@ -18,12 +18,10 @@ module.exports = {
         header: ["Poppins", "sans-serif"],
         body: ["Playfair Display", "serif"],
       },
+      backgroundColor: {
+        backdrop: "rgb(31 41 55 / 50%)",
+      },
     },
   },
-  content: [
-    "./public/**/*.html",
-    "./src/**/*.{js,jsx,ts,tsx,vue}",
-    "./src/components/SolutionClicker.tsx",
-  ],
   plugins: [],
 };
