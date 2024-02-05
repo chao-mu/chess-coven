@@ -36,7 +36,7 @@ export type PuzzleCollection = {
   title: string;
   rules: string;
   story: string;
-  solutionType: "move" | "square";
+  solutionType: "move" | "square" | "number";
   puzzles: Puzzle[];
   autoAdvance: boolean;
   noSolution: boolean;
