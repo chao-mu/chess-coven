@@ -20,7 +20,6 @@ import { ActionBar } from "@/components/ActionBar";
 // Types
 import type {
   GameStatus,
-  Puzzle,
   PlayerStatus,
   PuzzleCollection,
 } from "@/types";
@@ -44,13 +43,14 @@ export const Game = ({ collection }: GameProps) => {
   const [gameStatus, setGameStatus] = useState<GameStatus>("start");
   const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
   const [advanced, setAdvanced] = useState(false);
+  const [wins, setWins] = useState(0);
 
   const [fens, setFens] = useState<string[]>();
   const [fenPosition, setFenPosition] = useState(0);
   const [highlightPosition, setHighlightPosition] = useState(0);
   const [perFenFenHighlights, setPerFenHighlights] = useState<Key[][]>([]);
 
-  const { puzzles, title, rules, story, autoAdvance, solutionType } =
+  const { nextPuzzle, title, rules, story, autoAdvance, solutionType } =
     collection;
 
   useEffect(() => {
@@ -78,10 +78,6 @@ export const Game = ({ collection }: GameProps) => {
     highlightedSquares = Object.keys(solutions) as Key[];
   }
 
-  const nextPuzzle = () => {
-    return puzzles[Math.floor(Math.random() * puzzles.length)] as Puzzle;
-  };
-
   const playAgain = (newGame: boolean) => {
     if (currentScore > highScore) {
       setHighScore(currentScore);
@@ -103,7 +99,7 @@ export const Game = ({ collection }: GameProps) => {
     setGoodGuesses([]);
     setBadGuesses([]);
 
-    const puzzle = nextPuzzle();
+    const puzzle = nextPuzzle({wins});
     if (puzzle.fens) {
       setFens(puzzle.fens);
     } else {
@@ -143,6 +139,10 @@ export const Game = ({ collection }: GameProps) => {
     if (playerStatus === "gave-up" || readyToAdvance) {
       if (solutions.size == 0) {
         setAdvanced(true);
+      }
+
+      if (readyToAdvance) {
+        setWins((w) => w + 1);
       }
 
       gotoNextPuzzle();
