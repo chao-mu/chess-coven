@@ -2,7 +2,7 @@
 import React from "react";
 
 // Components
-import { SolutionClicker } from "@/components/SolutionClicker";
+import { Game } from "@/components/Game";
 
 // Game
 import collection from "@/puzzles/knight-forks";
@@ -13,5 +13,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <SolutionClicker collection={collection} />;
+  return <Game collection={collection} />;
 }

@@ -119,7 +119,7 @@ export function Chessboard({
             .map((s) => ({ orig: s, brush: "green" }))
             .concat(badSquares.map((s) => ({ orig: s, brush: "red" })))
             .concat(
-              highlightedSquares.map((s) => ({ orig: s, brush: "yellow" }))
+              highlightedSquares.map((s) => ({ orig: s, brush: "blue" })),
             ),
         },
       };

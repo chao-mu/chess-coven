@@ -7,6 +7,7 @@ import random
 import logging
 import os
 import requests
+from dataclasses import dataclass, field, asdict
 
 # CLICK
 import click
@@ -20,6 +21,14 @@ import pandas as pd
 
 # TQDM
 from tqdm import tqdm
+
+PIECE_VALUES = {
+    chess.PAWN: 1,
+    chess.KNIGHT: 3,
+    chess.BISHOP: 3,
+    chess.ROOK: 5,
+    chess.QUEEN: 9,
+}
 
 @click.group()
 def cli():
@@ -195,10 +204,82 @@ def cli_memorizer(pgn_path):
             "solution": move.uci(),
         })
         board.push(move)
-    
+
     out.append({"fen": board.fen(), "solution": ""})
 
     print(json.dumps(out))
+
+@cli.command(name="counting")
+@click.argument('games_path', type=click.Path(exists=True))
+@click.argument('out_path', default="assets/puzzles/counting.json", type=click.Path())
+def cli_counting(games_path, out_path):
+    def get_solutions(game):
+        solutions = []
+        board = game.board()
+        captures = []
+        fens = [board.fen()]
+        first_move_number = 0
+        turn_color = board.turn
+        solution = 0
+
+        for move_number, move in enumerate(game.mainline_moves(), 1):
+            if board.is_capture(move) and not board.is_en_passant(move):
+                captured_piece = board.piece_type_at(move.to_square)
+                captures.append(move)
+                change = PIECE_VALUES[captured_piece]
+                if board.turn == turn_color:
+                    solution += change
+                else:
+                    solution -= change
+            else:
+                if len(captures) > 2:
+                    solutions.append({
+                        "fens": fens,
+                        "highlights": [[chess.square_name(c.to_square)] for c in captures] + [[]],
+                        "solutions": {solution: solution},
+                        "moveNumber": first_move_number,
+                    })
+                captures = []
+
+                # The next move
+                first_move_number = move_number + 1
+                turn_color = not board.turn
+                solution = 0
+                fens = []
+
+            board.push(move)
+            fens.append(board.fen())
+
+        return solutions
+
+    process_games(games_path, out_path, get_solutions)
+
+@cli.command(name="opening-tree")
+@click.argument('openings_path', type=click.Path(exists=True))
+@click.argument('out_path', default="assets/opening-tree.json", type=click.Path())
+def cli_opening_tree(openings_path, out_path):
+    df = pd.read_csv(openings_path, sep="\t")
+    tree = {}
+    opening_names = {}
+    for uci, name in zip(df["uci"], df["name"]):
+        continuations = tree
+        for move in uci.split():
+            if move not in continuations:
+                continuations[move] = {}
+            continuations = continuations[move]
+
+        if uci in opening_names:
+            print("Duplicate opening name!")
+
+        opening_names[uci] = name
+
+    out = {
+        "tree": tree,
+        "names": opening_names,
+    }
+
+    with open(out_path, "w") as f:
+        json.dump(out, f)
 
 @cli.command(name="undefended")
 @click.argument('positions_path', type=click.Path(exists=True))
@@ -214,7 +295,29 @@ def cli_undefended(positions_path, out_path):
         return solutions
 
     process_positions(positions_path, out_path, get_solutions)
-    
+
+def process_games(games_path, out_path, get_solutions):
+    games = []
+    with open(games_path) as f:
+        while True:
+            game = chess.pgn.read_game(f)
+            if game is None:
+                break  # end of file
+
+            games.append(game)
+
+    solutions = []
+    for game in tqdm(games):
+        for solution in get_solutions(game):
+            if not solution:
+                continue
+
+            solution["site"] = get_site(game, solution["moveNumber"])
+            solutions.append(solution)
+
+    out_df = pd.DataFrame(solutions)
+    out_df.to_json(out_path, orient="records")
+
 def process_positions(positions_path, out_path, get_solutions):
     reader = pd.read_json(positions_path, chunksize=1000, lines=True)
 
@@ -222,7 +325,7 @@ def process_positions(positions_path, out_path, get_solutions):
     for df in tqdm(reader):
         df["solutions"] = df["fen"].map(get_solutions)
         outs.append(df)
-        
+
     out_df = pd.concat(outs)
     out_df.dropna(subset=["solutions"], inplace=True)
 

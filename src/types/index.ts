@@ -9,6 +9,9 @@ export type Puzzle = {
   fen: string;
   solutions: { [key: string]: string };
   site?: string;
+  sequence?: string[];
+  fens?: string[];
+  highlights?: Square[][];
 };
 
 export type SquareInfo = {
@@ -32,6 +35,8 @@ export type PlayerStatus =
   | "respawn"
   | "dead";
 
+export type GameStatus = "start" | "playing" | "over";
+
 export type PuzzleCollection = {
   title: string;
   rules: string;
@@ -40,4 +45,5 @@ export type PuzzleCollection = {
   puzzles: Puzzle[];
   autoAdvance: boolean;
   noSolution: boolean;
+  isSequence?: boolean;
 };

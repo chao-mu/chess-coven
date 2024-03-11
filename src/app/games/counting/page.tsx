@@ -2,7 +2,7 @@
 import React from "react";
 
 // Components
-import { ExchangeCounter } from "@/components/ExchangeCounter";
+import { Game } from "@/components/Game";
 
 // Game
 import collection from "@/puzzles/counting";
@@ -13,5 +13,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <ExchangeCounter collection={collection} />;
+  return <Game collection={collection} />;
 }
