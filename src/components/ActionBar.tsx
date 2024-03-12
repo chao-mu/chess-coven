@@ -5,7 +5,7 @@ import React from "react";
 import { NumberEntryForm } from "@/components/NumberEntryForm";
 
 // Types
-import { PlayerStatus } from "@/types";
+import { type PlayerStatus } from "@/types";
 
 export type ActionBarProps = {
   playerStatus: PlayerStatus;

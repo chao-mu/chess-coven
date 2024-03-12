@@ -9,7 +9,7 @@ import puzzles from "@/assets/puzzles/undefended.json";
 
 // Game
 import { randomPuzzle } from "@/puzzles/util";
-import { GameInfo } from "@/types";
+import { type GameInfo } from "@/types";
 
 const gameInfo = {
   title: "Enchant the Undefended",
@@ -33,5 +33,5 @@ async function nextPuzzle() {
 }
 
 export default function Page() {
-  return <Game gameInfo={gameInfo} nextPuzzle={nextPuzzle}/>;
+  return <Game gameInfo={gameInfo} nextPuzzle={nextPuzzle} />;
 }

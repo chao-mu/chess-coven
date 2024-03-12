@@ -1,8 +1,8 @@
 // React draggable
-import React, { DragEvent } from "react";
+import React, { type DragEvent } from "react";
 
 // chess.js
-import { WHITE, Piece } from "chess.js";
+import { WHITE, type Piece } from "chess.js";
 
 // https://github.com/nikfrank/react-chess-pieces
 import ChessPiece from "react-chess-pieces";

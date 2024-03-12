@@ -7,16 +7,15 @@ import { Game } from "@/components/Game";
 // Assets
 import puzzles from "@/assets/puzzles/checks-captures.json";
 
-
 import { randomPuzzle } from "@/puzzles/util";
-import { GameInfo } from "@/types";
+import { type GameInfo } from "@/types";
 
 const gameInfo = {
   title: "Checks/Captures",
   rules:
     "By clicking squares, perform all legal captures and checks for either side.",
   story:
-    "Tomorrow the war reaches your small village. Analyze the crawling battlefield to determine where destruction is innevitable.",
+    "Tomorrow the war reaches your small village. Analyze the crawling battlefield to determine where destruction is inevitable.",
   autoAdvance: false,
   solutionType: "move",
   noSolution: false,

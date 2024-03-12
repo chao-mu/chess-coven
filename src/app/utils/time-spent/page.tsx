@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 // Utils
-import { getLichessUserGames, LichessGame } from "@/utils/lichess";
+import { getLichessUserGames, type LichessGame } from "@/utils/lichess";
 
 type FormValues = {
   username: string;
@@ -85,7 +85,7 @@ export default function Page() {
         timeSpentByOpponent: `${timeSpentByOpponent.toFixed(2)} minutes`,
         timeSpentByYouPerMove: `${timeSpentByYouPerMove.toFixed(2)} minutes`,
         timeSpentByOpponentPerMove: `${timeSpentByOpponentPerMove.toFixed(
-          2
+          2,
         )} minutes`,
         basetimeUsedByYou: `%${basetimeUsedByYou.toFixed(2)}`,
         basetimeUsedByOpponent: `%${basetimeUsedByOpponent.toFixed(2)}`,

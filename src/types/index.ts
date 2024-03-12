@@ -1,4 +1,6 @@
-import { Color, PieceSymbol, Square } from "chess.js";
+import { type Color, type PieceSymbol, type Square } from "chess.js";
+
+import { range } from "@/utils";
 
 export type Game = {
   event: string;
@@ -7,7 +9,7 @@ export type Game = {
 
 export type Puzzle = {
   fen: string;
-  solutions: { [key: string]: string };
+  solutions: Record<string, string>;
   site?: string;
   sequence?: string[];
   fens?: string[];
@@ -24,7 +26,7 @@ export type Rank = (SquareInfo | null)[];
 
 export type Board = Rank[];
 
-export const EmptyBoard: Board = Array(8).fill(Array(8).fill(null));
+export const EmptyBoard: Board = range(8).map(() => range(8).map(() => null));
 
 export type PlayerStatus =
   | "premature-advancement"
@@ -37,7 +39,7 @@ export type PlayerStatus =
 
 export type GameStatus = "start" | "playing" | "over";
 
-export type NextPuzzleLogic = (args: {wins: number}) => Promise<Puzzle>
+export type NextPuzzleLogic = (args: { wins: number }) => Promise<Puzzle>;
 
 export type GameInfo = {
   title: string;

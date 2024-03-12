@@ -2,7 +2,7 @@
 import React from "react";
 
 // Types
-import { Game } from "@/types";
+import { type Game } from "@/types";
 
 type GameSelectProps = {
   setGame: (game: Game) => void;

@@ -6,9 +6,9 @@ import Link from "next/link";
 
 // Chessground
 import { Chessground } from "chessground";
-import { Api as BoardApi } from "chessground/api";
-import { Key } from "chessground/types";
-import { Config } from "chessground/config";
+import { type Api as BoardApi } from "chessground/api";
+import { type Key } from "chessground/types";
+import { type Config } from "chessground/config";
 
 type ChessboardProps = {
   movable?: boolean;
@@ -165,9 +165,7 @@ export function Chessboard({
 
   return (
     <div className="flex min-h-0 flex-col">
-      <div
-        className={`border-2 border-black ${topColor} min-h-8 text-black`}
-      >
+      <div className={`border-2 border-black ${topColor} min-h-8 text-black`}>
         {children}
       </div>
       <ChessboardWrapper flipped={flipped}>

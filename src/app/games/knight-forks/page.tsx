@@ -7,7 +7,7 @@ import { Game } from "@/components/Game";
 // Game
 import puzzles from "@/assets/puzzles/knight-forkables.json";
 import { randomPuzzle } from "@/puzzles/util";
-import { GameInfo } from "@/types";
+import { type GameInfo } from "@/types";
 
 const gameInfo = {
   title: "Catapult Knights",

@@ -34,5 +34,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <Game gameInfo={gameInfo} nextPuzzle={nextPuzzle}/>;
+  return <Game gameInfo={gameInfo} nextPuzzle={nextPuzzle} />;
 }

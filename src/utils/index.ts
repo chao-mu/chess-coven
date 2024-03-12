@@ -1,6 +1,16 @@
-import { WHITE, BLACK, Color, PieceSymbol, Square } from "chess.js";
+import {
+  WHITE,
+  BLACK,
+  type Color,
+  type PieceSymbol,
+  type Square,
+} from "chess.js";
 
-import { Board, Rank } from "@/types";
+import { type Board, type Rank } from "@/types";
+
+export function range(n: number) {
+  return [...Array.from({ length: n })];
+}
 
 export function parseFen(fen: string): Board {
   const rowsEncoded = fen.split(" ")[0];

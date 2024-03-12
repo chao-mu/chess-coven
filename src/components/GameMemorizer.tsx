@@ -16,7 +16,7 @@ import { Chessboard } from "./Chessboard";
 import { SanInputForm } from "./SanInputForm";
 
 // Types
-import { Game } from "@/types";
+import { type Game } from "@/types";
 
 import { GameSelect } from "@/components/GameSelect";
 
