@@ -35,7 +35,10 @@ const ANIMATION_SPEED = 1000;
 
 export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
   const [gameUrl, setGameUrl] = useState<string | undefined>();
-  const [solutions, setSolutions] = useState<Map<string, string>>(new Map());
+  const [solutions, setSolutions] = useState<string[]>([]);
+  const [solutionAliases, setSolutionAliases] = useState<Map<string, string>>(
+    new Map(),
+  );
   const [flipped, setFlipped] = useState(false);
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
@@ -67,7 +70,7 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
     }
   }, [fens, fenPosition, highlightPosition]);
 
-  const readyToAdvance = goodGuesses.length == solutions.size;
+  const readyToAdvance = goodGuesses.length == solutions.length;
 
   const resetAnimation = () => {
     setFenPosition(0);
@@ -100,24 +103,24 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
     setGoodGuesses([]);
     setBadGuesses([]);
 
-    const puzzle = await nextPuzzle({ wins });
-    if (puzzle.fens) {
-      setFens(puzzle.fens);
-    } else {
-      setFens([puzzle.fen]);
-    }
+    const { fens, solutions, solutionAliases, highlights, site } =
+      await nextPuzzle({
+        wins,
+      });
+    setFens(fens);
 
-    setSolutions(new Map(Object.entries(puzzle.solutions)));
+    setSolutionAliases(new Map(Object.entries(solutionAliases)));
+    setSolutions(solutions);
 
-    setPerFenHighlights(puzzle.highlights ?? []);
+    setPerFenHighlights(highlights);
     resetAnimation();
 
-    if (puzzle.site) {
-      setGameUrl(puzzle.site);
+    if (site) {
+      setGameUrl(site);
     }
 
     try {
-      const chess = new Chess(puzzle.fen);
+      const chess = new Chess(fens[0]);
       setFlipped(chess.turn() === BLACK);
     } catch (e) {
       // We support invalid FENs
@@ -138,7 +141,7 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
 
   const checkCompleted = async () => {
     if (playerStatus === "gave-up" || readyToAdvance) {
-      if (solutions.size == 0) {
+      if (solutions.length == 0) {
         setAdvanced(true);
       }
 
@@ -158,23 +161,24 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
   const checkGuess = (guess: string) => {
     setPlayerStatus("playing");
 
+    const guessAlias = solutionAliases.get(guess) ?? guess;
+
     if (
       goodGuesses.includes(guess) ||
-      goodGuesses.includes(solutions.get(guess) ?? "") ||
+      goodGuesses.includes(guessAlias) ||
       badGuesses.includes(guess)
     ) {
       return false;
     }
 
-    const isCorrect =
-      solutions.has(guess) || Object.values(solutions).includes(guess);
+    const isCorrect = solutions.includes(guess);
 
     if (isCorrect) {
-      const newGoodGuesses = [...goodGuesses, solutions.get(guess) ?? guess];
+      const newGoodGuesses = [...goodGuesses, guessAlias];
       setGoodGuesses(newGoodGuesses);
 
       // Check if puzzle is complete
-      if (newGoodGuesses.length === solutions.size && autoAdvance) {
+      if (newGoodGuesses.length === solutions.length && autoAdvance) {
         gotoNextPuzzle()
           .then(() => gainPoints())
           .catch((err) => console.error(err));
@@ -196,7 +200,8 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
     }
 
     setPlayerStatus("gave-up");
-    solutions.forEach((alias, solution) => {
+    solutions.forEach((solution) => {
+      const alias = solutionAliases.get(solution) ?? solution;
       if (!goodGuesses.includes(solution) && !goodGuesses.includes(alias)) {
         setGoodGuesses((guesses) => [...guesses, alias]);
       }
@@ -275,7 +280,7 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
           <div>
             <ActionBar
               autoAdvance={autoAdvance}
-              pulseNoSolution={!advanced && solutions.size == 0}
+              pulseNoSolution={!advanced && solutions.length == 0}
               onAdvance={checkCompleted}
               onGiveUp={giveUp}
               allowNoSolution={gameInfo.noSolution ?? false}

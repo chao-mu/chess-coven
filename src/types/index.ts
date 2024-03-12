@@ -8,12 +8,12 @@ export type Game = {
 };
 
 export type Puzzle = {
-  fen: string;
-  solutions: Record<string, string>;
+  solutions: string[];
+  solutionAliases: Record<string, string>;
   site?: string;
   sequence?: string[];
-  fens?: string[];
-  highlights?: Square[][];
+  fens: string[];
+  highlights: Square[][];
 };
 
 export type SquareInfo = {

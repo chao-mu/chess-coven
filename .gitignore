@@ -33,7 +33,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-/games.pgn
 
 # Building puzzles and such
+/generate-puzzles/build
 /build
+
+# Build files
+*.pyc

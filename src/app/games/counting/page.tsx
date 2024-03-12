@@ -5,7 +5,7 @@ import React from "react";
 import { Game } from "@/components/Game";
 
 // Types
-import type { GameInfo, Puzzle } from "@/types";
+import type { GameInfo } from "@/types";
 
 // Game
 import puzzles from "@/assets/puzzles/counting.json";
@@ -25,7 +25,7 @@ const gameInfo = {
 async function nextPuzzle() {
   "use server";
 
-  return randomPuzzle(puzzles as unknown as Puzzle[]);
+  return randomPuzzle(puzzles);
 }
 
 export const metadata = {

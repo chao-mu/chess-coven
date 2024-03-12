@@ -5,7 +5,7 @@ import React from "react";
 import { Game } from "@/components/Game";
 
 // Game
-import puzzles from "@/assets/puzzles/knight-forkables.json";
+import puzzles from "@/assets/puzzles/knight-forks.json";
 import { randomPuzzle } from "@/puzzles/util";
 import { type GameInfo } from "@/types";
 
