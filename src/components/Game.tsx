@@ -20,18 +20,20 @@ import { ActionBar } from "@/components/ActionBar";
 // Types
 import type {
   GameStatus,
+  NextPuzzleLogic,
   PlayerStatus,
-  PuzzleCollection,
+  GameInfo,
 } from "@/types";
 
 type GameProps = {
-  collection: PuzzleCollection;
+  gameInfo: GameInfo;
+  nextPuzzle: NextPuzzleLogic;
 };
 const MAX_HEALTH = 3;
 
 const ANIMATION_SPEED = 1000;
 
-export const Game = ({ collection }: GameProps) => {
+export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
   const [gameUrl, setGameUrl] = useState<string | undefined>();
   const [solutions, setSolutions] = useState<Map<string, string>>(new Map());
   const [flipped, setFlipped] = useState(false);
@@ -50,8 +52,7 @@ export const Game = ({ collection }: GameProps) => {
   const [highlightPosition, setHighlightPosition] = useState(0);
   const [perFenFenHighlights, setPerFenHighlights] = useState<Key[][]>([]);
 
-  const { nextPuzzle, title, rules, story, autoAdvance, solutionType } =
-    collection;
+  const { title, rules, story, autoAdvance, solutionType } = gameInfo;
 
   useEffect(() => {
     if (fens && fenPosition < fens.length - 1) {
@@ -78,7 +79,7 @@ export const Game = ({ collection }: GameProps) => {
     highlightedSquares = Object.keys(solutions) as Key[];
   }
 
-  const playAgain = (newGame: boolean) => {
+  const playAgain = async (newGame: boolean) => {
     if (currentScore > highScore) {
       setHighScore(currentScore);
     }
@@ -89,17 +90,17 @@ export const Game = ({ collection }: GameProps) => {
     setPlayerStatus("playing");
 
     if (newGame) {
-      gotoNextPuzzle();
+      await gotoNextPuzzle();
     } else {
       setPlayerStatus("respawn");
     }
   };
 
-  const gotoNextPuzzle = () => {
+  const gotoNextPuzzle = async () => {
     setGoodGuesses([]);
     setBadGuesses([]);
 
-    const puzzle = nextPuzzle({wins});
+    const puzzle = await nextPuzzle({wins});
     if (puzzle.fens) {
       setFens(puzzle.fens);
     } else {
@@ -135,7 +136,7 @@ export const Game = ({ collection }: GameProps) => {
     setCurrentScore((score) => score + 1);
   };
 
-  const checkCompleted = () => {
+  const checkCompleted = async () => {
     if (playerStatus === "gave-up" || readyToAdvance) {
       if (solutions.size == 0) {
         setAdvanced(true);
@@ -145,7 +146,7 @@ export const Game = ({ collection }: GameProps) => {
         setWins((w) => w + 1);
       }
 
-      gotoNextPuzzle();
+      await gotoNextPuzzle();
       setPlayerStatus("playing");
       gainPoints();
     } else {
@@ -174,10 +175,10 @@ export const Game = ({ collection }: GameProps) => {
 
       // Check if puzzle is complete
       if (newGoodGuesses.length === solutions.size && autoAdvance) {
-        gotoNextPuzzle();
+        gotoNextPuzzle().then(() => gainPoints());
+      } else {
+        gainPoints();
       }
-
-      gainPoints();
     } else {
       loseHealth();
       setBadGuesses([...badGuesses, guess]);
@@ -275,7 +276,7 @@ export const Game = ({ collection }: GameProps) => {
               pulseNoSolution={!advanced && solutions.size == 0}
               onAdvance={checkCompleted}
               onGiveUp={giveUp}
-              allowNoSolution={collection.noSolution}
+              allowNoSolution={gameInfo.noSolution ?? false}
               playerStatus={playerStatus}
               onSanEntry={(san) => checkGuess(san)}
               sanEntry={solutionType == "move"}

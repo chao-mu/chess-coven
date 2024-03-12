@@ -37,13 +37,14 @@ export type PlayerStatus =
 
 export type GameStatus = "start" | "playing" | "over";
 
-export type PuzzleCollection = {
+export type NextPuzzleLogic = (args: {wins: number}) => Promise<Puzzle>
+
+export type GameInfo = {
   title: string;
   rules: string;
   story: string;
   solutionType: "move" | "square" | "number";
-  puzzles: Puzzle[];
   autoAdvance: boolean;
-  noSolution: boolean;
+  noSolution?: boolean;
   isSequence?: boolean;
 };

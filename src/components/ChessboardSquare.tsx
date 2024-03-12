@@ -52,12 +52,12 @@ export function ChessboardSquare(props: ChessboardSquareProps) {
 
   return (
     <div
-      className={`${fill} relative flex h-full w-full items-center justify-center`}
+      className={`${fill} relative flex size-full items-center justify-center`}
     >
-      <div className={`${circleClass} absolute h-full w-full`}></div>
+      <div className={`${circleClass} absolute size-full`}></div>
       <div
         draggable={!!piece && !!props.draggable}
-        className="absolute h-full w-full"
+        className="absolute size-full"
         onDragOver={onDragOver}
         onDragStart={props.onPieceDrag}
         onDrop={props.onPieceDrop}
