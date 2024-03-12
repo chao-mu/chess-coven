@@ -9,6 +9,9 @@ export type Puzzle = {
   fen: string;
   solutions: { [key: string]: string };
   site?: string;
+  sequence?: string[];
+  fens?: string[];
+  highlights?: Square[][];
 };
 
 export type SquareInfo = {
@@ -32,12 +35,16 @@ export type PlayerStatus =
   | "respawn"
   | "dead";
 
-export type PuzzleCollection = {
+export type GameStatus = "start" | "playing" | "over";
+
+export type NextPuzzleLogic = (args: {wins: number}) => Promise<Puzzle>
+
+export type GameInfo = {
   title: string;
   rules: string;
   story: string;
-  solutionType: "move" | "square";
-  puzzles: Puzzle[];
+  solutionType: "move" | "square" | "number";
   autoAdvance: boolean;
-  noSolution: boolean;
+  noSolution?: boolean;
+  isSequence?: boolean;
 };

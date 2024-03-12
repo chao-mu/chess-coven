@@ -2,7 +2,7 @@
 
 // React
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Chess.js
 import { Chess, BLACK } from "chess.js";
@@ -18,25 +18,23 @@ import { GameStartScreen } from "@/components/GameStartScreen";
 import { ActionBar } from "@/components/ActionBar";
 
 // Types
-import { Puzzle, PlayerStatus, PuzzleCollection } from "@/types";
+import type {
+  GameStatus,
+  NextPuzzleLogic,
+  PlayerStatus,
+  GameInfo,
+} from "@/types";
 
-export type SolutionType = "move" | "square";
-
-type SolutionClickerProps = {
-  collection: PuzzleCollection;
+type GameProps = {
+  gameInfo: GameInfo;
+  nextPuzzle: NextPuzzleLogic;
 };
-
-const GameStatus = {
-  START: "start",
-  PLAYING: "playing",
-  OVER: "over",
-};
-
 const MAX_HEALTH = 3;
 
-export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
+const ANIMATION_SPEED = 1000;
+
+export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
   const [gameUrl, setGameUrl] = useState<string | undefined>();
-  const [fen, setFen] = useState<string>();
   const [solutions, setSolutions] = useState<Map<string, string>>(new Map());
   const [flipped, setFlipped] = useState(false);
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
@@ -44,44 +42,75 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
   const [health, setHealth] = useState(MAX_HEALTH);
   const [currentScore, setCurrentScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
-  const [gameStatus, setGameStatus] = useState(GameStatus.START);
+  const [gameStatus, setGameStatus] = useState<GameStatus>("start");
   const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
   const [advanced, setAdvanced] = useState(false);
+  const [wins, setWins] = useState(0);
 
-  const { puzzles, title, rules, story, autoAdvance, solutionType } =
-    collection;
+  const [fens, setFens] = useState<string[]>();
+  const [fenPosition, setFenPosition] = useState(0);
+  const [highlightPosition, setHighlightPosition] = useState(0);
+  const [perFenFenHighlights, setPerFenHighlights] = useState<Key[][]>([]);
+
+  const { title, rules, story, autoAdvance, solutionType } = gameInfo;
+
+  useEffect(() => {
+    if (fens && fenPosition < fens.length - 1) {
+      const interval = setInterval(() => {
+        if (highlightPosition < fenPosition) {
+          setHighlightPosition((position) => position + 1);
+        } else {
+          setFenPosition((position) => position + 1);
+        }
+      }, ANIMATION_SPEED);
+      return () => clearInterval(interval);
+    }
+  }, [fens, fenPosition, highlightPosition]);
 
   const readyToAdvance = goodGuesses.length == solutions.size;
 
-  const nextPuzzle = () => {
-    return puzzles[Math.floor(Math.random() * puzzles.length)] as Puzzle;
+  const resetAnimation = () => {
+    setFenPosition(0);
+    setHighlightPosition(0);
   };
 
-  const playAgain = (newGame: boolean) => {
+  let highlightedSquares = perFenFenHighlights[highlightPosition] || [];
+  if (solutionType == "square" && playerStatus == "gave-up") {
+    highlightedSquares = Object.keys(solutions) as Key[];
+  }
+
+  const playAgain = async (newGame: boolean) => {
     if (currentScore > highScore) {
       setHighScore(currentScore);
     }
 
     setHealth(MAX_HEALTH);
     setCurrentScore(0);
-    setGameStatus(GameStatus.PLAYING);
+    setGameStatus("playing");
     setPlayerStatus("playing");
 
     if (newGame) {
-      gotoNextPuzzle();
+      await gotoNextPuzzle();
     } else {
       setPlayerStatus("respawn");
     }
   };
 
-  const gotoNextPuzzle = () => {
+  const gotoNextPuzzle = async () => {
     setGoodGuesses([]);
     setBadGuesses([]);
 
-    const puzzle = nextPuzzle();
-    setFen(puzzle.fen);
-    console.log(puzzle);
+    const puzzle = await nextPuzzle({wins});
+    if (puzzle.fens) {
+      setFens(puzzle.fens);
+    } else {
+      setFens([puzzle.fen]);
+    }
+
     setSolutions(new Map(Object.entries(puzzle.solutions)));
+
+    setPerFenHighlights(puzzle.highlights || []);
+    resetAnimation();
 
     if (puzzle.site) {
       setGameUrl(puzzle.site);
@@ -99,7 +128,7 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
     const newHealth = health - 1;
     setHealth(newHealth);
     if (newHealth < 1) {
-      setGameStatus(GameStatus.OVER);
+      setGameStatus("over");
     }
   };
 
@@ -107,12 +136,17 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
     setCurrentScore((score) => score + 1);
   };
 
-  const checkCompleted = () => {
+  const checkCompleted = async () => {
     if (playerStatus === "gave-up" || readyToAdvance) {
       if (solutions.size == 0) {
         setAdvanced(true);
       }
-      gotoNextPuzzle();
+
+      if (readyToAdvance) {
+        setWins((w) => w + 1);
+      }
+
+      await gotoNextPuzzle();
       setPlayerStatus("playing");
       gainPoints();
     } else {
@@ -141,10 +175,10 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
 
       // Check if puzzle is complete
       if (newGoodGuesses.length === solutions.size && autoAdvance) {
-        gotoNextPuzzle();
+        gotoNextPuzzle().then(() => gainPoints());
+      } else {
+        gainPoints();
       }
-
-      gainPoints();
     } else {
       loseHealth();
       setBadGuesses([...badGuesses, guess]);
@@ -169,7 +203,7 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
 
   return (
     <div className="flex h-[95vh] min-w-[33vw] flex-col bg-gray-800/50">
-      {gameStatus === GameStatus.START && (
+      {gameStatus === "start" && (
         <GameStartScreen
           title={title}
           story={story}
@@ -177,7 +211,7 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
           rules={rules}
         />
       )}
-      {gameStatus === GameStatus.OVER && (
+      {gameStatus === "over" && (
         <GameOverScreen
           title={title}
           rules={rules}
@@ -186,7 +220,7 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
           onContinue={() => playAgain(false)}
         />
       )}
-      {gameStatus == GameStatus.PLAYING && (
+      {gameStatus == "playing" && (
         <>
           <div>
             <div className="m-2 text-center font-header text-2xl font-bold">
@@ -202,15 +236,11 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
           </div>
           <Chessboard
             movable={solutionType == "move"}
-            fen={fen}
+            fen={fens?.[fenPosition]}
             gameUrl={gameUrl}
             goodSquares={solutionType == "square" ? (goodGuesses as Key[]) : []}
             badSquares={solutionType == "square" ? (badGuesses as Key[]) : []}
-            highlightedSquares={
-              playerStatus == "gave-up"
-                ? (Object.values(solutions) as Key[])
-                : []
-            }
+            highlightedSquares={highlightedSquares}
             onSelect={checkGuess}
             onMove={checkGuess}
             flipped={flipped}
@@ -246,10 +276,12 @@ export const SolutionClicker = ({ collection }: SolutionClickerProps) => {
               pulseNoSolution={!advanced && solutions.size == 0}
               onAdvance={checkCompleted}
               onGiveUp={giveUp}
-              allowNoSolution={collection.noSolution}
+              allowNoSolution={gameInfo.noSolution ?? false}
               playerStatus={playerStatus}
               onSanEntry={(san) => checkGuess(san)}
               sanEntry={solutionType == "move"}
+              onNumberEntry={(number) => checkGuess(String(number))}
+              onReplayAnimation={() => resetAnimation()}
             />
           </div>
         </>

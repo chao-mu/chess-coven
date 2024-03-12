@@ -3,9 +3,8 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:jsx-a11y/recommended",
-    "plugin:storybook/recommended",
     "plugin:tailwindcss/recommended",
-    "prettier",
+    "eslint-config-prettier",
     "next/core-web-vitals"
   ],
   "parser": "@typescript-eslint/parser",

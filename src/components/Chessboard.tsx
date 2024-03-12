@@ -119,7 +119,7 @@ export function Chessboard({
             .map((s) => ({ orig: s, brush: "green" }))
             .concat(badSquares.map((s) => ({ orig: s, brush: "red" })))
             .concat(
-              highlightedSquares.map((s) => ({ orig: s, brush: "yellow" }))
+              highlightedSquares.map((s) => ({ orig: s, brush: "blue" })),
             ),
         },
       };
@@ -166,15 +166,15 @@ export function Chessboard({
   return (
     <div className="flex min-h-0 flex-col">
       <div
-        className={`border-2 border-black ${topColor} min-h-[2rem] text-black`}
+        className={`border-2 border-black ${topColor} min-h-8 text-black`}
       >
         {children}
       </div>
       <ChessboardWrapper flipped={flipped}>
-        <div ref={boardRef} className="h-full w-full" />
+        <div ref={boardRef} className="size-full" />
       </ChessboardWrapper>
       <div
-        className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-[2rem] pr-6 text-black`}
+        className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-8 pr-6 text-black`}
       >
         {gameSourceEl}
       </div>
