@@ -1,8 +1,6 @@
-// React
-import React from "react";
-
 // Components
 import { Heart } from "@/components/Heart";
+import { range } from "@/utils";
 
 type GameHUDProps = {
   maxHealth: number;
@@ -22,7 +20,7 @@ export const GameHUD = ({
       <div>Score: {score}</div>
       <div>High Score: {highScore}</div>
       <div className="flex flex-wrap gap-2">
-        {[...Array(maxHealth)].map((_, index) => (
+        {range(maxHealth).map((_, index) => (
           <Heart key={index} full={index < health} />
         ))}
       </div>

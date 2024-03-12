@@ -14,7 +14,7 @@ export const NavButton = ({ text, onClick, children }: NavButtonProps) => {
       onClick={onClick}
       className="flex items-center bg-amber-600 px-2 font-mono hover:cursor-pointer hover:bg-amber-700"
     >
-      {children || text}
+      {children ?? text}
     </button>
   );
 };

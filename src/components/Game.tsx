@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { Chess, BLACK } from "chess.js";
 
 // Chessground
-import { Key } from "chessground/types";
+import { type Key } from "chessground/types";
 
 // Components
 import { Chessboard } from "@/components/Chessboard";
@@ -100,7 +100,7 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
     setGoodGuesses([]);
     setBadGuesses([]);
 
-    const puzzle = await nextPuzzle({wins});
+    const puzzle = await nextPuzzle({ wins });
     if (puzzle.fens) {
       setFens(puzzle.fens);
     } else {
@@ -109,7 +109,7 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
 
     setSolutions(new Map(Object.entries(puzzle.solutions)));
 
-    setPerFenHighlights(puzzle.highlights || []);
+    setPerFenHighlights(puzzle.highlights ?? []);
     resetAnimation();
 
     if (puzzle.site) {
@@ -160,7 +160,7 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
 
     if (
       goodGuesses.includes(guess) ||
-      goodGuesses.includes(solutions.get(guess) || "") ||
+      goodGuesses.includes(solutions.get(guess) ?? "") ||
       badGuesses.includes(guess)
     ) {
       return false;
@@ -170,12 +170,14 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
       solutions.has(guess) || Object.values(solutions).includes(guess);
 
     if (isCorrect) {
-      const newGoodGuesses = [...goodGuesses, solutions.get(guess) || guess];
+      const newGoodGuesses = [...goodGuesses, solutions.get(guess) ?? guess];
       setGoodGuesses(newGoodGuesses);
 
       // Check if puzzle is complete
       if (newGoodGuesses.length === solutions.size && autoAdvance) {
-        gotoNextPuzzle().then(() => gainPoints());
+        gotoNextPuzzle()
+          .then(() => gainPoints())
+          .catch((err) => console.error(err));
       } else {
         gainPoints();
       }

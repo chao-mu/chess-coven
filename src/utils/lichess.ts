@@ -41,27 +41,26 @@ export type LichessGame = {
   clocks: number[];
 };
 
-export const getLichessUserGames = async (username: string) => {
+export const getLichessUserGames = async (
+  username: string,
+): Promise<LichessGame[]> => {
   const response = await fetch(
     `https://lichess.org/api/games/user/${username}?max=100&clocks=true&evals=false&moves=true`,
     {
       headers: {
         Accept: "application/x-ndjson",
       },
-    }
+    },
   );
   const data = await response.text();
 
-  const games = data
-    .split("\n")
-    .map((game) => {
-      if (!game || game.replace(/\s/g, "") === "") {
-        return;
-      }
+  const games = data.split("\n").flatMap((game) => {
+    if (!game || game.replace(/\s/g, "") === "") {
+      return [];
+    }
 
-      return JSON.parse(game);
-    })
-    .filter((game) => game);
+    return JSON.parse(game) as LichessGame;
+  });
 
-  return games as LichessGame[];
+  return games;
 };
