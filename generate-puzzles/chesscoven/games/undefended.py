@@ -1,13 +1,13 @@
-from chesscoven.common import get_undefended_squares
+from chesscoven.common import get_undefended_squares, Puzzle
 
 import chess
 
 
-def get_undefended_solutions(fen):
+def generate_undefended(fen):
     board = chess.Board(fen)
 
-    solutions = {s: s for s in get_undefended_squares(board)}
+    solutions = get_undefended_squares(board)
     if not solutions:
-        return None
+        return []
 
-    return solutions
+    return [Puzzle(solutions=solutions)]

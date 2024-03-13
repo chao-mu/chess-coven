@@ -3,6 +3,8 @@
 # Core
 import itertools
 import requests
+from typing import Optional
+from dataclasses import dataclass, field
 
 # Chess
 import chess
@@ -17,6 +19,16 @@ PIECE_VALUES = {
 }
 
 PIECES = [chess.PAWN, chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN]
+
+
+@dataclass
+class Puzzle:
+    fens: list = field(default_factory=list)
+    solution_aliases: dict[str, str] = field(default_factory=dict)
+    solutions: list = field(default_factory=list)
+    site: Optional[str] = None
+    game_move_number: Optional[int] = None
+    highlights: list[list[str]] = field(default_factory=list)
 
 
 def count_pieces(fen=None, board=None):

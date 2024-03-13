@@ -1,10 +1,10 @@
-from chesscoven.common import PIECE_VALUES
+from chesscoven.common import PIECE_VALUES, Puzzle
 
 import chess
 
 
-def get_counting_solutions(game):
-    solutions = []
+def generate_counting(game):
+    puzzles = []
     board = game.board()
     captures = []
     fens = [board.fen()]
@@ -22,13 +22,16 @@ def get_counting_solutions(game):
             else:
                 solution -= change
         else:
-            if len(captures) > 2:
-                solutions.append({
-                    "fens": fens,
-                    "highlights": [[chess.square_name(c.to_square)] for c in captures] + [[]],
-                    "solutions": {str(solution): str(solution)},
-                    "moveNumber": first_move_number,
-                })
+            if len(captures) > 1:
+                puzzles.append(
+                    Puzzle(
+                        solutions=[solution],
+                        fens=fens,
+                        highlights=[
+                            [chess.square_name(c.to_square)] for c in captures] + [[]],
+                        game_move_number=first_move_number,
+                    )
+                )
             captures = []
 
             # The next move
@@ -40,4 +43,4 @@ def get_counting_solutions(game):
         board.push(move)
         fens.append(board.fen())
 
-    return solutions
+    return puzzles

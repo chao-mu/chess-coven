@@ -2,19 +2,25 @@ import { type Color, type PieceSymbol, type Square } from "chess.js";
 
 import { range } from "@/utils";
 
+import { z } from "zod";
+
 export type Game = {
   event: string;
   pgn: string;
 };
 
-export type Puzzle = {
-  solutions: string[];
-  solutionAliases: Record<string, string>;
-  site?: string;
-  sequence?: string[];
-  fens: string[];
-  highlights: Square[][];
-};
+const SquareSchema = z.string().refine((v) => /^[a-h][1-8]$/.test(v));
+
+export const PuzzleSchema = z.object({
+  solutions: z.array(z.coerce.string()),
+  solutionAliases: z.record(z.string()),
+  site: z.string().nullable(),
+  fens: z.array(z.string()),
+  highlights: z.array(z.array(SquareSchema)),
+});
+export const PuzzleCollectionSchema = z.array(PuzzleSchema);
+
+export type Puzzle = z.infer<typeof PuzzleSchema>;
 
 export type SquareInfo = {
   color: Color;

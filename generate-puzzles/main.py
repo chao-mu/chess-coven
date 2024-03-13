@@ -20,11 +20,11 @@ import pandas as pd
 from tqdm import tqdm
 
 # Ours
-from chesscoven.games.checkscaptures import get_checks_captures_solutions
-from chesscoven.games.undefended import get_undefended_solutions
-from chesscoven.games.counting import get_counting_solutions
-from chesscoven.games.knightforkables import get_knight_forkable_solutions
-from chesscoven.common import get_lichess_games, games_reader, get_site, count_pieces
+from chesscoven.games.checkscaptures import generate_checks_captures
+from chesscoven.games.undefended import generate_undefended
+from chesscoven.games.counting import generate_counting
+from chesscoven.games.knightforkables import generate_knight_forkable
+from chesscoven.common import get_lichess_games, games_reader, get_site, count_pieces, Puzzle
 
 
 def load_manifest():
@@ -32,22 +32,22 @@ def load_manifest():
         "games": {
             "knight-forks": {
                 "load": from_self,
-                "get_solutions": get_knight_forkable_solutions,
+                "generate_puzzles": generate_knight_forkable,
                 "prune": passthrough
             },
             "counting": {
                 "load": from_games,
-                "get_solutions": get_counting_solutions,
+                "generate_puzzles": generate_counting,
                 "prune": passthrough,
             },
             "checks-captures": {
                 "load": from_positions,
-                "get_solutions": get_checks_captures_solutions,
+                "generate_puzzles": generate_checks_captures,
                 "prune": build_pruner(),
             },
             "undefended": {
                 "load": from_positions,
-                "get_solutions": get_undefended_solutions,
+                "generate_puzzles": generate_undefended,
                 "prune": build_pruner(),
             },
         },
@@ -105,7 +105,7 @@ def cli_all(build_dir, assets_dir, should_refetch, should_overwrite_assets):
                 f"Skipping re-genearting {out_path}. Use --overwrite-assets to force.")
             continue
 
-        logging.info(f"# Processing {name}")
+        logging.info(f"### Processing {name}")
         cli_generate_puzzles(pgn_path, positions_path, out_path, game_manifest)
 
 
@@ -122,24 +122,27 @@ def cli_fetch_games(pgn_path, manifest):
 
 def cli_generate_puzzles(pgn_path, positions_path, out_path, game_manifest):
     load = game_manifest["load"]
-    get_solutions = game_manifest["get_solutions"]
+    generate_puzzles = game_manifest["generate_puzzles"]
     prune = game_manifest["prune"]
 
-    solutions = load(
+    puzzles = load(
         pgn_path=pgn_path,
         positions_path=positions_path,
-        get_solutions=get_solutions
+        generate_puzzles=generate_puzzles
     )
 
-    solutions.dropna(subset=["solutions"], inplace=True)
+    if not puzzles:
+        logging.warning(
+            f"Zero candidate puzzles generated! Skipping {out_path}")
+        return
+    else:
+        logging.info(f"Generated {len(puzzles)} candidate puzzles")
 
-    logging.info(f"Generated {len(solutions)} candidate puzzles")
+    df = to_df(puzzles)
+    df = prune(df)
+    df.to_json(out_path, orient="records")
 
-    solutions = standardize_columns(solutions)
-    solutions = prune(solutions)
-    solutions.to_json(out_path, orient="records")
-
-    logging.info(f"Wrote {len(solutions)} puzzles to {out_path}")
+    logging.info(f"Wrote {len(df)} puzzles to {out_path}")
 
 
 def cli_extract_positions(pgn_path, positions_path):
@@ -250,16 +253,24 @@ def cli_opening_tree(openings_path, out_path):
         json.dump(out, f)
 
 
-def from_positions(positions_path, get_solutions, **kv):
+def from_positions(positions_path, generate_puzzles, **kv):
     reader = pd.read_json(positions_path, chunksize=1000, lines=True)
 
+    puzzles = []
     for df in tqdm(reader):
-        df["solutions"] = df["fen"].map(get_solutions)
+        for fen, site in zip(df["fen"], df["site"]):
+            for puzzle in generate_puzzles(fen):
+                if not puzzle.site:
+                    puzzle.site = site
+                if not puzzle.fens:
+                    puzzle.fens = [fen]
 
-    return df
+                puzzles.append(puzzle)
+
+    return puzzles
 
 
-def from_games(pgn_path, get_solutions, **kv):
+def from_games(pgn_path, generate_puzzles, **kv):
     games = []
     with open(pgn_path) as f:
         while True:
@@ -269,54 +280,39 @@ def from_games(pgn_path, get_solutions, **kv):
 
             games.append(game)
 
-    solutions = []
+    puzzles = []
     for game in tqdm(games):
-        for solution in get_solutions(game):
-            if not solution:
-                continue
+        for puzzle in generate_puzzles(game):
+            if puzzle.game_move_number and not puzzle.site:
+                puzzle.site = get_site(game, puzzle.game_move_number)
 
-            solution["site"] = get_site(game, solution["moveNumber"])
-            solutions.append(solution)
+            puzzles.append(puzzle)
 
-    return pd.DataFrame(solutions)
+    return puzzles
 
 
-def from_self(get_solutions, **kv):
-    return pd.DataFrame(get_solutions())
+def from_self(generate_puzzles, **kv):
+    return generate_puzzles()
 
 
 def passthrough(df):
     return df
 
 
-def standardize_columns(df):
-    out_df = pd.DataFrame()
+def to_df(puzzles):
+    df = pd.DataFrame(
+        {
+            "highlights": [p.highlights for p in puzzles],
+            "solutionAliases": [p.solution_aliases for p in puzzles],
+            "site": [p.site for p in puzzles],
+            "solutions": [p.solutions for p in puzzles],
+            "solutionCount": [len(p.solutions) for p in puzzles],
+            "pieceCount": [count_pieces(fen=p.fens[0]) for p in puzzles],
+            "fens": [p.fens for p in puzzles],
+        }
+    )
 
-    if "fen" in df:
-        out_df["fens"] = df["fen"].map(lambda fen: [fen])
-    else:
-        out_df["fens"] = df["fens"]
-
-    if "highlights" in df:
-        out_df["highlights"] = df["highlights"]
-    else:
-        out_df["highlights"] = df["solutions"].map(lambda _: [])
-
-    def is_dict(s):
-        return hasattr(s, "keys")
-
-    out_df["solutionAliases"] = df["solutions"].map(
-        lambda s: s if is_dict(s) else {})
-    out_df["solutions"] = df["solutions"].map(
-        lambda s: list(s.keys()) if is_dict(s) else s)
-    out_df["site"] = df["site"] if "site" in df else None
-
-    # Supplemental columns
-    out_df["solutionCount"] = out_df["solutions"].map(len)
-    out_df["pieceCount"] = out_df["fens"].map(
-        lambda fens: count_pieces(fen=fens[0]))
-
-    return out_df
+    return df
 
 
 if __name__ == '__main__':

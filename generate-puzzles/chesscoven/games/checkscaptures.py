@@ -1,14 +1,16 @@
 import chess
 
+from chesscoven.common import Puzzle
 
-def get_checks_captures_solutions(fen):
+
+def generate_checks_captures(fen):
     board = chess.Board(fen)
 
-    # Skip positions where there's an active check
+    # Skip positions where there's already an active check
     if board.is_check():
-        return None
+        return []
 
-    solutions = {}
+    puzzle = Puzzle()
     for turn_color in chess.COLORS:
         board.turn = turn_color
         for continuation in board.legal_moves:
@@ -20,10 +22,12 @@ def get_checks_captures_solutions(fen):
 
             square_pair = chess.square_name(
                 continuation.from_square) + chess.square_name(continuation.to_square)
-            solutions[square_pair] = board.san(
+
+            puzzle.solutions.append(square_pair)
+            puzzle.solution_aliases[square_pair] = board.san(
                 continuation) or continuation
 
-    if not solutions:
-        return None
+    if not puzzle.solutions:
+        return []
 
-    return solutions
+    return [puzzle]

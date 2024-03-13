@@ -1,12 +1,10 @@
-from chesscoven.common import piece_combinations
+from chesscoven.common import piece_combinations, Puzzle
 
 import chess
 import random
 
 
-def get_knight_forkable_solutions():
-    puzzles = []
-
+def generate_knight_forkable():
     pieces = [
         chess.Piece(chess.KING, chess.WHITE),
         chess.Piece(chess.QUEEN, chess.WHITE),
@@ -48,9 +46,9 @@ def get_knight_forks(pieces):
 
             board.remove_piece_at(square)
 
-        puzzle = {"fens": [fen], "solutions": []}
+        puzzle = Puzzle(fens=[fen])
         if knight_fork_squares:
-            puzzle["solutions"] = \
+            puzzle.solutions = \
                 [chess.SQUARE_NAMES[square] for square in knight_fork_squares]
             puzzles.append(puzzle)
         else:
