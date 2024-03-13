@@ -110,9 +110,9 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
     setFens(fens);
 
     setSolutionAliases(new Map(Object.entries(solutionAliases)));
-    setSolutions(solutions);
+    setSolutions(solutions.map((s) => s.toString()));
 
-    setPerFenHighlights(highlights);
+    setPerFenHighlights(highlights as Key[][]);
     resetAnimation();
 
     if (site) {

@@ -12,7 +12,7 @@ export type Game = {
 const SquareSchema = z.string().refine((v) => /^[a-h][1-8]$/.test(v));
 
 export const PuzzleSchema = z.object({
-  solutions: z.array(z.coerce.string()),
+  solutions: z.array(z.union([z.string(), z.number()])),
   solutionAliases: z.record(z.string()),
   site: z.string().nullable(),
   fens: z.array(z.string()),
