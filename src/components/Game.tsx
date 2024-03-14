@@ -287,7 +287,7 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
               playerStatus={playerStatus}
               onSanEntry={(san) => checkGuess(san)}
               sanEntry={solutionType == "move"}
-              onNumberEntry={(number) => checkGuess(String(number))}
+              onNumberEntry={(number) => checkGuess(number.toString())}
               onReplayAnimation={() => resetAnimation()}
             />
           </div>

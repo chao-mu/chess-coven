@@ -23,14 +23,15 @@ export const NumberEntryForm = ({
     formState: { errors },
   } = useForm<FormValues>();
 
-  const submit = ({ number }: FormValues) => {
+  const submit = handleSubmit(({ number }: FormValues, e) => {
+    e?.preventDefault();
     onSubmit(number);
     reset();
-  };
+  });
 
   return (
     <form
-      onSubmit={handleSubmit(submit)}
+      onSubmit={submit}
       className="flex flex-col items-center justify-center gap-2"
     >
       <div className="flex flex-wrap items-center gap-2">
@@ -39,7 +40,7 @@ export const NumberEntryForm = ({
         </label>
         <div className="flex gap-2">
           <input
-            {...register("number")}
+            {...register("number", { required: true })}
             type="number"
             className="w-24 border-2 border-amber-500 bg-transparent p-1 text-lg"
             placeholder="Number"
