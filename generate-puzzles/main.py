@@ -22,14 +22,41 @@ from tqdm import tqdm
 # Ours
 from chesscoven.games.checkscaptures import generate_checks_captures
 from chesscoven.games.undefended import generate_undefended
-from chesscoven.games.counting import generate_counting
+from chesscoven.games.counting import generate_counting, prune_counting
 from chesscoven.games.knightforkables import generate_knight_forkable
-from chesscoven.common import get_lichess_games, games_reader, get_site, count_pieces, Puzzle
+
+from chesscoven.pipeline import \
+    run_pipeline, from_self, from_positions, from_games, passthrough, \
+    build_pruner
+
+from chesscoven.common import \
+    get_lichess_games, games_reader, count_pieces
 
 
-def load_manifest():
+def load_puzzle_names():
+    return list(load_manifest()["puzzles"].keys())
+
+
+def load_manifest(build_dir=None, assets_dir=None):
+    paths = {}
+
+    if build_dir is not None:
+        build_dir = pathlib.Path(build_dir)
+        paths |= {
+            "source_games_path": build_dir / "games.pgn",
+            "source_positions_path": build_dir / "positions.json",
+        }
+
+    if assets_dir is not None:
+        assets_dir = pathlib.Path(assets_dir)
+        paths |= {
+            "assets_dir": assets_dir,
+            "puzzles_dir": assets_dir / "puzzles",
+        }
+
     return {
-        "games": {
+        "paths": paths,
+        "puzzles": {
             "knight-forks": {
                 "load": from_self,
                 "generate_puzzles": generate_knight_forkable,
@@ -38,7 +65,7 @@ def load_manifest():
             "counting": {
                 "load": from_games,
                 "generate_puzzles": generate_counting,
-                "prune": passthrough,
+                "prune": prune_counting,
             },
             "checks-captures": {
                 "load": from_positions,
@@ -69,22 +96,29 @@ def cli():
     pass
 
 
+@cli.command(name="generate")
+@click.argument("puzzle_name", type=click.Choice(load_puzzle_names()))
+@click.argument("assets_dir", type=click.Path())
+@click.option("--build-dir", "build_dir", default="build", type=click.Path())
+def cli_generate(puzzle_name, build_dir, assets_dir):
+    manifest = load_manifest(build_dir, assets_dir)
+
+    run_pipeline(puzzle_name, manifest, True)
+
+
 @cli.command(name="all")
 @click.argument("assets_dir", type=click.Path())
+@click.option("--build-dir", "build_dir", default="build", type=click.Path())
 @click.option("--refetch", "should_refetch", is_flag=True, default=False)
 @click.option("--overwrite-assets", "should_overwrite_assets", is_flag=True, default=False)
 @click.option("--build-dir", "build_dir", default="build", type=click.Path())
 def cli_all(build_dir, assets_dir, should_refetch, should_overwrite_assets):
-    build_dir = pathlib.Path(build_dir)
-    assets_dir = pathlib.Path(assets_dir)
-    puzzles_dir = assets_dir / "puzzles"
-
-    manifest = load_manifest()
+    manifest = load_manifest(build_dir, assets_dir)
 
     os.makedirs(build_dir, exist_ok=True)
 
-    pgn_path = build_dir / "games.pgn"
-    positions_path = build_dir / "positions.json"
+    pgn_path = manifest["paths"]["source_games_path"]
+    positions_path = manifest["paths"]["source_positions_path"]
 
     if should_refetch or not pgn_path.exists():
         cli_fetch_games(pgn_path, manifest)
@@ -98,15 +132,8 @@ def cli_all(build_dir, assets_dir, should_refetch, should_overwrite_assets):
         logging.info(
             f"Skipping re-genearting {positions_path}. Use --refetch to force.")
 
-    for name, game_manifest in manifest["games"].items():
-        out_path = puzzles_dir / (name + ".json")
-        if out_path.exists() and not should_overwrite_assets:
-            logging.info(
-                f"Skipping re-genearting {out_path}. Use --overwrite-assets to force.")
-            continue
-
-        logging.info(f"### Processing {name}")
-        cli_generate_puzzles(pgn_path, positions_path, out_path, game_manifest)
+    for puzzle_name in manifest["puzzles"]:
+        run_pipeline(puzzle_name, manifest, should_overwrite_assets)
 
 
 def cli_fetch_games(pgn_path, manifest):
@@ -118,31 +145,6 @@ def cli_fetch_games(pgn_path, manifest):
     for pgn in tqdm(get_lichess_games(usernames), total=len(usernames)):
         with open(pgn_path, "ab") as file:
             file.write(pgn)
-
-
-def cli_generate_puzzles(pgn_path, positions_path, out_path, game_manifest):
-    load = game_manifest["load"]
-    generate_puzzles = game_manifest["generate_puzzles"]
-    prune = game_manifest["prune"]
-
-    puzzles = load(
-        pgn_path=pgn_path,
-        positions_path=positions_path,
-        generate_puzzles=generate_puzzles
-    )
-
-    if not puzzles:
-        logging.warning(
-            f"Zero candidate puzzles generated! Skipping {out_path}")
-        return
-    else:
-        logging.info(f"Generated {len(puzzles)} candidate puzzles")
-
-    df = to_df(puzzles)
-    df = prune(df)
-    df.to_json(out_path, orient="records")
-
-    logging.info(f"Wrote {len(df)} puzzles to {out_path}")
 
 
 def cli_extract_positions(pgn_path, positions_path):
@@ -170,39 +172,6 @@ def cli_extract_positions(pgn_path, positions_path):
     df = pd.DataFrame(positions)
     df.drop_duplicates(subset=["fen"], inplace=True)
     df.to_json(positions_path, orient="records", lines=True)
-
-
-def build_pruner(
-    min_piece_count=4,
-    max_piece_count=24,
-    max_solution_count=4,
-    min_solution_count=1,
-    min_piece_per_solution=2,
-    max_piece_per_solution=12
-):
-    def prune(df):
-        df = df[
-            (df["solutionCount"] <= max_solution_count) &
-            (df["solutionCount"] >= min_solution_count) &
-            (df["pieceCount"] >= min_piece_count) &
-            (df["pieceCount"] <= max_piece_count) &
-            (df["pieceCount"] / df["solutionCount"] >= min_piece_per_solution) &
-            (df["pieceCount"] / df["solutionCount"] <= max_piece_per_solution)
-        ]
-
-        def is_worthy(fens):
-            board = chess.Board(fens[0])
-            return not board.is_game_over() and board.is_valid()
-
-        df = df[df["fens"].apply(is_worthy)]
-
-        logging.info(f'Found {len(df)} interesting puzzles')
-
-        df = df.sample(min(len(df), 2000))
-
-        return df
-
-    return prune
 
 
 @cli.command(name="memorizer")
@@ -251,68 +220,6 @@ def cli_opening_tree(openings_path, out_path):
 
     with open(out_path, "w") as f:
         json.dump(out, f)
-
-
-def from_positions(positions_path, generate_puzzles, **kv):
-    reader = pd.read_json(positions_path, chunksize=1000, lines=True)
-
-    puzzles = []
-    for df in tqdm(reader):
-        for fen, site in zip(df["fen"], df["site"]):
-            for puzzle in generate_puzzles(fen):
-                if not puzzle.site:
-                    puzzle.site = site
-                if not puzzle.fens:
-                    puzzle.fens = [fen]
-
-                puzzles.append(puzzle)
-
-    return puzzles
-
-
-def from_games(pgn_path, generate_puzzles, **kv):
-    games = []
-    with open(pgn_path) as f:
-        while True:
-            game = chess.pgn.read_game(f)
-            if game is None:
-                break  # end of file
-
-            games.append(game)
-
-    puzzles = []
-    for game in tqdm(games):
-        for puzzle in generate_puzzles(game):
-            if puzzle.game_move_number and not puzzle.site:
-                puzzle.site = get_site(game, puzzle.game_move_number)
-
-            puzzles.append(puzzle)
-
-    return puzzles
-
-
-def from_self(generate_puzzles, **kv):
-    return generate_puzzles()
-
-
-def passthrough(df):
-    return df
-
-
-def to_df(puzzles):
-    df = pd.DataFrame(
-        {
-            "highlights": [p.highlights for p in puzzles],
-            "solutionAliases": [p.solution_aliases for p in puzzles],
-            "site": [p.site for p in puzzles],
-            "solutions": [p.solutions for p in puzzles],
-            "solutionCount": [len(p.solutions) for p in puzzles],
-            "pieceCount": [count_pieces(fen=p.fens[0]) for p in puzzles],
-            "fens": [p.fens for p in puzzles],
-        }
-    )
-
-    return df
 
 
 if __name__ == '__main__':
