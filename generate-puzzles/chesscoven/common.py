@@ -29,6 +29,7 @@ class Puzzle:
     site: Optional[str] = None
     game_move_number: Optional[int] = None
     highlights: list[list[str]] = field(default_factory=list)
+    level: int = 1
 
 
 def count_pieces(fen=None, board=None):

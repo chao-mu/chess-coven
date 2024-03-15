@@ -10,4 +10,4 @@ def generate_undefended(fen):
     if not solutions:
         return []
 
-    return [Puzzle(solutions=solutions)]
+    return [Puzzle(solutions=list(solutions))]

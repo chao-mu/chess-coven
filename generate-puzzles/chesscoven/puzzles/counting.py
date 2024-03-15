@@ -30,15 +30,7 @@ def generate_counting(game):
             captures.append(capture)
         else:
             if len(captures) > 1:
-                puzzles.append(
-                    Puzzle(
-                        solutions=[calculate_solution(captures)],
-                        fens=fens,
-                        highlights=[
-                            [chess.square_name(c.to_square)] for c in captures] + [[]],
-                        game_move_number=first_move_number,
-                    )
-                )
+                puzzles.append(build_puzzle(fens, captures, first_move_number))
             captures = []
             fens = []
             # The next move
@@ -48,6 +40,25 @@ def generate_counting(game):
         fens.append(board.fen())
 
     return puzzles
+
+
+def calc_level(captures):
+    square_diversity = len(set(c.to_square for c in captures))
+    piece_value_diversity = len(
+        set(PIECE_VALUES[c.captured_piece] for c in captures))
+
+    return square_diversity * len(captures) + piece_value_diversity
+
+
+def build_puzzle(fens, captures, first_move_number):
+    return Puzzle(
+        solutions=[calculate_solution(captures)],
+        fens=fens,
+        highlights=[
+            [chess.square_name(c.to_square)] for c in captures] + [[]],
+        game_move_number=first_move_number,
+        level=calc_level(captures)
+    )
 
 
 def prune_counting(in_df):

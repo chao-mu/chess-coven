@@ -1,5 +1,7 @@
 # Core
 import logging
+import json
+from dataclasses import asdict
 
 # Pandas
 import pandas as pd
@@ -61,20 +63,28 @@ def passthrough(df):
     return df
 
 
-def to_df(puzzles):
-    df = pd.DataFrame(
-        {
-            "highlights": [p.highlights for p in puzzles],
-            "solutionAliases": [p.solution_aliases for p in puzzles],
-            "site": [p.site for p in puzzles],
-            "solutions": [p.solutions for p in puzzles],
-            "solutionCount": [len(p.solutions) for p in puzzles],
-            "pieceCount": [count_pieces(fen=p.fens[0]) for p in puzzles],
-            "fens": [p.fens for p in puzzles],
-        }
+def to_camel(name):
+    components = name.split("_")
+
+    return "".join(
+        [components[0]] +
+        [c.capitalize() for c in components[1:]]
     )
 
-    return df
+
+def to_df(puzzles):
+    rows = []
+    for puzzle in puzzles:
+        row = {}
+        for k, v in asdict(puzzle).items():
+            row[to_camel(k)] = v
+
+        row["solutionCount"] = len(puzzle.solutions)
+        row["pieceCount"] = count_pieces(fen=puzzle.fens[0])
+
+        rows.append(row)
+
+    return pd.DataFrame(rows)
 
 
 def build_pruner(
@@ -108,6 +118,18 @@ def build_pruner(
         return df
 
     return prune
+
+
+def write_puzzles(df, out_path):
+    puzzles_by_level = {}
+    for row in df.to_dict('records'):
+        level = row.pop("level")
+        puzzles_by_level[level] = row
+
+    with open(out_path, "w") as f:
+        json.dump(puzzles_by_level, f)
+
+    logging.info(f"Wrote {len(df)} puzzles to {out_path}")
 
 
 def run_pipeline(puzzle_name, manifest, should_overwrite):
@@ -145,6 +167,4 @@ def run_pipeline(puzzle_name, manifest, should_overwrite):
 
     logging.info(f"Pruned {len(puzzles) - len(df)} puzzles.")
 
-    df.to_json(out_path, orient="records")
-
-    logging.info(f"Wrote {len(df)} puzzles to {out_path}")
+    write_puzzles(df, out_path)
