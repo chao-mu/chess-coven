@@ -20,10 +20,10 @@ import pandas as pd
 from tqdm import tqdm
 
 # Ours
-from chesscoven.games.checkscaptures import generate_checks_captures
-from chesscoven.games.undefended import generate_undefended
-from chesscoven.games.counting import generate_counting, prune_counting
-from chesscoven.games.knightforkables import generate_knight_forkable
+from chesscoven.puzzles.checkscaptures import generate_checks_captures
+from chesscoven.puzzles.undefended import generate_undefended
+from chesscoven.puzzles.counting import generate_counting, prune_counting
+from chesscoven.puzzles.knightforkables import generate_knight_forkable
 
 from chesscoven.pipeline import \
     run_pipeline, from_self, from_positions, from_games, passthrough, \
