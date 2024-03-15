@@ -9,12 +9,9 @@ import { SiteNav } from "@/components/SiteNav";
 
 // Styles
 import "@/app/globals.css";
+import { GameContainer } from "@/components/GameContainer";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-1 flex-wrap-reverse items-center justify-center p-4">
       <div className="flex-1">
@@ -29,7 +26,9 @@ export default function RootLayout({
         </div>
       </div>
       <div className="w-full xl:w-auto">
-        <div className="mx-auto max-w-lg">{children}</div>
+        <div className="mx-auto max-w-lg">
+          <GameContainer>{children}</GameContainer>
+        </div>
       </div>
       <div className="flex-1"></div>
     </div>

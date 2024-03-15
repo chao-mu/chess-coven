@@ -1,36 +1,37 @@
-// React
-import React from "react";
+"use server";
+
+import Link from "next/link";
 
 type GameStartScreenProps = {
   rules: string;
   story: string;
   title: string;
-  onGameStart: () => void;
+  to: string;
 };
 
 export const GameStartScreen = ({
   rules,
   story,
-  onGameStart,
+  to,
   title,
 }: GameStartScreenProps) => {
   return (
-    <div className="flex h-full grow flex-col justify-center p-6">
-      <h1 className="mb-4 text-center text-2xl">{title}</h1>
+    <div className="flex h-full gap-4 grow flex-col justify-center p-6">
+      <h1 className="text-center text-2xl">{title}</h1>
       <div>
         <div className="mb-1 text-center text-lg font-bold">Story</div>
-        <p className="mb-4 text-justify indent-6">{story}</p>
+        <p className="text-justify indent-6">{story}</p>
       </div>
       <div>
         <div className="mb-1 text-center text-lg font-bold">Rules</div>
-        <p className="mb-4 text-justify indent-6">{rules}</p>
+        <p className="text-justify indent-6">{rules}</p>
       </div>
-      <button
-        className="rounded bg-amber-600 px-4 py-2 text-white hover:bg-amber-700"
-        onClick={onGameStart}
+      <Link
+        href={to}
+        className="rounded mt-2 bg-amber-600 self-center px-6 py-2 text-white hover:bg-amber-700"
       >
         Play
-      </button>
+      </Link>
     </div>
   );
 };

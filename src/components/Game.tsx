@@ -22,18 +22,20 @@ import type {
   GameStatus,
   NextPuzzleLogic,
   PlayerStatus,
-  GameInfo,
+  GameLogic,
+  GameFlavor,
 } from "@/types";
 
 type GameProps = {
-  gameInfo: GameInfo;
+  flavor: GameFlavor;
+  logic: GameLogic;
   nextPuzzle: NextPuzzleLogic;
 };
 const MAX_HEALTH = 3;
 
 const ANIMATION_SPEED = 1000;
 
-export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
+export const Game = ({ logic, flavor, nextPuzzle }: GameProps) => {
   const [gameUrl, setGameUrl] = useState<string | undefined>();
   const [solutions, setSolutions] = useState<string[]>([]);
   const [solutionAliases, setSolutionAliases] = useState<Map<string, string>>(
@@ -45,7 +47,7 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
   const [health, setHealth] = useState(MAX_HEALTH);
   const [currentScore, setCurrentScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
-  const [gameStatus, setGameStatus] = useState<GameStatus>("start");
+  const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
   const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
   const [advanced, setAdvanced] = useState(false);
   const [wins, setWins] = useState(0);
@@ -55,7 +57,8 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
   const [highlightPosition, setHighlightPosition] = useState(0);
   const [perFenFenHighlights, setPerFenHighlights] = useState<Key[][]>([]);
 
-  const { title, rules, story, autoAdvance, solutionType } = gameInfo;
+  const { autoAdvance, solutionType } = logic;
+  const { title, rules } = flavor;
 
   useEffect(() => {
     if (fens && fenPosition < fens.length - 1) {
@@ -79,7 +82,7 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
 
   let highlightedSquares = perFenFenHighlights[highlightPosition] || [];
   if (solutionType == "square" && playerStatus == "gave-up") {
-    highlightedSquares = Object.keys(solutions) as Key[];
+    highlightedSquares = [...Object.keys(solutions)] as Key[];
   }
 
   const playAgain = async (newGame: boolean) => {
@@ -190,7 +193,6 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
       setBadGuesses([...badGuesses, guess]);
       setPlayerStatus("wrong-guess");
     }
-
     return isCorrect;
   };
 
@@ -209,15 +211,7 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
   };
 
   return (
-    <div className="flex h-[95vh] min-w-[33vw] flex-col bg-gray-800/50">
-      {gameStatus === "start" && (
-        <GameStartScreen
-          title={title}
-          story={story}
-          onGameStart={() => playAgain(true)}
-          rules={rules}
-        />
-      )}
+    <>
       {gameStatus === "over" && (
         <GameOverScreen
           title={title}
@@ -293,6 +287,6 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
           </div>
         </>
       )}
-    </div>
+    </>
   );
 };

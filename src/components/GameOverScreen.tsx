@@ -1,6 +1,3 @@
-// React
-import React from "react";
-
 type GameOverScreenProps = {
   finalScore: number;
   previousHighScore: number;

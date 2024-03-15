@@ -20,6 +20,8 @@ export const PuzzleSchema = z.object({
 });
 export const PuzzleCollectionSchema = z.array(PuzzleSchema);
 
+export type PuzzleCollection = z.infer<typeof PuzzleCollectionSchema>;
+
 export type Puzzle = z.infer<typeof PuzzleSchema>;
 
 export type SquareInfo = {
@@ -47,10 +49,13 @@ export type GameStatus = "start" | "playing" | "over";
 
 export type NextPuzzleLogic = (args: { wins: number }) => Promise<Puzzle>;
 
-export type GameInfo = {
+export type GameFlavor = {
   title: string;
   rules: string;
   story: string;
+};
+
+export type GameLogic = {
   solutionType: "move" | "square" | "number";
   autoAdvance: boolean;
   noSolution?: boolean;

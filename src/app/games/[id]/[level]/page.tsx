@@ -7,10 +7,6 @@ import { Game } from "@/components/Game";
 // Types
 import type { GameInfo } from "@/types";
 
-// Game
-import puzzles from "@/assets/puzzles/counting.json";
-import { randomPuzzle } from "@/puzzles/util";
-
 const gameInfo = {
   title: "Count Capture Points",
   rules:
@@ -21,17 +17,6 @@ const gameInfo = {
   solutionType: "number",
   noSolution: false,
 } satisfies GameInfo;
-
-async function nextPuzzle() {
-  "use server";
-
-  return randomPuzzle(puzzles);
-}
-
-export const metadata = {
-  title: "Tactical Elements - " + gameInfo.title,
-  description: gameInfo.rules,
-};
 
 export default function Page() {
   return <Game gameInfo={gameInfo} nextPuzzle={nextPuzzle} />;
