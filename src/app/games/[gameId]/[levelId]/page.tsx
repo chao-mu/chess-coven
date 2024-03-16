@@ -12,8 +12,8 @@ type HasParams = {
   };
 };
 
-async function getLevelWithBonus(gameId: string, levelId: string) {
-  if (levelId == "bonus") {
+async function getLevelWithAll(gameId: string, levelId: string) {
+  if (levelId == "all") {
     return getLevel(gameId);
   }
 
@@ -31,9 +31,9 @@ export default async function Page({ params: { gameId, levelId } }: HasParams) {
     return notFound();
   }
 
-  const level = await getLevelWithBonus(gameId, levelId);
+  const level = await getLevelWithAll(gameId, levelId);
   if (!level.success) {
-    throw Error(level.error);
+    throw new Error(level.error);
   }
 
   return <Game id={gameId} flavor={flavor} logic={logic} level={level.data} />;

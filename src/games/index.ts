@@ -93,11 +93,15 @@ export async function getLevel(
 
   let candidates: Puzzle[] = [];
   let name = "bonus";
-  if (level === undefined || candidates[level] === undefined) {
+  if (level === undefined) {
     candidates = Object.values(collection).flat();
   } else {
     name = level.toString();
     candidates = collection[level];
+  }
+
+  if (candidates === undefined) {
+    return newError("Level not found");
   }
 
   const puzzles = [];
@@ -115,7 +119,7 @@ export async function getLevel(
   if (nextLevel !== undefined) {
     nextLevel += 1;
 
-    if (candidates[nextLevel] === undefined) {
+    if (collection[nextLevel] === undefined) {
       nextLevel = undefined;
     }
   }

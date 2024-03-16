@@ -115,10 +115,14 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
 
   const gotoNextPuzzle = async () => {
     if (puzzleIdx >= level.puzzles.length - 1) {
-      await router.push(`/game/${id}/${level.nextLevel ?? "bonus"}`);
+      router.push(`/games/${id}/${level.nextLevel ?? "all"}`);
+      return;
     }
 
     setPuzzleIdx((idx) => idx + 1);
+    setGoodGuesses([]);
+    setBadGuesses([]);
+
     resetAnimation();
   };
 

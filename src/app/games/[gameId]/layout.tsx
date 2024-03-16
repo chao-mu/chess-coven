@@ -17,6 +17,7 @@ type HasParams = {
 export function generateMetadata({ params: { gameId } }: HasParams): Metadata {
   const flavor = getFlavor(gameId);
   if (flavor == null) {
+    console.log(":-(");
     return notFound();
   }
 
