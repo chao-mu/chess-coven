@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { GameStartScreen } from "@/components/GameStartScreen";
 
 // Game
-import { getFlavor } from "@/puzzles/flavor";
+import { getFlavor } from "@/games";
 
 type HasParams = {
   params: {

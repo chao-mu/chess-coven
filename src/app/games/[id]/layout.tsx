@@ -6,7 +6,7 @@ import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
 // Styles
-import { getFlavor } from "@/puzzles/flavor";
+import { getFlavor } from "@/games";
 
 type HasParams = {
   params: {

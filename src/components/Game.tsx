@@ -1,47 +1,42 @@
 "use client";
 
 // React
-import React from "react";
 import { useState, useEffect } from "react";
 
-// Chess.js
-import { Chess, BLACK } from "chess.js";
+// NextJS
+import { useRouter } from "next/router";
 
-// Chessground
-import { type Key } from "chessground/types";
+// Chess.js
+import { Chess, BLACK, type Square } from "chess.js";
 
 // Components
 import { Chessboard } from "@/components/Chessboard";
 import { GameOverScreen } from "@/components/GameOverScreen";
 import { GameHUD } from "@/components/GameHUD";
-import { GameStartScreen } from "@/components/GameStartScreen";
 import { ActionBar } from "@/components/ActionBar";
 
 // Types
 import type {
   GameStatus,
-  NextPuzzleLogic,
   PlayerStatus,
   GameLogic,
   GameFlavor,
+  GameLevel,
 } from "@/types";
 
 type GameProps = {
+  id: string;
   flavor: GameFlavor;
   logic: GameLogic;
-  nextPuzzle: NextPuzzleLogic;
+  level: GameLevel;
 };
 const MAX_HEALTH = 3;
 
 const ANIMATION_SPEED = 1000;
 
-export const Game = ({ logic, flavor, nextPuzzle }: GameProps) => {
-  const [gameUrl, setGameUrl] = useState<string | undefined>();
-  const [solutions, setSolutions] = useState<string[]>([]);
-  const [solutionAliases, setSolutionAliases] = useState<Map<string, string>>(
-    new Map(),
-  );
-  const [flipped, setFlipped] = useState(false);
+export const Game = ({ logic, flavor, level, id }: GameProps) => {
+  const router = useRouter();
+
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
   const [health, setHealth] = useState(MAX_HEALTH);
@@ -50,15 +45,31 @@ export const Game = ({ logic, flavor, nextPuzzle }: GameProps) => {
   const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
   const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
   const [advanced, setAdvanced] = useState(false);
-  const [wins, setWins] = useState(0);
 
-  const [fens, setFens] = useState<string[]>();
   const [fenPosition, setFenPosition] = useState(0);
   const [highlightPosition, setHighlightPosition] = useState(0);
-  const [perFenFenHighlights, setPerFenHighlights] = useState<Key[][]>([]);
+  const [puzzleIdx, setPuzzleIdx] = useState<number>(0);
 
   const { autoAdvance, solutionType } = logic;
   const { title, rules } = flavor;
+
+  const {
+    fens,
+    highlights: perFenHighlights,
+    site: gameUrl,
+    solutionAliases: solutionAliasesRecord,
+    solutions: solutionsRaw,
+  } = level.puzzles[puzzleIdx];
+  const solutionAliases = new Map(Object.entries(solutionAliasesRecord));
+  const solutions = solutionsRaw.map((s) => s.toString());
+
+  let flipped = false;
+  try {
+    const chess = new Chess(fens[0]);
+    flipped = chess.turn() === BLACK;
+  } catch (e) {
+    // We support invalid FENs
+  }
 
   useEffect(() => {
     if (fens && fenPosition < fens.length - 1) {
@@ -80,9 +91,9 @@ export const Game = ({ logic, flavor, nextPuzzle }: GameProps) => {
     setHighlightPosition(0);
   };
 
-  let highlightedSquares = perFenFenHighlights[highlightPosition] || [];
+  let highlightedSquares = perFenHighlights[highlightPosition] || [];
   if (solutionType == "square" && playerStatus == "gave-up") {
-    highlightedSquares = [...Object.keys(solutions)] as Key[];
+    highlightedSquares = [...Object.keys(solutions)] as Square[];
   }
 
   const playAgain = async (newGame: boolean) => {
@@ -103,31 +114,12 @@ export const Game = ({ logic, flavor, nextPuzzle }: GameProps) => {
   };
 
   const gotoNextPuzzle = async () => {
-    setGoodGuesses([]);
-    setBadGuesses([]);
+    if (puzzleIdx >= level.puzzles.length - 1) {
+      await router.push(`/game/${id}/${level.nextLevel ?? "bonus"}`);
+    }
 
-    const { fens, solutions, solutionAliases, highlights, site } =
-      await nextPuzzle({
-        wins,
-      });
-    setFens(fens);
-
-    setSolutionAliases(new Map(Object.entries(solutionAliases)));
-    setSolutions(solutions.map((s) => s.toString()));
-
-    setPerFenHighlights(highlights as Key[][]);
+    setPuzzleIdx((idx) => idx + 1);
     resetAnimation();
-
-    if (site) {
-      setGameUrl(site);
-    }
-
-    try {
-      const chess = new Chess(fens[0]);
-      setFlipped(chess.turn() === BLACK);
-    } catch (e) {
-      // We support invalid FENs
-    }
   };
 
   const loseHealth = () => {
@@ -146,10 +138,6 @@ export const Game = ({ logic, flavor, nextPuzzle }: GameProps) => {
     if (playerStatus === "gave-up" || readyToAdvance) {
       if (solutions.length == 0) {
         setAdvanced(true);
-      }
-
-      if (readyToAdvance) {
-        setWins((w) => w + 1);
       }
 
       await gotoNextPuzzle();
@@ -239,8 +227,12 @@ export const Game = ({ logic, flavor, nextPuzzle }: GameProps) => {
             movable={solutionType == "move"}
             fen={fens?.[fenPosition]}
             gameUrl={gameUrl}
-            goodSquares={solutionType == "square" ? (goodGuesses as Key[]) : []}
-            badSquares={solutionType == "square" ? (badGuesses as Key[]) : []}
+            goodSquares={
+              solutionType == "square" ? (goodGuesses as Square[]) : []
+            }
+            badSquares={
+              solutionType == "square" ? (badGuesses as Square[]) : []
+            }
             highlightedSquares={highlightedSquares}
             onSelect={checkGuess}
             onMove={checkGuess}
@@ -277,7 +269,7 @@ export const Game = ({ logic, flavor, nextPuzzle }: GameProps) => {
               pulseNoSolution={!advanced && solutions.length == 0}
               onAdvance={checkCompleted}
               onGiveUp={giveUp}
-              allowNoSolution={gameInfo.noSolution ?? false}
+              allowNoSolution={logic.noSolution ?? false}
               playerStatus={playerStatus}
               onSanEntry={(san) => checkGuess(san)}
               sanEntry={solutionType == "move"}

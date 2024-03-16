@@ -17,7 +17,7 @@ type ChessboardProps = {
   badSquares?: Key[];
   highlightedSquares?: Key[];
   flipped?: boolean;
-  gameUrl?: string;
+  gameUrl?: string | null;
   onMove?: (san: string) => boolean;
   onSelect?: (square: string) => void;
   children?: React.ReactNode;

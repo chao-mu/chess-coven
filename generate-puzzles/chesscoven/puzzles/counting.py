@@ -29,7 +29,7 @@ def generate_counting(game):
                               captured_color=not board.turn)
             captures.append(capture)
         else:
-            if len(captures) > 1:
+            if len(captures) > 0:
                 puzzles.append(build_puzzle(fens, captures, first_move_number))
             captures = []
             fens = []

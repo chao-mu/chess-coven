@@ -124,10 +124,18 @@ def write_puzzles(df, out_path):
     puzzles_by_level = {}
     for row in df.to_dict('records'):
         level = row.pop("level")
-        puzzles_by_level[level] = row
+        if level not in puzzles_by_level:
+            puzzles_by_level[level] = []
+
+        puzzles_by_level[level].append(row)
+
+    # fill in gaps
+    out = {}
+    for idx, level in enumerate(sorted(puzzles_by_level.keys())):
+        out[idx + 1] = puzzles_by_level[level]
 
     with open(out_path, "w") as f:
-        json.dump(puzzles_by_level, f)
+        json.dump(out, f)
 
     logging.info(f"Wrote {len(df)} puzzles to {out_path}")
 
