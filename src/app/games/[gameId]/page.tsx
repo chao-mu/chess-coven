@@ -9,12 +9,12 @@ import { getFlavor } from "@/games";
 
 type HasParams = {
   params: {
-    id: string;
+    gameId: string;
   };
 };
 
-export default function Page({ params: { id } }: HasParams) {
-  const flavor = getFlavor(id);
+export default function Page({ params: { gameId } }: HasParams) {
+  const flavor = getFlavor(gameId);
   if (flavor == null) {
     return notFound();
   }
@@ -25,7 +25,7 @@ export default function Page({ params: { id } }: HasParams) {
       rules={rules}
       story={story}
       title={title}
-      to={`/puzzles/${id}/1`}
+      to={`/games/${gameId}/1`}
     />
   );
 }

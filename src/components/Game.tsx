@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 
 // NextJS
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 // Chess.js
 import { Chess, BLACK, type Square } from "chess.js";

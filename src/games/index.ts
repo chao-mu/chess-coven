@@ -67,15 +67,15 @@ const games: Record<string, GameInfo & { collection: PuzzleCollection }> = {
 };
 
 export function getFlavor(id: string) {
-  const { flavor } = games[id];
+  const game = games[id];
 
-  return flavor ?? null;
+  return game?.flavor ?? null;
 }
 
 export function getLogic(id: string) {
-  const { logic } = games[id];
+  const game = games[id];
 
-  return logic ?? null;
+  return game?.logic ?? null;
 }
 
 function newError(error: string): Error {

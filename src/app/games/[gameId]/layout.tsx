@@ -10,12 +10,12 @@ import { getFlavor } from "@/games";
 
 type HasParams = {
   params: {
-    id: string;
+    gameId: string;
   };
 };
 
-export function generateMetadata({ params: { id } }: HasParams): Metadata {
-  const flavor = getFlavor(id);
+export function generateMetadata({ params: { gameId } }: HasParams): Metadata {
+  const flavor = getFlavor(gameId);
   if (flavor == null) {
     return notFound();
   }
