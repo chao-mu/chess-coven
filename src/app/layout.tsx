@@ -14,7 +14,7 @@ import "@/app/globals.css";
 import { Footer } from "@/components/Footer";
 
 export const metadata = {
-  title: "Tactical Elements",
+  title: "Chess Coven",
   description: "Chess learning tools and games",
 };
 

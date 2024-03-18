@@ -20,7 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             href="/"
             className="mb-2 whitespace-nowrap font-header text-2xl font-bold text-amber-300"
           >
-            Tactical Elements
+            Chess Coven
           </Link>
           <SiteNav />
         </div>

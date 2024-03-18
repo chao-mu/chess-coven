@@ -24,7 +24,7 @@ export function generateMetadata({ params: { gameId } }: HasParams): Metadata {
   const { rules, title } = flavor;
 
   return {
-    title: "Tactical Elements - " + title,
+    title: "Chess Coven - " + title,
     description: rules,
   };
 }

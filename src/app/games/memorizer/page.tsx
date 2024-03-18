@@ -5,7 +5,7 @@ import React from "react";
 import { GameMemorizer } from "@/components/GameMemorizer";
 
 export const metadata = {
-  title: "Tactical Elements - Game Memorizer",
+  title: "Chess Coven - Game Memorizer",
   description: "Quiz your knowledge of Dojo games to memorize.",
 };
 
