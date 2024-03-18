@@ -17,7 +17,6 @@ fix: clicking board in number guesser causes incorrect guess
 fix: gaps in levels
 fix: giveup doesn't autoadvance on guess
 fix: health resets
-fix: knight game only mentions clicking single square
 fix: number sometimes ignored on enter
 refactor: align names
 refactor: autogenerate site nav
@@ -25,3 +24,4 @@ refactor: externalize game logic
 refactor: move game start screen to server page
 refactor: rename generate-positions -> generate-gamesrefactor: games -> puzzles
 refactor: single puzzle page
+fix: controls hard to notice
