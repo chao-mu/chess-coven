@@ -94,9 +94,10 @@ def get_site(game, move_number):
 def get_lichess_games(usernames):
     # Scrape games for each user
     for username in usernames:
-        max_results = 200
-        for perf_type in ["classical", "rapid"]:
+        max_results = 400
+        for perf_type in ["classical", "rapid", "blitz"]:
             url = f"https://lichess.org/api/games/user/{username}?max={max_results}&evals=false&perfType={perf_type}"
+            print(url)
 
             response = requests.get(url)
             yield response.content
