@@ -14,7 +14,7 @@ import chess
 import chess.pgn
 
 # Ours
-from chesscoven.common import get_site, count_pieces
+from chesscoven.common import get_site, count_pieces, print_stats
 
 
 def from_positions(positions_path, generate_puzzles, **kv):
@@ -121,18 +121,11 @@ def build_pruner(
 
 
 def write_puzzles(df, out_path):
-    puzzles_by_level = {}
-    for row in df.to_dict('records'):
-        level = row.pop("level")
-        if level not in puzzles_by_level:
-            puzzles_by_level[level] = []
-
-        puzzles_by_level[level].append(row)
-
-    # fill in gaps
-    out = {}
-    for idx, level in enumerate(sorted(puzzles_by_level.keys())):
-        out[idx + 1] = puzzles_by_level[level]
+    by_level = df.groupby("level")
+    out = {
+        level: group.to_dict(orient="records")
+        for level, group in by_level
+    }
 
     with open(out_path, "w") as f:
         json.dump(out, f)
@@ -151,6 +144,7 @@ def run_pipeline(puzzle_name, manifest, should_overwrite):
     if out_path.exists() and not should_overwrite:
         logging.info(
             f"Skipping re-genearting {out_path}. Use --overwrite-assets to force.")
+        return
 
     puzzle_manifest = manifest["puzzles"][puzzle_name]
     load = puzzle_manifest["load"]
@@ -164,7 +158,7 @@ def run_pipeline(puzzle_name, manifest, should_overwrite):
     )
 
     if not puzzles:
-        logging.warning(
+        logging.error(
             f"Zero candidate puzzles generated! Skipping {out_path}")
         return
     else:
@@ -174,5 +168,20 @@ def run_pipeline(puzzle_name, manifest, should_overwrite):
     df = prune(df)
 
     logging.info(f"Pruned {len(puzzles) - len(df)} puzzles.")
+
+    before_dedup = len(df)
+    df["fens"].drop_duplicates(inplace=True)
+    dup_drop_count = before_dedup - len(df)
+    if dup_drop_count:
+        logging.warning(f"Dropped {dup_drop_count} duplicate positions")
+
+    if len(df) == 0:
+        logging.error(
+            f"Zero puzzles left! Skipping {out_path}")
+        return
+    else:
+        logging.info(f"Selected {len(puzzles)} puzzles")
+
+    print_stats(df)
 
     write_puzzles(df, out_path)

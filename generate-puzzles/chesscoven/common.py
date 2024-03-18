@@ -3,7 +3,7 @@
 # Core
 import itertools
 import requests
-from typing import Optional
+from typing import Optional, Any
 from dataclasses import dataclass, field
 
 # Chess
@@ -30,6 +30,7 @@ class Puzzle:
     game_move_number: Optional[int] = None
     highlights: list[list[str]] = field(default_factory=list)
     level: int = 1
+    extra: dict[str, Any] = field(default_factory=dict)
 
 
 def count_pieces(fen=None, board=None):
@@ -94,9 +95,31 @@ def get_lichess_games(usernames):
     # Scrape games for each user
     for username in usernames:
         max_results = 200
-        url = f"https://lichess.org/api/games/user/{username}?max={max_results}&evals=false&perfType=classical,rapid"
+        for perf_type in ["classical", "rapid"]:
+            url = f"https://lichess.org/api/games/user/{username}?max={max_results}&evals=false&perfType={perf_type}"
 
-        # Make a GET request to the URL
-        response = requests.get(url)
+            response = requests.get(url)
+            yield response.content
 
-        yield response.content
+
+def get_even_distribution(df, label):
+    groups = df.groupby(label)
+    size = min(len(group) for _, group in groups)
+    return groups.apply(lambda x: x.sample(size))
+
+
+def print_stats(df):
+    stats = get_stats(df)
+    indent = " " * 2
+    loglines = []
+    loglines.append("# Levels")
+    for level, count in stats["levels"].items():
+        loglines.append(f"{indent}{level} - {count}")
+
+    print("\n".join(loglines))
+
+
+def get_stats(df):
+    levels = dict(df.groupby("level").size())
+
+    return {"levels": levels}

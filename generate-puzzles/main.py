@@ -86,6 +86,8 @@ def load_manifest(build_dir=None, assets_dir=None):
                 "NoseKnowsAll",
                 "Bubbleboy",
                 "WoodJRx",
+                "Noobmasterplayer123",
+                "Benwick",
             ]
         }
     }

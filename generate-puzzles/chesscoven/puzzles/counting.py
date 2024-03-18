@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from chesscoven.common import PIECE_VALUES, Puzzle
+from chesscoven.common import PIECE_VALUES, Puzzle, get_even_distribution
 
 import chess
 
@@ -42,12 +42,39 @@ def generate_counting(game):
     return puzzles
 
 
-def calc_level(captures):
-    square_diversity = len(set(c.to_square for c in captures))
-    piece_value_diversity = len(
-        set(PIECE_VALUES[c.captured_piece] for c in captures))
+def get_square_diversity(captures):
+    return len(set(c.to_square for c in captures))
 
-    return square_diversity * len(captures) + piece_value_diversity
+
+def get_piece_value_diversity(captures):
+    return len(set(PIECE_VALUES[c.captured_piece] for c in captures))
+
+
+def calc_level(captures):
+    square_diversity = get_square_diversity(captures)
+    piece_value_diversity = get_piece_value_diversity(captures)
+
+    # Make our math easier by establishing invariants
+    assert square_diversity > 0
+    assert piece_value_diversity > 0
+    assert len(captures) > 0
+
+    if len(captures) == 1:
+        return 1
+
+    if square_diversity == 1:
+        if piece_value_diversity == 1:
+            if len(captures) == 2:
+                return 2
+            else:
+                return 3
+        else:
+            return 4
+
+    if square_diversity == 2:
+        return 5
+
+    return 6
 
 
 def build_puzzle(fens, captures, first_move_number):
@@ -55,34 +82,69 @@ def build_puzzle(fens, captures, first_move_number):
         solutions=[calculate_solution(captures)],
         fens=fens,
         highlights=[
-            [chess.square_name(c.to_square)] for c in captures] + [[]],
+            [chess.square_name(c.to_square)] for c in captures
+        ] + [[]],
         game_move_number=first_move_number,
-        level=calc_level(captures)
+        level=calc_level(captures),
+        extra={"captures": captures}
     )
 
 
-def prune_counting(in_df):
-    def is_trade(solutions):
-        return solutions[0] == 0
+# TODO max captures
+def prune_counting(df):
+    def is_white_to_play(extra):
+        return extra["captures"][0]["captured_color"] == chess.BLACK
 
-    def is_gain(solutions):
-        return solutions[0] > 0
+    def classify_trade(solution):
+        if solution == 0:
+            return "T"
+        elif solution > 0:
+            return "G"
+        elif solution < 0:
+            return "L"
 
-    def is_loss(solutions):
-        return solutions[0] < 0
+    # Supplement
+    df["solution"] = df["solutions"].apply(lambda s: s[0])
+    df["is_white_to_play"] = df["extra"].apply(is_white_to_play)
+    df["trade_type"] = df["solution"].apply(classify_trade)
+    df["piece_value_diversity"] = df["extra"].apply(
+        lambda x: get_piece_value_diversity([Capture(**c) for c in x["captures"]]))
+    df["capture_count"] = df["extra"].apply(lambda x: len(x["captures"]))
+    df["is_odd_captures"] = df["capture_count"].apply(lambda c: c % 2 == 0)
 
-    df_gain = in_df[in_df["solutions"].apply(is_gain)]
-    df_loss = in_df[in_df["solutions"].apply(is_loss)]
-    df_trades = in_df[in_df["solutions"].apply(is_trade)]
+    # Prune all levels
+    df = df[df["is_white_to_play"]]
 
-    sources = [df_gain, df_loss, df_trades]
+    # Prune level 1
+    by_level = {level: group for level, group in df.groupby("level")}
+    lvl_1 = by_level[1]
+    solution_counts = lvl_1["solution"].value_counts()
 
-    target_total = 2000
-    sample_size = target_total // len(sources)
+    target_size = min(solution_counts[points] for points in [1, 3, 5])
+    by_level[1] = lvl_1.groupby("solution").sample(target_size, replace=True)
 
-    out_df = pd.concat(df.sample(min(len(df), sample_size)) for df in sources)
+    # Prune level > 1
+    for level in by_level:
+        lvl_df = by_level[level]
+        by_oddity = {
+            is_odd: group
+            for is_odd, group in lvl_df.groupby(df["is_odd_captures"])
+        }
+        for is_odd, group in by_oddity:
+            if is_odd:
+                by_oddity[is_odd] = get_even_distribution(
+                    by_oddity[is_odd], "trade_type")
+            else:
+                by_oddity[is_odd] = get_even_distribution(
+                    by_oddity[is_odd], df["trade_type"] == "G")
 
-    return out_df
+        by_level[level] = pd.concat(list(by_oddity.values()))
+
+    df = pd.concat(list(by_level.values()))
+
+    # breakpoint()
+
+    return df
 
 
 def calculate_solution(captures):

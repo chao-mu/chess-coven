@@ -14,8 +14,8 @@ import type {
 // Assets
 import knightForks from "@/assets/puzzles/knight-forks.json";
 import checksCaptures from "@/assets/puzzles/checks-captures.json";
-import undefended from "@/assets/puzzles/checks-captures.json";
-import counting from "@/assets/puzzles/checks-captures.json";
+import undefended from "@/assets/puzzles/undefended.json";
+import counting from "@/assets/puzzles/counting.json";
 
 const PUZZLES_PER_LEVEL = 10;
 

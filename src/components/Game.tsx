@@ -113,6 +113,14 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
     }
   };
 
+  const resetBoard = () => {
+    setGoodGuesses([]);
+    setBadGuesses([]);
+    resetAnimation();
+    setFenPosition(0);
+    setHighlightPosition(0);
+  };
+
   const gotoNextPuzzle = async () => {
     if (puzzleIdx >= level.puzzles.length - 1) {
       router.push(`/games/${id}/${level.nextLevel ?? "all"}`);
@@ -120,10 +128,7 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
     }
 
     setPuzzleIdx((idx) => idx + 1);
-    setGoodGuesses([]);
-    setBadGuesses([]);
-
-    resetAnimation();
+    resetBoard();
   };
 
   const loseHealth = () => {
