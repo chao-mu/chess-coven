@@ -72,7 +72,7 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
   }
 
   useEffect(() => {
-    if (fens && fenPosition < fens.length - 1) {
+    if (fens && fenPosition <= fens.length - 1) {
       const interval = setInterval(() => {
         if (highlightPosition < fenPosition) {
           setHighlightPosition((position) => position + 1);
