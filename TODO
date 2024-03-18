@@ -1,0 +1,28 @@
+ci: validate puzzles on push
+feat: back/resume button for lost games
+feat: detect improvement of worthy trades
+feat: improved writing
+feat: make No Solution a link
+feat: obvious generate commands with defaults
+feat: paranormal spotting anomaly amefeat: level screens
+feat: reduced page loads
+feat: short summaries
+feat: speed controls for animation
+feat: puzzle generators specify level length
+feat: puzzle generators specify level selection criteria or have buckets
+fix: UI jumps on incorrect guess
+fix: board not flipped to turn
+fix: clicking board in number guesser causes incorrect guess
+fix: gaps in levels
+fix: knight game only mentions clicking single square
+fix: old name Tactical Elements still used
+fix: number sometimes guessed. replay + enter??? Too fast?
+fix: health resets
+fix: giveup doesn't autoadvance on guess
+refactor: align names
+refactor: autogenerate site nav
+refactor: externalize game logic
+refactor: move game start screen to server page
+refactor: rename generate-positions -> generate-gamesrefactor: games -> puzzles
+refactor: single puzzle page
+feat: adjust level before pruning
