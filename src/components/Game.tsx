@@ -219,61 +219,14 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
         />
       )}
       {gameStatus == "playing" && (
-        <>
+        <div className="flex flex-col justify-between h-full">
           <div>
-            <div className="m-2 text-center font-header text-2xl font-bold">
+            <div className="text-center font-header text-2xl font-bold">
               {title}
             </div>
-            <div className="mt-2 p-4">{rules}</div>
-            <GameHUD
-              score={currentScore}
-              health={health}
-              highScore={highScore}
-              maxHealth={MAX_HEALTH}
-            />
+            <div className="p-4 text-center">{rules}</div>
           </div>
-          <Chessboard
-            viewOnly={solutionType == "number"}
-            movable={solutionType == "move"}
-            fen={fens?.[fenPosition]}
-            gameUrl={gameUrl}
-            goodSquares={
-              solutionType == "square" ? (goodGuesses as Square[]) : []
-            }
-            badSquares={
-              solutionType == "square" ? (badGuesses as Square[]) : []
-            }
-            highlightedSquares={highlightedSquares}
-            onSelect={checkGuess}
-            onMove={checkGuess}
-            flipped={flipped}
-          >
-            <div className="flex h-full flex-wrap items-center justify-between gap-2 px-2">
-              <div>
-                {goodGuesses && goodGuesses.length > 0 && (
-                  <div className="flex gap-2 bg-gray-800/50 px-2">
-                    {goodGuesses.map((guess) => (
-                      <div className="text-green-500" key={guess}>
-                        {guess}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div>
-                {badGuesses && badGuesses.length > 0 && (
-                  <div className="flex gap-2 bg-gray-800/50 px-2 line-through">
-                    {badGuesses.map((guess) => (
-                      <div className="text-red-500" key={guess}>
-                        {guess}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </Chessboard>
-          <div>
+          <div className="flex flex-col gap-1">
             <ActionBar
               solutionType={solutionType}
               autoAdvance={autoAdvance}
@@ -287,8 +240,57 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
               onNumberEntry={(number) => checkGuess(number.toString())}
               onReplayAnimation={() => resetAnimation()}
             />
+            <Chessboard
+              viewOnly={solutionType == "number"}
+              movable={solutionType == "move"}
+              fen={fens?.[fenPosition]}
+              gameUrl={gameUrl}
+              goodSquares={
+                solutionType == "square" ? (goodGuesses as Square[]) : []
+              }
+              badSquares={
+                solutionType == "square" ? (badGuesses as Square[]) : []
+              }
+              highlightedSquares={highlightedSquares}
+              onSelect={checkGuess}
+              onMove={checkGuess}
+              flipped={flipped}
+            >
+              <div className="flex h-full flex-wrap items-center justify-between gap-2">
+                <div>
+                  {goodGuesses && goodGuesses.length > 0 && (
+                    <div className="flex gap-2 bg-gray-800/50 px-2">
+                      {goodGuesses.map((guess) => (
+                        <div className="text-green-500" key={guess}>
+                          {guess}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  {badGuesses && badGuesses.length > 0 && (
+                    <div className="flex gap-2 bg-gray-800/50 px-2 line-through">
+                      {badGuesses.map((guess) => (
+                        <div className="text-red-500" key={guess}>
+                          {guess}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Chessboard>
           </div>
-        </>
+          <div>
+            <GameHUD
+              score={currentScore}
+              health={health}
+              highScore={highScore}
+              maxHealth={MAX_HEALTH}
+            />
+          </div>
+        </div>
       )}
     </>
   );

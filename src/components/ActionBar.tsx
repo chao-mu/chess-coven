@@ -34,53 +34,53 @@ export const ActionBar = ({
   onReplayAnimation,
 }: ActionBarProps) => {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="flex flex-wrap items-center justify-between gap-4 px-2">
       <div className="flex items-center gap-1">
-        {(!autoAdvance || playerStatus == "gave-up") && (
-          <button
-            onClick={onAdvance}
-            className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
-          >
-            Advance
-          </button>
-        )}
-        {playerStatus != "gave-up" && (
-          <>
-            {allowNoSolution && (
-              <button
-                className={`${
-                  pulseNoSolution ? "animate-pulse" : ""
-                } rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700`}
-                onClick={onAdvance}
-              >
-                No Solution
-              </button>
-            )}
+        <div className="flex gap-2">
+          {(!autoAdvance || playerStatus == "gave-up") && (
             <button
-              className="whitespace-nowrap rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
-              onClick={onGiveUp}
+              onClick={onAdvance}
+              className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
             >
-              Give Up
+              Advance
             </button>
-          </>
-        )}
-      </div>
-      {onReplayAnimation && (
-        <button
-          className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
-          onClick={onReplayAnimation}
-        >
-          Replay
-        </button>
-      )}
-      {solutionType == "number" && onNumberEntry && (
-        <div className="mx-auto">
-          <NumberEntryForm
-            label="Total value"
-            onSubmit={onNumberEntry}
-            isWrong={playerStatus == "wrong-guess"}
-          />
+          )}
+          {playerStatus != "gave-up" && (
+            <>
+              {allowNoSolution && (
+                <button
+                  className={`${
+                    pulseNoSolution ? "animate-pulse" : ""
+                  } rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700`}
+                  onClick={onAdvance}
+                >
+                  No Solution
+                </button>
+              )}
+              <button
+                className="whitespace-nowrap rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
+                onClick={onGiveUp}
+              >
+                Give Up
+              </button>
+            </>
+          )}
+          {onReplayAnimation && (
+            <button
+              className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
+              onClick={onReplayAnimation}
+            >
+              Replay
+            </button>
+          )}
         </div>
+      </div>
+      {solutionType == "number" && onNumberEntry && (
+        <NumberEntryForm
+          label="Total value"
+          onSubmit={onNumberEntry}
+          isWrong={playerStatus == "wrong-guess"}
+        />
       )}
       {playerStatus == "premature-advancement" && (
         <div className="flex items-center justify-center pr-6 font-bold text-amber-400">
