@@ -18,8 +18,7 @@ fix: gaps in levels
 fix: giveup doesn't autoadvance on guess
 fix: health resets
 fix: knight game only mentions clicking single square
-fix: number sometimes guessed. replay + enter??? Too fast?
-fix: old name Tactical Elements still used
+fix: number sometimes ignored on enter
 refactor: align names
 refactor: autogenerate site nav
 refactor: externalize game logic
