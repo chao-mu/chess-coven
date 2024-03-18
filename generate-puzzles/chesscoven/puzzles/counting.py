@@ -52,29 +52,16 @@ def get_piece_value_diversity(captures):
 
 def calc_level(captures):
     square_diversity = get_square_diversity(captures)
-    piece_value_diversity = get_piece_value_diversity(captures)
 
     # Make our math easier by establishing invariants
     assert square_diversity > 0
-    assert piece_value_diversity > 0
     assert len(captures) > 0
 
-    if len(captures) == 1:
-        return 1
-
+    capture_level = min(len(captures), 5)
     if square_diversity == 1:
-        if piece_value_diversity == 1:
-            if len(captures) == 2:
-                return 2
-            else:
-                return 3
-        else:
-            return 4
+        return min(len(captures), 5)
 
-    if square_diversity == 2:
-        return 5
-
-    return 6
+    return min(square_diversity, 5) + capture_level
 
 
 def build_puzzle(fens, captures, first_move_number):
@@ -110,7 +97,7 @@ def prune_counting(df):
     df["piece_value_diversity"] = df["extra"].apply(
         lambda x: get_piece_value_diversity([Capture(**c) for c in x["captures"]]))
     df["capture_count"] = df["extra"].apply(lambda x: len(x["captures"]))
-    df["is_odd_captures"] = df["capture_count"].apply(lambda c: c % 2 == 0)
+    df["is_odd_captures"] = df["capture_count"].apply(lambda c: c % 2 != 0)
 
     # Prune all levels
     df = df[df["is_white_to_play"]]
@@ -125,18 +112,21 @@ def prune_counting(df):
 
     # Prune level > 1
     for level in by_level:
+        if level == 1:
+            continue
+
         lvl_df = by_level[level]
         by_oddity = {
             is_odd: group
-            for is_odd, group in lvl_df.groupby(df["is_odd_captures"])
+            for is_odd, group in lvl_df.groupby("is_odd_captures")
         }
-        for is_odd, group in by_oddity:
+        for is_odd in by_oddity:
             if is_odd:
                 by_oddity[is_odd] = get_even_distribution(
-                    by_oddity[is_odd], "trade_type")
+                    by_oddity[is_odd], df["trade_type"] == "G")
             else:
                 by_oddity[is_odd] = get_even_distribution(
-                    by_oddity[is_odd], df["trade_type"] == "G")
+                    by_oddity[is_odd], "trade_type")
 
         by_level[level] = pd.concat(list(by_oddity.values()))
 
