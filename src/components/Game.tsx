@@ -233,6 +233,7 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
             />
           </div>
           <Chessboard
+            viewOnly={solutionType == "number"}
             movable={solutionType == "move"}
             fen={fens?.[fenPosition]}
             gameUrl={gameUrl}

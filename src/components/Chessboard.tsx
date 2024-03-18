@@ -11,6 +11,7 @@ import { type Key } from "chessground/types";
 import { type Config } from "chessground/config";
 
 type ChessboardProps = {
+  viewOnly?: boolean;
   movable?: boolean;
   fen?: string;
   goodSquares?: Key[];
@@ -65,6 +66,7 @@ export function Chessboard({
   onMove,
   onSelect,
   children,
+  viewOnly = false,
   goodSquares = [],
   badSquares = [],
   highlightedSquares = [],
@@ -80,6 +82,7 @@ export function Chessboard({
     }
 
     let config: Config = {
+      viewOnly,
       fen: fen,
       orientation: flipped ? "black" : "white",
       animation: { enabled: true },
