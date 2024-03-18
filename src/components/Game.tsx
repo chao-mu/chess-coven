@@ -274,6 +274,7 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
           </Chessboard>
           <div>
             <ActionBar
+              solutionType={solutionType}
               autoAdvance={autoAdvance}
               pulseNoSolution={!advanced && solutions.length == 0}
               onAdvance={checkCompleted}

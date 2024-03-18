@@ -66,8 +66,10 @@ export type GameFlavor = {
   story: string;
 };
 
+export type SolutionType = "move" | "square" | "number";
+
 export type GameLogic = {
-  solutionType: "move" | "square" | "number";
+  solutionType: SolutionType;
   autoAdvance: boolean;
   noSolution?: boolean;
 };

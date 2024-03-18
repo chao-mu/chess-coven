@@ -5,7 +5,7 @@ import React from "react";
 import { NumberEntryForm } from "@/components/NumberEntryForm";
 
 // Types
-import { type PlayerStatus } from "@/types";
+import type { PlayerStatus, SolutionType } from "@/types";
 
 export type ActionBarProps = {
   playerStatus: PlayerStatus;
@@ -19,12 +19,14 @@ export type ActionBarProps = {
   onContinue?: () => void;
   onNumberEntry?: (number: number) => void;
   onReplayAnimation?: () => void;
+  solutionType: SolutionType;
 };
 
 export const ActionBar = ({
   autoAdvance,
   playerStatus,
   allowNoSolution,
+  solutionType,
   pulseNoSolution = false,
   onGiveUp,
   onAdvance,
@@ -71,7 +73,7 @@ export const ActionBar = ({
           Replay
         </button>
       )}
-      {onNumberEntry && (
+      {solutionType == "number" && onNumberEntry && (
         <div className="mx-auto">
           <NumberEntryForm
             label="Total value"
