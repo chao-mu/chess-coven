@@ -1,9 +1,11 @@
+import Link from "next/link";
+
 type GameOverScreenProps = {
   finalScore: number;
   previousHighScore: number;
   title: string;
   rules: string;
-  onContinue: () => void;
+  to: string;
 };
 
 export function GameOverScreen({
@@ -11,7 +13,7 @@ export function GameOverScreen({
   previousHighScore,
   title,
   rules,
-  onContinue,
+  to,
 }: GameOverScreenProps) {
   const newHighScore = finalScore > previousHighScore;
 
@@ -30,12 +32,12 @@ export function GameOverScreen({
           )}
         </div>
         <div className="flex gap-2">
-          <button
+          <Link
+            href={to}
             className="rounded-full bg-amber-600 px-4 py-2 font-bold text-white hover:bg-amber-700"
-            onClick={onContinue}
           >
             Continue
-          </button>
+          </Link>
         </div>
       </div>
     </div>

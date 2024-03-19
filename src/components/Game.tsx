@@ -11,18 +11,11 @@ import { Chess, BLACK, type Square } from "chess.js";
 
 // Components
 import { Chessboard } from "@/components/Chessboard";
-import { GameOverScreen } from "@/components/GameOverScreen";
 import { GameHUD } from "@/components/GameHUD";
 import { ActionBar } from "@/components/ActionBar";
 
 // Types
-import type {
-  GameStatus,
-  PlayerStatus,
-  GameLogic,
-  GameFlavor,
-  GameLevel,
-} from "@/types";
+import type { PlayerStatus, GameLogic, GameFlavor, GameLevel } from "@/types";
 
 type GameProps = {
   id: string;
@@ -41,8 +34,6 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
   const [health, setHealth] = useState(MAX_HEALTH);
   const [currentScore, setCurrentScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
-  const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
   const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
   const [advanced, setAdvanced] = useState(false);
 
@@ -50,7 +41,7 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
   const [highlightPosition, setHighlightPosition] = useState(0);
   const [puzzleIdx, setPuzzleIdx] = useState<number>(0);
 
-  const { autoAdvance, solutionType } = logic;
+  const { autoAdvance, solutionType, supportNoSolution } = logic;
   const { title, rules } = flavor;
 
   const {
@@ -86,7 +77,7 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
 
   const readyToAdvance = goodGuesses.length == solutions.length;
 
-  const resetAnimation = () => {
+  const replayAnimation = () => {
     setFenPosition(0);
     setHighlightPosition(0);
   };
@@ -96,27 +87,10 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
     highlightedSquares = [...Object.keys(solutions)] as Square[];
   }
 
-  const playAgain = async (newGame: boolean) => {
-    if (currentScore > highScore) {
-      setHighScore(currentScore);
-    }
-
-    setHealth(MAX_HEALTH);
-    setCurrentScore(0);
-    setGameStatus("playing");
-    setPlayerStatus("playing");
-
-    if (newGame) {
-      await gotoNextPuzzle();
-    } else {
-      setPlayerStatus("respawn");
-    }
-  };
-
   const resetBoard = () => {
     setGoodGuesses([]);
     setBadGuesses([]);
-    resetAnimation();
+    replayAnimation();
     setFenPosition(0);
     setHighlightPosition(0);
   };
@@ -135,7 +109,7 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
     const newHealth = health - 1;
     setHealth(newHealth);
     if (newHealth < 1) {
-      setGameStatus("over");
+      router.push(`/games/${id}/game-over`);
     }
   };
 
@@ -153,7 +127,6 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
       setPlayerStatus("playing");
       gainPoints();
     } else {
-      setPlayerStatus("premature-advancement");
       loseHealth();
     }
   };
@@ -193,10 +166,13 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
     return isCorrect;
   };
 
-  const giveUp = () => {
-    if (playerStatus != "premature-advancement" && playerStatus != "respawn") {
-      loseHealth();
-    }
+  const replay = () => {
+    loseHealth();
+    resetBoard();
+  };
+
+  const giveUp = async () => {
+    loseHealth();
 
     setPlayerStatus("gave-up");
     solutions.forEach((solution) => {
@@ -208,90 +184,76 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
   };
 
   return (
-    <>
-      {gameStatus === "over" && (
-        <GameOverScreen
-          title={title}
-          rules={rules}
-          finalScore={currentScore}
-          previousHighScore={highScore}
-          onContinue={() => playAgain(false)}
-        />
-      )}
-      {gameStatus == "playing" && (
-        <div className="flex flex-col justify-between h-full">
-          <div>
-            <div className="text-center font-header text-2xl font-bold">
-              {title}
-            </div>
-            <div className="p-4 text-center">{rules}</div>
-          </div>
-          <div className="flex flex-col gap-1">
-            <ActionBar
-              solutionType={solutionType}
-              autoAdvance={autoAdvance}
-              pulseNoSolution={!advanced && solutions.length == 0}
-              onAdvance={checkCompleted}
-              onGiveUp={giveUp}
-              allowNoSolution={logic.noSolution ?? false}
-              playerStatus={playerStatus}
-              onSanEntry={(san) => checkGuess(san)}
-              sanEntry={solutionType == "move"}
-              onNumberEntry={(number) => checkGuess(number.toString())}
-              onReplayAnimation={() => resetAnimation()}
-            />
-            <Chessboard
-              viewOnly={solutionType == "number"}
-              movable={solutionType == "move"}
-              fen={fens?.[fenPosition]}
-              gameUrl={gameUrl}
-              goodSquares={
-                solutionType == "square" ? (goodGuesses as Square[]) : []
-              }
-              badSquares={
-                solutionType == "square" ? (badGuesses as Square[]) : []
-              }
-              highlightedSquares={highlightedSquares}
-              onSelect={checkGuess}
-              onMove={checkGuess}
-              flipped={flipped}
-            >
-              <div className="flex h-full flex-wrap items-center justify-between gap-2">
-                <div>
-                  {goodGuesses && goodGuesses.length > 0 && (
-                    <div className="flex gap-2 bg-gray-800/50 px-2">
-                      {goodGuesses.map((guess) => (
-                        <div className="text-green-500" key={guess}>
-                          {guess}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  {badGuesses && badGuesses.length > 0 && (
-                    <div className="flex gap-2 bg-gray-800/50 px-2 line-through">
-                      {badGuesses.map((guess) => (
-                        <div className="text-red-500" key={guess}>
-                          {guess}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Chessboard>
-          </div>
-          <div>
-            <GameHUD
-              score={currentScore}
-              health={health}
-              highScore={highScore}
-              maxHealth={MAX_HEALTH}
-            />
-          </div>
+    <div className="flex flex-col justify-between h-full">
+      <div>
+        <div className="text-center font-header text-2xl font-bold pt-4">
+          {title}
         </div>
-      )}
-    </>
+        <div className="p-4 text-center">{rules}</div>
+      </div>
+      <div className="flex flex-col gap-1">
+        <ActionBar
+          showGiveUp={supportNoSolution || !readyToAdvance}
+          showReplay={fens.length > 1 && health > 1}
+          showAdvance={!autoAdvance || playerStatus == "gave-up"}
+          showNoSolution={supportNoSolution}
+          solutionType={solutionType}
+          onAdvance={checkCompleted}
+          onSanEntry={(san) => checkGuess(san)}
+          onNumberEntry={(number) => checkGuess(number.toString())}
+          onGiveUp={giveUp}
+          onReplay={replay}
+          pulseNoSolution={playerStatus == "gave-up" && solutions.length == 0}
+          playerStatus={playerStatus}
+        />
+        <Chessboard
+          viewOnly={solutionType == "number"}
+          movable={solutionType == "move"}
+          fen={fens?.[fenPosition]}
+          gameUrl={gameUrl}
+          goodSquares={
+            solutionType == "square" ? (goodGuesses as Square[]) : []
+          }
+          badSquares={solutionType == "square" ? (badGuesses as Square[]) : []}
+          highlightedSquares={highlightedSquares}
+          onSelect={checkGuess}
+          onMove={checkGuess}
+          flipped={flipped}
+        >
+          <div className="flex h-full flex-wrap items-center justify-between gap-2">
+            <div>
+              {goodGuesses && goodGuesses.length > 0 && (
+                <div className="flex gap-2 bg-gray-800/50 px-2">
+                  {goodGuesses.map((guess) => (
+                    <div className="text-green-500" key={guess}>
+                      {guess}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div>
+              {badGuesses && badGuesses.length > 0 && (
+                <div className="flex gap-2 bg-gray-800/50 px-2 line-through">
+                  {badGuesses.map((guess) => (
+                    <div className="text-red-500" key={guess}>
+                      {guess}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </Chessboard>
+      </div>
+      <div>
+        <GameHUD
+          score={currentScore}
+          health={health}
+          highScore={0}
+          maxHealth={MAX_HEALTH}
+        />
+      </div>
+    </div>
   );
 };

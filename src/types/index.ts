@@ -70,8 +70,8 @@ export type SolutionType = "move" | "square" | "number";
 
 export type GameLogic = {
   solutionType: SolutionType;
+  supportNoSolution: boolean;
   autoAdvance: boolean;
-  noSolution?: boolean;
 };
 
 export type Error = {

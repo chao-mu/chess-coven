@@ -21,7 +21,11 @@ const PUZZLES_PER_LEVEL = 10;
 
 const games: Record<string, GameInfo & { collection: PuzzleCollection }> = {
   "knight-forks": {
-    logic: { autoAdvance: true, solutionType: "square", noSolution: true },
+    logic: {
+      autoAdvance: true,
+      solutionType: "square",
+      supportNoSolution: true,
+    },
     flavor: {
       title: "Catapult Knights",
       rules:
@@ -32,7 +36,11 @@ const games: Record<string, GameInfo & { collection: PuzzleCollection }> = {
     collection: knightForks as PuzzleCollection,
   },
   "checks-captures": {
-    logic: { autoAdvance: false, solutionType: "move", noSolution: false },
+    logic: {
+      autoAdvance: false,
+      solutionType: "move",
+      supportNoSolution: false,
+    },
     flavor: {
       title: "Checks/Captures",
       rules: "Perform all legal captures and checks for either side.",
@@ -42,7 +50,11 @@ const games: Record<string, GameInfo & { collection: PuzzleCollection }> = {
     collection: checksCaptures as PuzzleCollection,
   },
   counting: {
-    logic: { autoAdvance: true, solutionType: "number", noSolution: false },
+    logic: {
+      autoAdvance: true,
+      solutionType: "number",
+      supportNoSolution: false,
+    },
     flavor: {
       title: "Count Capture Points",
       rules: "Watch the animation and determine the change in material value.",
@@ -52,7 +64,11 @@ const games: Record<string, GameInfo & { collection: PuzzleCollection }> = {
     collection: counting as PuzzleCollection,
   },
   undefended: {
-    logic: { solutionType: "square", autoAdvance: false },
+    logic: {
+      solutionType: "square",
+      autoAdvance: false,
+      supportNoSolution: false,
+    },
     flavor: {
       title: "Enchant the Undefended",
       rules:
