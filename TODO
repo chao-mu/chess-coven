@@ -13,12 +13,17 @@ feat: short summaries
 feat: speed controls for animation
 feat: split captures and checks mini games
 fix: UI jumps on incorrect guess
+fix: despite solution, knight game has no solution as answer
 fix: giveup doesn't autoadvance on guess
 fix: health resets
+fix: missing "more to go"
 fix: number sometimes ignored on enter
+fix: score not shown in game over screen
+fix: solution bar has no x padding
 refactor: align names
 refactor: autogenerate site nav
 refactor: externalize game logic
 refactor: move game start screen to server page
+refactor: noSolution -> allowNoSolution
 refactor: rename generate-positions -> generate-gamesrefactor: games -> puzzles
 refactor: single puzzle page
