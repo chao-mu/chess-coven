@@ -35,7 +35,6 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
   const [health, setHealth] = useState(MAX_HEALTH);
   const [currentScore, setCurrentScore] = useState(0);
   const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
-  const [advanced, setAdvanced] = useState(false);
 
   const [fenPosition, setFenPosition] = useState(0);
   const [highlightPosition, setHighlightPosition] = useState(0);
@@ -119,10 +118,6 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
 
   const checkCompleted = async () => {
     if (playerStatus === "gave-up" || readyToAdvance) {
-      if (solutions.length == 0) {
-        setAdvanced(true);
-      }
-
       await gotoNextPuzzle();
       setPlayerStatus("playing");
       gainPoints();
