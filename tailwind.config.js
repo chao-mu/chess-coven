@@ -20,6 +20,7 @@ module.exports = {
       },
       backgroundColor: {
         backdrop: "rgb(31 41 55 / 50%)",
+        "forest-bottom": "#280410",
       },
     },
   },

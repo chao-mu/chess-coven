@@ -43,7 +43,7 @@ export default function RootLayout({
             `,
         }}
       />
-      <body className="bg-gray-950 bg-forest bg-left-top font-body text-white">
+      <body className="bg-forest bg-forest-bottom bg-top bg-no-repeat font-body text-white">
         <div className="flex h-full min-h-screen flex-col">
           {children}
           <Footer />
