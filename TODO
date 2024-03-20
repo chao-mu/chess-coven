@@ -6,10 +6,11 @@ feat: puzzle generators specify levels with buckets
 feat: split captures and checks mini games
 fix(game): despite solution, knight game has no solution as answer
 fix(game): number sometimes ignored on enter
+fix(style): HUD not on-screen always visible
 fix(style): buttons have different styles
 fix(style): solution bar has no x padding
+fix(style): too much space at top on mobile
 fix(ux): number entry jumps around
 fix(ux): position of solutions non-obvious
-refactor: align names
 refactor: autogenerate site nav
 refactor: externalize game logic

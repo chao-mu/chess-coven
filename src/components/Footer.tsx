@@ -14,7 +14,7 @@ export function Footer() {
         <ul className="mr-8 flex flex-wrap items-center gap-4 text-gray-300">
           <li>
             <Link
-              href="https://github.com/chao-mu/tactical-elements"
+              href="https://github.com/chao-mu/chess-coven"
               className="flex items-center gap-2 hover:text-amber-500 hover:underline"
             >
               <SiGithub />
