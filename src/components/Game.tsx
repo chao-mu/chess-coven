@@ -1,10 +1,10 @@
 "use client";
 
-// React
-import { useState, useEffect, useMemo } from "react";
-
 // NextJS
 import { useRouter } from "next/navigation";
+
+// React
+import { useState, useEffect, useMemo } from "react";
 
 // Chess.js
 import { Chess, BLACK, type Square } from "chess.js";
@@ -15,7 +15,14 @@ import { GameHUD } from "@/components/GameHUD";
 import { ActionBar } from "@/components/ActionBar";
 
 // Types
-import type { PlayerStatus, GameLogic, GameFlavor, GameLevel } from "@/types";
+import type {
+  PlayerStatus,
+  GameLogic,
+  GameFlavor,
+  GameLevel,
+  LevelId,
+  APIResponse,
+} from "@/types";
 import { Overlay } from "./Overlay";
 import { GameOverScreen } from "./GameOverScreen";
 import { IncorrectScreen } from "./IncorrectScreen";
@@ -29,20 +36,24 @@ import {
   storeHighScore,
   updateGameSession,
 } from "@/utils/storage";
+import { LevelClearScreen } from "./NextLevelScreen";
 
 type GameProps = {
   id: string;
   flavor: GameFlavor;
   logic: GameLogic;
-  level: GameLevel;
+  defaultLevel: GameLevel;
+  getLevel: (
+    gameId: string,
+    levelId: LevelId,
+  ) => Promise<APIResponse<GameLevel>>;
 };
 const MAX_HEALTH = 3;
 
 const ANIMATION_SPEED = 1000;
 
-export const Game = ({ logic, flavor, level, id }: GameProps) => {
+export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
   const router = useRouter();
-
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
   const [health, setHealth] = useState(getHealth(id));
@@ -51,6 +62,7 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
   const [previousHighScore, setPreviousHighScore] = useState<number>(
     getHighScore(id),
   );
+  const [level, setLevel] = useState(defaultLevel);
 
   const [fenPosition, setFenPosition] = useState(0);
   const [highlightPosition, setHighlightPosition] = useState(0);
@@ -59,13 +71,15 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
   const { autoAdvance, solutionType, supportNoSolution } = logic;
   const { title, rules } = flavor;
 
+  const { nextLevelId, puzzles } = level;
+
   const {
     fens,
     highlights: perFenHighlights,
     site: gameUrl,
     solutionAliases: solutionAliasesRecord,
     solutions: solutionsRaw,
-  } = level.puzzles[puzzleIdx];
+  } = puzzles[puzzleIdx];
   const solutionAliases = new Map(Object.entries(solutionAliasesRecord));
   const solutions = solutionsRaw.map((s) => s.toString());
 
@@ -78,7 +92,11 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
   }
 
   useEffect(() => {
-    if (fens && fenPosition <= fens.length - 1) {
+    if (
+      ["gave-up", "playing", "idle"].includes(playerStatus) &&
+      fens &&
+      fenPosition <= fens.length - 1
+    ) {
       const interval = setInterval(() => {
         if (highlightPosition < fenPosition) {
           setHighlightPosition((position) => position + 1);
@@ -88,7 +106,7 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
       }, ANIMATION_SPEED);
       return () => clearInterval(interval);
     }
-  }, [fens, fenPosition, highlightPosition]);
+  }, [fens, fenPosition, highlightPosition, playerStatus]);
 
   useEffect(() => {
     updateGameSession(id, { score: currentScore });
@@ -142,13 +160,20 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
   };
 
   const gotoNextPuzzle = async () => {
-    if (puzzleIdx >= level.puzzles.length - 1) {
-      router.push(`/games/${id}/${level.nextLevel ?? "all"}`);
-      return;
+    if (puzzleIdx >= puzzles.length - 1) {
+      const nextLevel = await getLevel(id, nextLevelId);
+      if (nextLevel.success) {
+        setPuzzleIdx(0);
+        setLevel(nextLevel.data);
+        setPlayerStatus("level-clear");
+      } else {
+        console.error(nextLevel.error);
+      }
+    } else {
+      setPuzzleIdx((idx) => idx + 1);
+      setPlayerStatus("playing");
     }
 
-    setPlayerStatus("playing");
-    setPuzzleIdx((idx) => idx + 1);
     resetBoard();
   };
 
@@ -274,8 +299,22 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
             />
           </Overlay>
         )}
+        {playerStatus == "level-clear" && (
+          <Overlay>
+            <LevelClearScreen
+              highScore={previousHighScore}
+              currentScore={currentScore}
+              levelName={level.name}
+              health={health}
+              maxHealth={MAX_HEALTH}
+              onContinue={() => setPlayerStatus("playing")}
+            />
+          </Overlay>
+        )}
         <ActionBar
-          showGiveUp={supportNoSolution || !readyToAdvance}
+          showGiveUp={
+            playerStatus != "gave-up" && (supportNoSolution || !readyToAdvance)
+          }
           showReplay={fens.length > 1 && health > 1}
           showAdvance={!autoAdvance || playerStatus == "gave-up"}
           showNoSolution={supportNoSolution}
@@ -338,4 +377,4 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
       </div>
     </div>
   );
-};
+}

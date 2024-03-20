@@ -17,14 +17,14 @@ export const GameStartScreen = ({
 }: GameStartScreenProps) => {
   return (
     <div className="flex h-full gap-4 grow flex-col justify-center p-6">
-      <h1 className="text-center text-2xl">{title}</h1>
+      <h1 className="text-center text-4xl">{title}</h1>
       <div>
-        <div className="mb-1 text-center text-lg font-bold">Story</div>
-        <p className="text-justify indent-6">{story}</p>
+        <div className="mb-1 text-center text-xl font-bold">Story</div>
+        <p className="text-justify indent-6 text-lg">{story}</p>
       </div>
       <div>
-        <div className="mb-1 text-center text-lg font-bold">Rules</div>
-        <p className="text-justify indent-6">{rules}</p>
+        <div className="mb-1 text-center text-xl font-bold">Rules</div>
+        <p className="text-justify indent-6 text-lg">{rules}</p>
       </div>
       <Link
         href={to}

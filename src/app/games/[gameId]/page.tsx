@@ -25,7 +25,7 @@ export default function Page({ params: { gameId } }: HasParams) {
       rules={rules}
       story={story}
       title={title}
-      to={`/games/${gameId}/1`}
+      to={`/games/${gameId}/playing`}
     />
   );
 }

@@ -1,16 +1,8 @@
 ci: validate puzzles on push
-feat: adjust level before pruning
-feat: back/resume button for lost games
 feat: detect improvement of worthy trades
 feat: improved writing
-feat: make No Solution a link
-feat: obvious generate commands with defaults
-feat: paranormal spotting anomaly amefeat: level screens
-feat: puzzle generators specify level length
-feat: puzzle generators specify level selection criteria or have buckets
-feat: reduced page loads
-feat: short summaries
-feat: speed controls for animation
+feat: paranormal spotting anomaly game
+feat: puzzle generators specify levels with buckets
 feat: split captures and checks mini games
 fix: UI jumps on incorrect guess
 fix: delay before board recognizes click
@@ -22,7 +14,3 @@ fix: solution bar has no x padding
 refactor: align names
 refactor: autogenerate site nav
 refactor: externalize game logic
-refactor: move game start screen to server page
-refactor: noSolution -> allowNoSolution
-refactor: rename generate-positions -> generate-gamesrefactor: games -> puzzles
-refactor: single puzzle page

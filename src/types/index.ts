@@ -13,6 +13,8 @@ export type Game = {
   pgn: string;
 };
 
+export type LevelId = "all" | number;
+
 export const PuzzleSchema = z.object({
   solutions: z.array(z.union([z.string(), z.number()])),
   solutionAliases: z.record(z.string()),
@@ -47,11 +49,10 @@ export type PlayerStatus =
   | "playing"
   | "idle"
   | "wrong-guess"
-  | "dead";
+  | "dead"
+  | "level-clear";
 
 export type GameStatus = "start" | "playing" | "over";
-
-export type NextPuzzleLogic = (args: { wins: number }) => Promise<Puzzle>;
 
 export type GameInfo = {
   flavor: GameFlavor;
@@ -82,9 +83,18 @@ export type Success<T> = {
   data: T;
 };
 
+export type APIResponse<T> = Error | Success<T>;
+
 export type GameLevel = {
   puzzles: Puzzle[];
   name: string;
-  level?: number;
-  nextLevel?: number;
+  nextLevelId: LevelId;
 };
+
+export function newError(error: string): Error {
+  return { error, success: false };
+}
+
+export function isError<T>(response: APIResponse<T>): response is Error {
+  return !response.success;
+}

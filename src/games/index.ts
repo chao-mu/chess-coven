@@ -1,15 +1,5 @@
-// random
-import random from "random";
-
 // Ours
-import type {
-  GameInfo,
-  Error,
-  Success,
-  GameLevel,
-  Puzzle,
-  PuzzleCollection,
-} from "@/types";
+import type { GameInfo, PuzzleCollection } from "@/types";
 
 // Assets
 import knightForks from "@/assets/puzzles/knight-forks.json";
@@ -17,9 +7,10 @@ import checksCaptures from "@/assets/puzzles/checks-captures.json";
 import undefended from "@/assets/puzzles/undefended.json";
 import counting from "@/assets/puzzles/counting.json";
 
-const PUZZLES_PER_LEVEL = 10;
-
-const games: Record<string, GameInfo & { collection: PuzzleCollection }> = {
+export const games: Record<
+  string,
+  GameInfo & { collection: PuzzleCollection }
+> = {
   "knight-forks": {
     logic: {
       autoAdvance: true,
@@ -90,53 +81,4 @@ export function getLogic(id: string) {
   const game = games[id];
 
   return game?.logic ?? null;
-}
-
-function newError(error: string): Error {
-  return { error, success: false };
-}
-
-export async function getLevel(
-  gameId: string,
-  level?: number,
-): Promise<Error | Success<GameLevel>> {
-  const { collection } = games[gameId];
-  if (collection === undefined) {
-    return newError("Game not found");
-  }
-
-  let candidates: Puzzle[] = [];
-  let name = "bonus";
-  if (level === undefined) {
-    candidates = Object.values(collection).flat();
-  } else {
-    name = level.toString();
-    candidates = collection[level];
-  }
-
-  if (candidates === undefined) {
-    return newError("Level not found");
-  }
-
-  const puzzles = [];
-  for (let i = 0; i < PUZZLES_PER_LEVEL; i++) {
-    const idx = random.int(0, candidates.length - 1);
-    const [puzzle] = candidates.splice(idx, 1);
-    if (puzzle === undefined) {
-      break;
-    }
-
-    puzzles.push(puzzle);
-  }
-
-  let nextLevel = level;
-  if (nextLevel !== undefined) {
-    nextLevel += 1;
-
-    if (collection[nextLevel] === undefined) {
-      nextLevel = undefined;
-    }
-  }
-
-  return { success: true, data: { name, level, puzzles, nextLevel } };
 }

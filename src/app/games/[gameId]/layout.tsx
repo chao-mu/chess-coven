@@ -6,7 +6,7 @@ import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
 // Styles
-import { getFlavor } from "@/games";
+import { games, getFlavor } from "@/games";
 
 type HasParams = {
   params: {
@@ -15,13 +15,12 @@ type HasParams = {
 };
 
 export function generateMetadata({ params: { gameId } }: HasParams): Metadata {
-  const flavor = getFlavor(gameId);
-  if (flavor == null) {
-    console.log(":-(");
+  const game = games[gameId] ?? null;
+  if (game == null) {
     return notFound();
   }
 
-  const { rules, title } = flavor;
+  const { rules, title } = game.flavor;
 
   return {
     title: "Chess Coven - " + title,
