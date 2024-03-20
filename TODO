@@ -4,13 +4,12 @@ feat: improved writing
 feat: paranormal spotting anomaly game
 feat: puzzle generators specify levels with buckets
 feat: split captures and checks mini games
-fix: UI jumps on incorrect guess
-fix: buttons have different styles
-fix: despite solution, knight game has no solution as answer
-fix: number entry jumps around
-fix: number sometimes ignored on enter
-fix: position of solutions non-obvious
-fix: solution bar has no x padding
+fix(game): despite solution, knight game has no solution as answer
+fix(game): number sometimes ignored on enter
+fix(style): buttons have different styles
+fix(style): solution bar has no x padding
+fix(ux): number entry jumps around
+fix(ux): position of solutions non-obvious
 refactor: align names
 refactor: autogenerate site nav
 refactor: externalize game logic
