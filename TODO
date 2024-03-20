@@ -5,7 +5,7 @@ feat: paranormal spotting anomaly game
 feat: puzzle generators specify levels with buckets
 feat: split captures and checks mini games
 fix: UI jumps on incorrect guess
-fix: delay before board recognizes click
+fix: buttons have different styles
 fix: despite solution, knight game has no solution as answer
 fix: number entry jumps around
 fix: number sometimes ignored on enter

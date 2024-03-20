@@ -50,10 +50,10 @@ function onSelectFactory(f: ((s: Key) => void) | undefined) {
     return undefined;
   }
 
-  let last = Date.now();
+  let last: number | null = null;
   return (s: Key) => {
     const now = Date.now();
-    if (now - last > 300) {
+    if (last == null || now - last > 300) {
       last = now;
       f(s);
     }
@@ -140,6 +140,7 @@ export function Chessboard({
   }, [
     board,
     boardRef,
+    viewOnly,
     fen,
     flipped,
     movable,
@@ -167,7 +168,7 @@ export function Chessboard({
   const bottomColor = flipped ? "bg-red-400" : "bg-red-100";
 
   return (
-    <div className="flex min-h-0 flex-col">
+    <div className="flex min-h-0 flex-col relative">
       <div className={`border-2 border-black ${topColor} min-h-8 text-black`}>
         {children}
       </div>
