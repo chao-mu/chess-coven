@@ -1,7 +1,7 @@
 "use client";
 
 // React
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 // NextJS
 import { useRouter } from "next/navigation";
@@ -16,6 +16,19 @@ import { ActionBar } from "@/components/ActionBar";
 
 // Types
 import type { PlayerStatus, GameLogic, GameFlavor, GameLevel } from "@/types";
+import { Overlay } from "./Overlay";
+import { GameOverScreen } from "./GameOverScreen";
+import { IncorrectScreen } from "./IncorrectScreen";
+
+// Ours
+import {
+  getHealth,
+  getHighScore,
+  getScore,
+  resetGameSession,
+  storeHighScore,
+  updateGameSession,
+} from "@/utils/storage";
 
 type GameProps = {
   id: string;
@@ -32,9 +45,12 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
 
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
-  const [health, setHealth] = useState(MAX_HEALTH);
-  const [currentScore, setCurrentScore] = useState(0);
+  const [health, setHealth] = useState(getHealth(id));
   const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
+  const [currentScore, setCurrentScore] = useState<number>(getScore(id));
+  const [previousHighScore, setPreviousHighScore] = useState<number>(
+    getHighScore(id),
+  );
 
   const [fenPosition, setFenPosition] = useState(0);
   const [highlightPosition, setHighlightPosition] = useState(0);
@@ -74,6 +90,37 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
     }
   }, [fens, fenPosition, highlightPosition]);
 
+  useEffect(() => {
+    updateGameSession(id, { score: currentScore });
+  }, [id, currentScore]);
+
+  useEffect(() => {
+    updateGameSession(id, { health });
+  }, [id, health]);
+
+  useEffect(() => {
+    if (playerStatus == "dead") {
+      resetGameSession(id);
+    }
+  }, [id, playerStatus]);
+
+  useMemo(() => {
+    if (health < 1) {
+      setPlayerStatus("dead");
+    }
+  }, [health]);
+
+  useMemo(() => {
+    if (playerStatus == "dead") {
+      const highScore = getHighScore(id);
+      setPreviousHighScore(highScore);
+
+      if (currentScore > highScore) {
+        storeHighScore(id, currentScore);
+      }
+    }
+  }, [id, playerStatus, currentScore]);
+
   const readyToAdvance = goodGuesses.length == solutions.length;
 
   const replayAnimation = () => {
@@ -100,27 +147,32 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
       return;
     }
 
+    setPlayerStatus("playing");
     setPuzzleIdx((idx) => idx + 1);
     resetBoard();
   };
 
   const loseHealth = () => {
-    const newHealth = health - 1;
-    setHealth(newHealth);
-    if (newHealth < 1) {
-      router.push(`/games/${id}/game-over`);
-    }
+    setHealth((health) => health - 1);
   };
 
   const gainPoints = () => {
     setCurrentScore((score) => score + 1);
   };
 
-  const checkCompleted = async () => {
-    if (playerStatus === "gave-up" || readyToAdvance) {
+  const advance = async () => {
+    if (playerStatus === "gave-up") {
       await gotoNextPuzzle();
-      setPlayerStatus("playing");
+    } else {
+      await checkCompleted();
+    }
+  };
+
+  const checkCompleted = async () => {
+    if (readyToAdvance) {
+      await gotoNextPuzzle();
       gainPoints();
+      setPlayerStatus("playing");
     } else {
       loseHealth();
     }
@@ -154,22 +206,34 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
         gainPoints();
       }
     } else {
-      loseHealth();
       setBadGuesses([...badGuesses, guess]);
       setPlayerStatus("wrong-guess");
+      loseHealth();
     }
     return isCorrect;
   };
 
   const replay = () => {
-    loseHealth();
     resetBoard();
+    if (!["gave-up", "wrong-guess"].includes(playerStatus)) {
+      loseHealth();
+    }
   };
 
-  const giveUp = async () => {
-    loseHealth();
+  const giveUp = async (shouldLoseHealth = true) => {
+    if (shouldLoseHealth) {
+      loseHealth();
+    }
 
     setPlayerStatus("gave-up");
+    showSolutions();
+  };
+
+  const tryAgain = () => {
+    setPlayerStatus("playing");
+  };
+
+  const showSolutions = () => {
     solutions.forEach((solution) => {
       const alias = solutionAliases.get(solution) ?? solution;
       if (!goodGuesses.includes(solution) && !goodGuesses.includes(alias)) {
@@ -186,17 +250,40 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
         </div>
         <div className="p-4 text-center">{rules}</div>
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="relative flex flex-col gap-1">
+        {playerStatus == "wrong-guess" && (
+          <Overlay>
+            <IncorrectScreen
+              tryAgain={tryAgain}
+              showSolutions={() => giveUp(false)}
+              currentScore={currentScore}
+              highScore={previousHighScore}
+              maxHealth={MAX_HEALTH}
+              health={health}
+            />
+          </Overlay>
+        )}
+        {playerStatus == "dead" && (
+          <Overlay>
+            <GameOverScreen
+              previousHighScore={previousHighScore}
+              finalScore={currentScore}
+              rules={rules}
+              title={title}
+              to={`/games/${id}`}
+            />
+          </Overlay>
+        )}
         <ActionBar
           showGiveUp={supportNoSolution || !readyToAdvance}
           showReplay={fens.length > 1 && health > 1}
           showAdvance={!autoAdvance || playerStatus == "gave-up"}
           showNoSolution={supportNoSolution}
           solutionType={solutionType}
-          onAdvance={checkCompleted}
+          onAdvance={advance}
           onSanEntry={(san) => checkGuess(san)}
           onNumberEntry={(number) => checkGuess(number.toString())}
-          onGiveUp={giveUp}
+          onGiveUp={() => giveUp()}
           onReplay={replay}
           pulseNoSolution={playerStatus == "gave-up" && solutions.length == 0}
           playerStatus={playerStatus}
@@ -245,7 +332,7 @@ export const Game = ({ logic, flavor, level, id }: GameProps) => {
         <GameHUD
           score={currentScore}
           health={health}
-          highScore={0}
+          highScore={previousHighScore}
           maxHealth={MAX_HEALTH}
         />
       </div>

@@ -43,12 +43,10 @@ export type Board = Rank[];
 export const EmptyBoard: Board = range(8).map(() => range(8).map(() => null));
 
 export type PlayerStatus =
-  | "premature-advancement"
   | "gave-up"
   | "playing"
   | "idle"
   | "wrong-guess"
-  | "respawn"
   | "dead";
 
 export type GameStatus = "start" | "playing" | "over";

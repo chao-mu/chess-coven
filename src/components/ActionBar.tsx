@@ -8,6 +8,8 @@ import { SanInputForm } from "./SanInputForm";
 // Types
 import type { PlayerStatus, SolutionType } from "@/types";
 
+const DEBUG = true;
+
 export type ActionBarProps = {
   playerStatus: PlayerStatus;
   solutionType: SolutionType;
@@ -77,6 +79,7 @@ export const ActionBar = ({
           )}
         </div>
       </div>
+      {DEBUG && playerStatus}
       {solutionType == "number" && (
         <NumberEntryForm
           label="Total value"
@@ -89,11 +92,6 @@ export const ActionBar = ({
           onSubmit={onSanEntry}
           isWrong={playerStatus == "wrong-guess"}
         />
-      )}
-      {playerStatus == "premature-advancement" && (
-        <div className="flex items-center justify-center pr-6 font-bold text-amber-400">
-          Still more to go!
-        </div>
       )}
     </div>
   );
