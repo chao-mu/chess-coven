@@ -4,9 +4,12 @@ feat: improved writing
 feat: paranormal spotting anomaly game
 feat: puzzle generators specify levels with buckets
 feat: split captures and checks mini games
+fix(board): moves not canceled
+fix(game): No Solution does not show incorrect screen
 fix(game): despite solution, knight game has no solution as answer
 fix(game): number sometimes ignored on enter
-fix(style): HUD not on-screen always visible
+fix(game): weird equal sign in show answers
+fix(style): HUD not always visible
 fix(style): buttons have different styles
 fix(style): solution bar has no x padding
 fix(style): too much space at top on mobile
@@ -14,3 +17,4 @@ fix(ux): number entry jumps around
 fix(ux): position of solutions non-obvious
 refactor: autogenerate site nav
 refactor: externalize game logic
+refactor: replace generic input to solution type specific
