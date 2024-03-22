@@ -24,27 +24,6 @@ type ChessboardProps = {
   children?: React.ReactNode;
 };
 
-function ChessboardWrapper({
-  flipped,
-  children,
-}: {
-  flipped: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="relative m-auto flex aspect-square min-h-0 flex-col">
-      <canvas width="10000" height="10000" className="max-h-full max-w-full" />
-      <div
-        className={`absolute inset-0 flex ${
-          flipped ? "flex-col-reverse" : "flex-col"
-        }`}
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
-
 function onSelectFactory(f: ((s: Key) => void) | undefined) {
   if (!f) {
     return undefined;
@@ -168,13 +147,13 @@ export function Chessboard({
   const bottomColor = flipped ? "bg-red-400" : "bg-red-100";
 
   return (
-    <div className="flex min-h-0 flex-col relative">
+    <div className="w-chessboard">
       <div className={`border-2 border-black ${topColor} min-h-8 text-black`}>
         {children}
       </div>
-      <ChessboardWrapper flipped={flipped}>
-        <div ref={boardRef} className="size-full" />
-      </ChessboardWrapper>
+      <div className={`flex ${flipped ? "flex-col-reverse" : "flex-col"}`}>
+        <div ref={boardRef} className="h-chessboard w-chessboard" />
+      </div>
       <div
         className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-8 pr-6 text-black`}
       >

@@ -44,11 +44,11 @@ export default function RootLayout({
         }}
       />
       <body className="bg-forest bg-forest-bottom bg-top bg-no-repeat font-body text-white">
-        <div className="flex h-full min-h-screen flex-col">
+        <Analytics />
+        <div className="flex min-h-screen flex-col">
           {children}
           <Footer />
         </div>
-        <Analytics />
       </body>
     </html>
   );

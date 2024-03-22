@@ -63,6 +63,7 @@ export type GameFlavor = {
   title: string;
   rules: string;
   story: string;
+  shortRules: string;
 };
 
 export type SolutionType = "move" | "square" | "number";

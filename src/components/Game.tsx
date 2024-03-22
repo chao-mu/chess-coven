@@ -1,8 +1,5 @@
 "use client";
 
-// NextJS
-import { useRouter } from "next/navigation";
-
 // React
 import { useState, useEffect, useMemo } from "react";
 
@@ -53,7 +50,6 @@ const MAX_HEALTH = 3;
 const ANIMATION_SPEED = 1000;
 
 export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
-  const router = useRouter();
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
   const [health, setHealth] = useState(getHealth(id));
@@ -235,6 +231,7 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
       setPlayerStatus("wrong-guess");
       loseHealth();
     }
+
     return isCorrect;
   };
 
@@ -268,113 +265,105 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
   };
 
   return (
-    <div className="flex flex-col justify-between h-full">
-      <div>
-        <div className="text-center font-header text-2xl font-bold pt-4">
-          {title}
-        </div>
-        <div className="p-4 text-center">{rules}</div>
+    <div className="relative flex flex-col justify-between bg-backdrop w-chessboard mx-auto">
+      <div className="flex p-2 flex-col gap-1 items-center">
+        <div className="font-header text-2xl font-bold">{title}</div>
+        <div className="text-center">{rules}</div>
       </div>
-      <div className="relative flex flex-col gap-1">
-        {playerStatus == "wrong-guess" && (
-          <Overlay>
-            <IncorrectScreen
-              tryAgain={tryAgain}
-              showSolutions={() => giveUp(false)}
-              currentScore={currentScore}
-              highScore={previousHighScore}
-              maxHealth={MAX_HEALTH}
-              health={health}
-            />
-          </Overlay>
-        )}
-        {playerStatus == "dead" && (
-          <Overlay>
-            <GameOverScreen
-              previousHighScore={previousHighScore}
-              finalScore={currentScore}
-              rules={rules}
-              title={title}
-              to={`/games/${id}`}
-            />
-          </Overlay>
-        )}
-        {playerStatus == "level-clear" && (
-          <Overlay>
-            <LevelClearScreen
-              highScore={previousHighScore}
-              currentScore={currentScore}
-              levelName={level.name}
-              health={health}
-              maxHealth={MAX_HEALTH}
-              onContinue={() => setPlayerStatus("playing")}
-            />
-          </Overlay>
-        )}
-        <ActionBar
-          showGiveUp={
-            playerStatus != "gave-up" && (supportNoSolution || !readyToAdvance)
-          }
-          showReplay={fens.length > 1 && health > 1}
-          showAdvance={!autoAdvance || playerStatus == "gave-up"}
-          showNoSolution={supportNoSolution}
-          solutionType={solutionType}
-          onAdvance={advance}
-          onSanEntry={(san) => checkGuess(san)}
-          onNumberEntry={(number) => checkGuess(number.toString())}
-          onGiveUp={() => giveUp()}
-          onReplay={replay}
-          pulseNoSolution={playerStatus == "gave-up" && solutions.length == 0}
-          playerStatus={playerStatus}
-        />
-        <Chessboard
-          viewOnly={solutionType == "number"}
-          movable={solutionType == "move"}
-          fen={fens?.[fenPosition]}
-          gameUrl={gameUrl}
-          goodSquares={
-            solutionType == "square" ? (goodGuesses as Square[]) : []
-          }
-          badSquares={solutionType == "square" ? (badGuesses as Square[]) : []}
-          highlightedSquares={highlightedSquares}
-          onSelect={checkGuess}
-          onMove={checkGuess}
-          flipped={flipped}
-        >
-          <div className="flex h-full flex-wrap items-center justify-between gap-2">
-            <div>
-              {goodGuesses && goodGuesses.length > 0 && (
-                <div className="flex gap-2 bg-gray-800/50 px-2">
-                  {goodGuesses.map((guess) => (
-                    <div className="text-green-500" key={guess}>
-                      {guess}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div>
-              {badGuesses && badGuesses.length > 0 && (
-                <div className="flex gap-2 bg-gray-800/50 px-2 line-through">
-                  {badGuesses.map((guess) => (
-                    <div className="text-red-500" key={guess}>
-                      {guess}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+      {playerStatus == "wrong-guess" && (
+        <Overlay>
+          <IncorrectScreen
+            tryAgain={tryAgain}
+            showSolutions={() => giveUp(false)}
+            currentScore={currentScore}
+            highScore={previousHighScore}
+            maxHealth={MAX_HEALTH}
+            health={health}
+          />
+        </Overlay>
+      )}
+      {playerStatus == "dead" && (
+        <Overlay>
+          <GameOverScreen
+            previousHighScore={previousHighScore}
+            finalScore={currentScore}
+            rules={rules}
+            title={title}
+            to={`/games/${id}`}
+          />
+        </Overlay>
+      )}
+      {playerStatus == "level-clear" && (
+        <Overlay>
+          <LevelClearScreen
+            highScore={previousHighScore}
+            currentScore={currentScore}
+            levelName={level.name}
+            health={health}
+            maxHealth={MAX_HEALTH}
+            onContinue={() => setPlayerStatus("playing")}
+          />
+        </Overlay>
+      )}
+      <ActionBar
+        showGiveUp={
+          playerStatus != "gave-up" && (supportNoSolution || !readyToAdvance)
+        }
+        showReplay={fens.length > 1 && health > 1}
+        showAdvance={!autoAdvance || playerStatus == "gave-up"}
+        showNoSolution={supportNoSolution}
+        solutionType={solutionType}
+        onAdvance={advance}
+        onSanEntry={(san) => checkGuess(san)}
+        onNumberEntry={(number) => checkGuess(number.toString())}
+        onGiveUp={() => giveUp()}
+        onReplay={replay}
+        pulseNoSolution={playerStatus == "gave-up" && solutions.length == 0}
+        playerStatus={playerStatus}
+      />
+      <Chessboard
+        viewOnly={solutionType == "number"}
+        movable={solutionType == "move"}
+        fen={fens?.[fenPosition]}
+        gameUrl={gameUrl}
+        goodSquares={solutionType == "square" ? (goodGuesses as Square[]) : []}
+        badSquares={solutionType == "square" ? (badGuesses as Square[]) : []}
+        highlightedSquares={highlightedSquares}
+        onSelect={checkGuess}
+        onMove={checkGuess}
+        flipped={flipped}
+      >
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            {goodGuesses && goodGuesses.length > 0 && (
+              <div className="flex gap-2 bg-backdrop px-2">
+                {goodGuesses.map((guess) => (
+                  <div className="text-green-500" key={guess}>
+                    {guess}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        </Chessboard>
-      </div>
-      <div>
-        <GameHUD
-          score={currentScore}
-          health={health}
-          highScore={previousHighScore}
-          maxHealth={MAX_HEALTH}
-        />
-      </div>
+          <div>
+            {badGuesses && badGuesses.length > 0 && (
+              <div className="flex gap-2 bg-backdrop px-2 line-through">
+                {badGuesses.map((guess) => (
+                  <div className="text-red-500" key={guess}>
+                    {guess}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </Chessboard>
+      <GameHUD
+        score={currentScore}
+        health={health}
+        highScore={previousHighScore}
+        maxHealth={MAX_HEALTH}
+      />
     </div>
   );
 }

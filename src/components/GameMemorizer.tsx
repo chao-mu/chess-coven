@@ -19,6 +19,7 @@ import { SanInputForm } from "./SanInputForm";
 import { type Game } from "@/types";
 
 import { GameSelect } from "@/components/GameSelect";
+import { GameContainer } from "./GameContainer";
 
 const getChess = (pgn: string, position: number) => {
   const chess = new Chess();
@@ -75,7 +76,7 @@ export const GameMemorizer = () => {
   }
 
   return (
-    <div className="flex h-[95vh] min-w-[33vw]  flex-col bg-gray-800/50">
+    <div className="flex flex-col bg-backdrop w-chessboard mx-auto">
       <div className="m-2 text-center font-header text-2xl font-bold">
         Game Memorizer
       </div>

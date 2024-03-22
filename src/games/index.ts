@@ -19,6 +19,7 @@ export const games: Record<
     },
     flavor: {
       title: "Catapult Knights",
+      shortRules: "Click squares a knight would fork all pieces",
       rules:
         "Click all squares that attack all pieces simultaneously. Otherwise click No Solution.",
       story:
@@ -35,6 +36,7 @@ export const games: Record<
     flavor: {
       title: "Checks/Captures",
       rules: "Perform all legal captures and checks for either side.",
+      shortRules: "Perform all legal captures and checks for either side.",
       story:
         "Tomorrow the war reaches your small village. Analyze the crawling battlefield to determine where destruction is inevitable.",
     },
@@ -49,6 +51,7 @@ export const games: Record<
     flavor: {
       title: "Count Capture Points",
       rules: "Watch the animation and determine the change in material value.",
+      shortRules: "Enter total capture points",
       story:
         "The death toll from the war increases every day. The war has gone on far too long and soon will be the mutual ruin of both kingdoms. You must prepare a PowerPoint slide presentation to convince the ruling monarchs that peace is the best option.",
     },
@@ -64,6 +67,7 @@ export const games: Record<
       title: "Enchant the Undefended",
       rules:
         "Click undefended pieces. A piece is considered undefended if there are no allies who have sight on its square.",
+      shortRules: "Click all undefended pieces",
       story:
         "The battlefield is littered with fallen chesspersons. Opposing forces clash, blinded by mutual hatred and pricked on by a thirst for blood. There is however a chance for peace. Find the chesspersons who are most vulnerable and pacify them to quell the cycle of violence.",
     },
