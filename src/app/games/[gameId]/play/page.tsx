@@ -73,17 +73,19 @@ export default async function Page({ params: { gameId } }: HasParams) {
 
   const levelResp = await getLevel(gameId, 1);
   if (!levelResp.success) {
-    console.log(levelResp.error);
+    console.error(levelResp.error);
     return notFound();
   }
 
   return (
-    <Game
-      id={gameId}
-      flavor={flavor}
-      logic={logic}
-      getLevel={getLevel}
-      defaultLevel={levelResp.data}
-    />
+    <main className="flex-1 flex justify-center items-center">
+      <Game
+        id={gameId}
+        flavor={flavor}
+        logic={logic}
+        getLevel={getLevel}
+        defaultLevel={levelResp.data}
+      />
+    </main>
   );
 }

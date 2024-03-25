@@ -16,7 +16,7 @@ function getGameCards() {
       },
     ]) => ({
       gameId,
-      href: `/games/${gameId}`,
+      href: `/games/${gameId}/start`,
       title: title,
     }),
   );
@@ -24,7 +24,7 @@ function getGameCards() {
 
 export function SiteNav() {
   return (
-    <div className="flex flex-col gap-2">
+    <nav className="flex flex-col gap-2">
       {getGameCards().map(({ title, href, gameId }) => (
         <LinkButton key={gameId} href={href}>
           {title}
@@ -35,6 +35,6 @@ export function SiteNav() {
       <LinkButton href="https://www.patreon.com/user?u=84821837">
         Help Cover Costs
       </LinkButton>
-    </div>
+    </nav>
   );
 }

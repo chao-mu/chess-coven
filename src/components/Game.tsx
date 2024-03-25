@@ -34,6 +34,7 @@ import {
   updateGameSession,
 } from "@/utils/storage";
 import { LevelClearScreen } from "./NextLevelScreen";
+import Link from "next/link";
 
 type GameProps = {
   id: string;
@@ -264,9 +265,25 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
     });
   };
 
+  let gameSourceEl = null;
+  if (gameUrl) {
+    gameSourceEl = (
+      <Link
+        href={gameUrl}
+        className="bg-backdrop px-2 text-white"
+        target="_blank"
+      >
+        View Game
+      </Link>
+    );
+  }
+
+  const topColor = flipped ? "bg-red-100" : "bg-red-400";
+  const bottomColor = flipped ? "bg-red-400" : "bg-red-100";
+
   return (
-    <div className="relative flex flex-col justify-between bg-backdrop w-chessboard mx-auto">
-      <div className="flex p-2 flex-col gap-1 items-center">
+    <div className="relative flex-1 flex flex-col bg-backdrop mx-auto h-screen max-w-2xl justify-center">
+      <div className="p-2 flex flex-col gap-1 items-center">
         <div className="font-header text-2xl font-bold">{title}</div>
         <div className="text-center">{rules}</div>
       </div>
@@ -289,7 +306,7 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
             finalScore={currentScore}
             rules={rules}
             title={title}
-            to={`/games/${id}`}
+            to={`/games/${id}/start`}
           />
         </Overlay>
       )}
@@ -320,21 +337,12 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
         onReplay={replay}
         pulseNoSolution={playerStatus == "gave-up" && solutions.length == 0}
         playerStatus={playerStatus}
+        toExit={`/games/${id}/start`}
       />
-      <Chessboard
-        viewOnly={solutionType == "number"}
-        movable={solutionType == "move"}
-        fen={fens?.[fenPosition]}
-        gameUrl={gameUrl}
-        goodSquares={solutionType == "square" ? (goodGuesses as Square[]) : []}
-        badSquares={solutionType == "square" ? (badGuesses as Square[]) : []}
-        highlightedSquares={highlightedSquares}
-        onSelect={checkGuess}
-        onMove={checkGuess}
-        flipped={flipped}
-      >
+
+      <div className={`border-2 border-black ${topColor} min-h-9 text-black`}>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div>
+          <div className="p-1">
             {goodGuesses && goodGuesses.length > 0 && (
               <div className="flex gap-2 bg-backdrop px-2">
                 {goodGuesses.map((guess) => (
@@ -345,7 +353,7 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
               </div>
             )}
           </div>
-          <div>
+          <div className="p-1">
             {badGuesses && badGuesses.length > 0 && (
               <div className="flex gap-2 bg-backdrop px-2 line-through">
                 {badGuesses.map((guess) => (
@@ -357,7 +365,24 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
             )}
           </div>
         </div>
-      </Chessboard>
+      </div>
+      <Chessboard
+        viewOnly={solutionType == "number"}
+        movable={solutionType == "move"}
+        fen={fens?.[fenPosition]}
+        gameUrl={gameUrl}
+        goodSquares={solutionType == "square" ? (goodGuesses as Square[]) : []}
+        badSquares={solutionType == "square" ? (badGuesses as Square[]) : []}
+        highlightedSquares={highlightedSquares}
+        onSelect={checkGuess}
+        onMove={checkGuess}
+        flipped={flipped}
+      />
+      <div
+        className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-9 pr-6 text-black`}
+      >
+        {gameSourceEl}
+      </div>
       <GameHUD
         score={currentScore}
         health={health}

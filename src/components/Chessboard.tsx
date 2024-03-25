@@ -53,6 +53,7 @@ export function Chessboard({
   movable = false,
 }: ChessboardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
+  const boardWrapperRef = useRef<HTMLDivElement>(null);
   const [board, setBoard] = useState<BoardApi | null>(null);
 
   useEffect(() => {
@@ -130,34 +131,40 @@ export function Chessboard({
     onSelect,
   ]);
 
-  let gameSourceEl = null;
-  if (gameUrl) {
-    gameSourceEl = (
-      <Link
-        href={gameUrl}
-        className="bg-backdrop px-2 text-white"
-        target="_blank"
-      >
-        View Game
-      </Link>
-    );
-  }
+  useEffect(() => {
+    const wrapper = boardWrapperRef.current;
+    if (!wrapper || !board) {
+      return;
+    }
 
-  const topColor = flipped ? "bg-red-100" : "bg-red-400";
-  const bottomColor = flipped ? "bg-red-400" : "bg-red-100";
+    const wrapperParent = wrapper.parentElement;
+    if (!wrapperParent) {
+      return;
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+      const rect = wrapperParent.getBoundingClientRect();
+      const minLength = Math.min(rect.height, rect.width);
+      console.log(rect.toJSON());
+      const sizeAttr = `${minLength}px`;
+      wrapper.style.width = sizeAttr;
+      wrapper.style.height = sizeAttr;
+      wrapperParent.style.maxHeight = sizeAttr;
+    });
+
+    resizeObserver.observe(wrapperParent);
+    return () => resizeObserver.disconnect(); // clean up
+  }, [boardWrapperRef, board]);
 
   return (
-    <div className="w-chessboard">
-      <div className={`border-2 border-black ${topColor} min-h-8 text-black`}>
-        {children}
-      </div>
-      <div className={`flex ${flipped ? "flex-col-reverse" : "flex-col"}`}>
-        <div ref={boardRef} className="h-chessboard w-chessboard" />
-      </div>
-      <div
-        className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-8 pr-6 text-black`}
-      >
-        {gameSourceEl}
+    <div
+      className={`flex-1 justify-center items-center flex ${flipped ? "flex-col-reverse" : "flex-col"}`}
+    >
+      <div ref={boardWrapperRef}>
+        <div
+          ref={boardRef}
+          className="flex justify-center items-center h-full w-full"
+        />
       </div>
     </div>
   );
