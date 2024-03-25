@@ -1,5 +1,6 @@
 ci: validate puzzles on push
 feat: detect improvement of worthy trades
+feat: exit button
 feat: improved writing
 feat: paranormal spotting anomaly game
 feat: puzzle generators specify levels with buckets
@@ -11,6 +12,7 @@ fix(game): number sometimes ignored on enter
 fix(game): weird equal sign in show answers
 fix(style): HUD not always visible
 fix(style): buttons have different styles
+fix(style): site nav does not wrap
 fix(style): solution bar has no x padding
 fix(style): too much space at top on mobile
 fix(ux): number entry jumps around
