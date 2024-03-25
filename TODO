@@ -12,6 +12,7 @@ fix(game): number sometimes ignored on enter
 fix(style): buttons have different styles
 fix(style): site nav does not wrap
 fix(style): too much space at top on mobile
+fix(style): wasted spance in game header
 fix(ux): position of solutions non-obvious
 refactor: autogenerate site nav
 refactor: externalize game logic

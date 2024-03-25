@@ -7,9 +7,6 @@ import { SanInputForm } from "./SanInputForm";
 
 // Types
 import type { PlayerStatus, SolutionType } from "@/types";
-import Link from "next/link";
-
-const DEBUG = true;
 
 export type ActionBarProps = {
   playerStatus: PlayerStatus;
@@ -19,7 +16,6 @@ export type ActionBarProps = {
   showReplay: boolean;
   showAdvance: boolean;
   showGiveUp: boolean;
-  toExit: string;
   onAdvance: () => void;
   onGiveUp: () => void;
   onSanEntry: (san: string) => void;
@@ -35,7 +31,6 @@ export const ActionBar = ({
   showAdvance,
   showReplay,
   showGiveUp,
-  toExit,
   onSanEntry,
   onGiveUp,
   onAdvance,
@@ -82,12 +77,6 @@ export const ActionBar = ({
           )}
         </div>
       </div>
-      <Link
-        href={toExit}
-        className="rounded bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
-      >
-        Exit
-      </Link>
       {solutionType == "number" && (
         <NumberEntryForm
           label="Total value"

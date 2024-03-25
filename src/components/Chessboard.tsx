@@ -1,5 +1,5 @@
 // React
-import React, { useEffect, useRef, useState } from "react";
+import React, { Ref, RefObject, useEffect, useRef, useState } from "react";
 
 // NextJS
 import Link from "next/link";
@@ -19,9 +19,10 @@ type ChessboardProps = {
   highlightedSquares?: Key[];
   flipped?: boolean;
   gameUrl?: string | null;
+  children?: React.ReactNode;
+  topLevelRef: RefObject<HTMLElement>;
   onMove?: (san: string) => boolean;
   onSelect?: (square: string) => void;
-  children?: React.ReactNode;
 };
 
 function onSelectFactory(f: ((s: Key) => void) | undefined) {
@@ -44,6 +45,7 @@ export function Chessboard({
   fen,
   onMove,
   onSelect,
+  topLevelRef,
   children,
   viewOnly = false,
   goodSquares = [],
@@ -133,7 +135,8 @@ export function Chessboard({
 
   useEffect(() => {
     const wrapper = boardWrapperRef.current;
-    if (!wrapper || !board) {
+    const topLevel = topLevelRef.current;
+    if (!wrapper || !topLevel) {
       return;
     }
 
@@ -142,30 +145,29 @@ export function Chessboard({
       return;
     }
 
+    // min(top level - width, ???)
     const resizeObserver = new ResizeObserver(() => {
       const rect = wrapperParent.getBoundingClientRect();
       const minLength = Math.min(rect.height, rect.width);
-      console.log(rect.toJSON());
       const sizeAttr = `${minLength}px`;
       wrapper.style.width = sizeAttr;
       wrapper.style.height = sizeAttr;
-      wrapperParent.style.maxHeight = sizeAttr;
     });
+
+    // I want to grow to consume all available space but stop when the parents space is exhausted.
+    //
+    // MIN OF max-w-2xl and 100vw
 
     resizeObserver.observe(wrapperParent);
     return () => resizeObserver.disconnect(); // clean up
-  }, [boardWrapperRef, board]);
+  }, [boardWrapperRef, topLevelRef, board]);
 
   return (
-    <div
-      className={`flex-1 justify-center items-center flex ${flipped ? "flex-col-reverse" : "flex-col"}`}
-    >
-      <div ref={boardWrapperRef}>
-        <div
-          ref={boardRef}
-          className="flex justify-center items-center h-full w-full"
-        />
-      </div>
+    <div ref={boardWrapperRef} className="grow">
+      <div
+        ref={boardRef}
+        className="flex justify-center items-center h-full w-full"
+      />
     </div>
   );
 }

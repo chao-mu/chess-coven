@@ -19,7 +19,7 @@ export const games: Record<
     },
     flavor: {
       title: "Catapult Knights",
-      shortRules: "Click squares a knight would fork all pieces",
+      shortRules: "Click squares where a knight would fork all pieces",
       rules:
         "Click all squares that attack all pieces simultaneously. Otherwise click No Solution.",
       story:

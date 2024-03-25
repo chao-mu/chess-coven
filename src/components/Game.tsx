@@ -1,7 +1,7 @@
 "use client";
 
 // React
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 
 // Chess.js
 import { Chess, BLACK, type Square } from "chess.js";
@@ -65,8 +65,10 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
   const [highlightPosition, setHighlightPosition] = useState(0);
   const [puzzleIdx, setPuzzleIdx] = useState<number>(0);
 
+  const topLevelRef = useRef<HTMLDivElement>(null);
+
   const { autoAdvance, solutionType, supportNoSolution } = logic;
-  const { title, rules } = flavor;
+  const { title, rules, shortRules } = flavor;
 
   const { nextLevelId, puzzles } = level;
 
@@ -282,11 +284,20 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
   const bottomColor = flipped ? "bg-red-400" : "bg-red-100";
 
   return (
-    <div className="relative flex-1 flex flex-col bg-backdrop mx-auto h-screen max-w-2xl justify-center">
-      <div className="p-2 flex flex-col gap-1 items-center">
-        <div className="font-header text-2xl font-bold">{title}</div>
-        <div className="text-center">{rules}</div>
+    <div
+      ref={topLevelRef}
+      className="relative flex flex-col bg-backdrop mx-auto w-full max-w-2xl justify-center"
+    >
+      <div className="p-4">
+        <Link
+          href="/"
+          className="rounded bg-red-600 ml-2 px-2 py-1 font-bold text-white hover:bg-red-700 float-right"
+        >
+          Exit
+        </Link>
+        <div className="font-header text-2xl">{shortRules}</div>
       </div>
+
       {playerStatus == "wrong-guess" && (
         <Overlay>
           <IncorrectScreen
@@ -337,7 +348,6 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
         onReplay={replay}
         pulseNoSolution={playerStatus == "gave-up" && solutions.length == 0}
         playerStatus={playerStatus}
-        toExit={`/games/${id}/start`}
       />
 
       <div className={`border-2 border-black ${topColor} min-h-9 text-black`}>
@@ -377,6 +387,7 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
         onSelect={checkGuess}
         onMove={checkGuess}
         flipped={flipped}
+        topLevelRef={topLevelRef}
       />
       <div
         className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-9 pr-6 text-black`}

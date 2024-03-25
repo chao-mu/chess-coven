@@ -40,7 +40,7 @@ export default function RootLayout({
             `,
         }}
       />
-      <body className="bg-forest bg-forest-bottom bg-top bg-no-repeat font-body text-white min-h-screen flex flex-col">
+      <body className="bg-forest bg-forest-bottom bg-top bg-no-repeat font-body text-white min-h-dvh flex flex-col">
         <Analytics />
         {children}
       </body>
