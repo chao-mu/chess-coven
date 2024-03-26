@@ -99,7 +99,7 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
       const interval = setInterval(() => {
         if (highlightPosition < fenPosition) {
           setHighlightPosition((position) => position + 1);
-        } else {
+        } else if (fenPosition < fens.length - 1) {
           setFenPosition((position) => position + 1);
         }
       }, ANIMATION_SPEED);
@@ -234,8 +234,6 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
       setPlayerStatus("wrong-guess");
       loseHealth();
     }
-
-    return isCorrect;
   };
 
   const replay = () => {

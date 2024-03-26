@@ -21,7 +21,7 @@ type ChessboardProps = {
   gameUrl?: string | null;
   children?: React.ReactNode;
   topLevelRef: RefObject<HTMLElement>;
-  onMove?: (san: string) => boolean;
+  onMove?: (san: string) => void;
   onSelect?: (square: string) => void;
 };
 
@@ -58,57 +58,40 @@ export function Chessboard({
   const boardWrapperRef = useRef<HTMLDivElement>(null);
   const [board, setBoard] = useState<BoardApi | null>(null);
 
+  if (!fen) {
+    fen = "8/8/8/8/8/8/8/8 w - - 0 1";
+  }
+
   useEffect(() => {
     if (!boardRef.current) {
       return;
     }
 
-    let config: Config = {
+    const config: Config = {
       viewOnly,
       fen: fen,
       orientation: flipped ? "black" : "white",
       animation: { enabled: true },
+      events: {
+        select: movable ? undefined : onSelectFactory(onSelect),
+        move: (orig: Key, dest: Key) => {
+          if (!onMove) {
+            return;
+          }
+
+          onMove(orig + dest);
+        },
+      },
+      movable: { free: true },
+      draggable: { enabled: movable },
+      drawable: {
+        enabled: false,
+        autoShapes: goodSquares
+          .map((s) => ({ orig: s, brush: "green" }))
+          .concat(badSquares.map((s) => ({ orig: s, brush: "red" })))
+          .concat(highlightedSquares.map((s) => ({ orig: s, brush: "blue" }))),
+      },
     };
-
-    if (movable) {
-      config = {
-        ...config,
-        movable: {
-          free: true,
-          events: {
-            after: (orig: Key, dest: Key) => {
-              if (!onMove) {
-                return;
-              }
-
-              const allow = onMove(orig + dest);
-              if (!allow) {
-                board?.cancelMove();
-                board?.set(config);
-              }
-            },
-          },
-        },
-      };
-    } else {
-      config = {
-        ...config,
-        events: {
-          select: onSelectFactory(onSelect),
-        },
-        movable: { free: false },
-        draggable: { enabled: false },
-        drawable: {
-          enabled: false,
-          autoShapes: goodSquares
-            .map((s) => ({ orig: s, brush: "green" }))
-            .concat(badSquares.map((s) => ({ orig: s, brush: "red" })))
-            .concat(
-              highlightedSquares.map((s) => ({ orig: s, brush: "blue" })),
-            ),
-        },
-      };
-    }
 
     if (board) {
       board.set(config);
