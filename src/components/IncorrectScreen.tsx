@@ -18,20 +18,20 @@ export function IncorrectScreen({
   health,
 }: IncorrectScreenProps) {
   return (
-    <div className="size-full flex flex-col gap-4 flex-wrap items-center justify-center">
-      <div className="text-4xl p-2">Incorrect!</div>
+    <div className="flex size-full flex-col flex-wrap items-center justify-center gap-4">
+      <div className="p-2 text-4xl">Incorrect!</div>
       <div className="flex gap-2">
         <button
           onClick={tryAgain}
           type="submit"
-          className="border-2 border-amber-600 p-2 text-lg bg-gray-800"
+          className="border-2 border-amber-600 bg-gray-800 p-2 text-lg"
         >
           Try Again
         </button>
         <button
           onClick={showSolutions}
           type="submit"
-          className="border-2 border-amber-600 p-2 text-lg bg-gray-800"
+          className="border-2 border-amber-600 bg-gray-800 p-2 text-lg"
         >
           Show Solutions
         </button>

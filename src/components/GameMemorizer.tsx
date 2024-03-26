@@ -1,7 +1,6 @@
 "use client";
 
 // React
-import React from "react";
 import { useState } from "react";
 
 // chess.js
@@ -19,7 +18,6 @@ import { SanInputForm } from "./SanInputForm";
 import { type Game } from "@/types";
 
 import { GameSelect } from "@/components/GameSelect";
-import { GameContainer } from "./GameContainer";
 
 const getChess = (pgn: string, position: number) => {
   const chess = new Chess();
@@ -76,7 +74,7 @@ export const GameMemorizer = () => {
   }
 
   return (
-    <div className="flex flex-col bg-backdrop w-chessboard mx-auto">
+    <div className="mx-auto flex flex-col bg-backdrop">
       <div className="m-2 text-center font-header text-2xl font-bold">
         Game Memorizer
       </div>

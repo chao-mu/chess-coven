@@ -1,6 +1,3 @@
-// React
-import React from "react";
-
 // Components
 import { NumberEntryForm } from "./NumberEntryForm";
 import { SanInputForm } from "./SanInputForm";
@@ -38,7 +35,7 @@ export const ActionBar = ({
   onReplay,
 }: ActionBarProps) => {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 py-1 px-2">
+    <div className="flex flex-wrap items-center justify-between gap-4 px-2 py-1">
       <div className="flex items-center gap-1">
         <div className="flex gap-2">
           {showAdvance && (

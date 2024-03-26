@@ -14,8 +14,8 @@ import { Footer } from "@/components/Footer";
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <div className="flex-1 flex justify-center items-center flex-wrap-reverse">
-        <header className="flex-1 flex justify-center">
+      <div className="flex flex-1 flex-wrap-reverse items-center justify-center">
+        <header className="flex flex-1 justify-center">
           <div className="flex flex-col items-center gap-2">
             <Link
               href="/"

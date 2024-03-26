@@ -78,7 +78,7 @@ export default async function Page({ params: { gameId } }: HasParams) {
   }
 
   return (
-    <main className="flex-1 flex flex-col justify-center items-center">
+    <main className="flex flex-1 flex-col items-center justify-center">
       <Game
         id={gameId}
         flavor={flavor}

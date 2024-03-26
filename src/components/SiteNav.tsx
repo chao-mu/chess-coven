@@ -1,8 +1,5 @@
 "use client";
 
-// React
-import React from "react";
-
 // Ours
 import { LinkButton } from "@/components/LinkButton";
 import { games } from "@/games";

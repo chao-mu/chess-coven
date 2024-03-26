@@ -1,7 +1,7 @@
 "use client";
 
 // React
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 // Chess.js
 import { Chess, BLACK, type Square } from "chess.js";
@@ -64,8 +64,6 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
   const [fenPosition, setFenPosition] = useState(0);
   const [highlightPosition, setHighlightPosition] = useState(0);
   const [puzzleIdx, setPuzzleIdx] = useState<number>(0);
-
-  const topLevelRef = useRef<HTMLDivElement>(null);
 
   const { autoAdvance, solutionType, supportNoSolution } = logic;
   const { title, rules, shortRules } = flavor;
@@ -282,14 +280,11 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
   const bottomColor = flipped ? "bg-red-400" : "bg-red-100";
 
   return (
-    <div
-      ref={topLevelRef}
-      className="relative flex flex-col bg-backdrop mx-auto w-full max-w-2xl justify-center"
-    >
+    <div className="relative mx-auto flex w-full max-w-2xl flex-col justify-center bg-backdrop">
       <div className="p-4">
         <Link
           href="/"
-          className="rounded bg-red-600 ml-2 px-2 py-1 font-bold text-white hover:bg-red-700 float-right"
+          className="float-right ml-2 rounded bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
         >
           Exit
         </Link>
@@ -385,7 +380,6 @@ export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
         onSelect={checkGuess}
         onMove={checkGuess}
         flipped={flipped}
-        topLevelRef={topLevelRef}
       />
       <div
         className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-9 pr-6 text-black`}

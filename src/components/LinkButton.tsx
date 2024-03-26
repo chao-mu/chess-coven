@@ -1,8 +1,5 @@
 "use client";
 
-// React
-import React from "react";
-
 // NextJS
 import Link from "next/link";
 

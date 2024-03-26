@@ -18,12 +18,12 @@ export function LevelClearScreen({
   health,
 }: IncorrectScreenProps) {
   return (
-    <div className="size-full flex flex-col gap-4 flex-wrap items-center justify-center">
-      <div className="text-4xl p-2">Level clear! Next up {levelName}</div>
+    <div className="flex size-full flex-col flex-wrap items-center justify-center gap-4">
+      <div className="p-2 text-4xl">Level clear! Next up {levelName}</div>
       <div className="flex gap-2">
         <button
           onClick={onContinue}
-          className="rounded mt-2 bg-amber-600 self-center px-6 py-2 text-white hover:bg-amber-700"
+          className="mt-2 self-center rounded bg-amber-600 px-6 py-2 text-white hover:bg-amber-700"
         >
           Continue
         </button>

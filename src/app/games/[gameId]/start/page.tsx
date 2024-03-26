@@ -1,9 +1,6 @@
 // NextJS
 import { notFound } from "next/navigation";
 
-// Components
-import { GameStartScreen } from "@/components/GameStartScreen";
-
 // Game
 import { getFlavor } from "@/games";
 import Link from "next/link";
@@ -22,7 +19,7 @@ export default function Page({ params: { gameId } }: HasParams) {
   const { rules, story, title } = flavor;
 
   return (
-    <main className="flex gap-4 min-h-[90dvh] flex-col justify-center p-6 bg-backdrop">
+    <main className="flex min-h-[90dvh] flex-col justify-center gap-4 bg-backdrop p-6">
       <h1 className="text-center text-4xl">{title}</h1>
       <div>
         <div className="mb-1 text-center text-xl font-bold">Story</div>
@@ -34,7 +31,7 @@ export default function Page({ params: { gameId } }: HasParams) {
       </div>
       <Link
         href={`/games/${gameId}/play`}
-        className="rounded mt-2 bg-amber-600 self-center px-6 py-2 text-white hover:bg-amber-700"
+        className="mt-2 self-center rounded bg-amber-600 px-6 py-2 text-white hover:bg-amber-700"
       >
         Play
       </Link>

@@ -1,3 +1,4 @@
+// React
 import { type ReactNode } from "react";
 
 type OverlayProps = {
@@ -5,9 +6,5 @@ type OverlayProps = {
 };
 
 export function Overlay({ children }: OverlayProps) {
-  return (
-    <div className="absolute size-full z-50 bg-opacity-75 bg-black">
-      {children}
-    </div>
-  );
+  return <div className="absolute z-50 size-full bg-black/75">{children}</div>;
 }

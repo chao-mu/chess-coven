@@ -1,8 +1,5 @@
 // React
-import React, { Ref, RefObject, useEffect, useRef, useState } from "react";
-
-// NextJS
-import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 // Chessground
 import { Chessground } from "chessground";
@@ -20,7 +17,6 @@ type ChessboardProps = {
   flipped?: boolean;
   gameUrl?: string | null;
   children?: React.ReactNode;
-  topLevelRef: RefObject<HTMLElement>;
   onMove?: (san: string) => void;
   onSelect?: (square: string) => void;
 };
@@ -41,12 +37,9 @@ function onSelectFactory(f: ((s: Key) => void) | undefined) {
 }
 
 export function Chessboard({
-  gameUrl,
   fen,
   onMove,
   onSelect,
-  topLevelRef,
-  children,
   viewOnly = false,
   goodSquares = [],
   badSquares = [],
@@ -118,8 +111,7 @@ export function Chessboard({
 
   useEffect(() => {
     const wrapper = boardWrapperRef.current;
-    const topLevel = topLevelRef.current;
-    if (!wrapper || !topLevel) {
+    if (!wrapper) {
       return;
     }
 
@@ -128,7 +120,6 @@ export function Chessboard({
       return;
     }
 
-    // min(top level - width, ???)
     const resizeObserver = new ResizeObserver(() => {
       const rect = wrapperParent.getBoundingClientRect();
       const minLength = Math.min(rect.height, rect.width);
@@ -137,19 +128,15 @@ export function Chessboard({
       wrapper.style.height = sizeAttr;
     });
 
-    // I want to grow to consume all available space but stop when the parents space is exhausted.
-    //
-    // MIN OF max-w-2xl and 100vw
-
     resizeObserver.observe(wrapperParent);
     return () => resizeObserver.disconnect(); // clean up
-  }, [boardWrapperRef, topLevelRef, board]);
+  }, [boardWrapperRef, board]);
 
   return (
     <div ref={boardWrapperRef} className="grow">
       <div
         ref={boardRef}
-        className="flex justify-center items-center h-full w-full"
+        className="flex size-full items-center justify-center"
       />
     </div>
   );
