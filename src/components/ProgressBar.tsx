@@ -1,6 +1,3 @@
-// React
-import React from "react";
-
 type ProgressBarProps = {
   progress: number;
 };

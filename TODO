@@ -1,0 +1,15 @@
+ci: validate puzzles on push
+feat(ux): exit button from incorrect guess
+feat: detect improvement of worthy trades
+feat: improved writing
+feat: paranormal spotting anomaly game
+feat: puzzle generators specify levels with buckets
+feat: split captures and checks mini games
+fix(game): No Solution does not show incorrect screen
+fix(game): despite solution, knight game has no solution as answer
+fix(game): number sometimes ignored on enter
+fix(style): buttons have different styles
+fix(style): site nav does not wrap
+fix(ux): position of solutions non-obvious
+refactor: externalize game logic
+refactor: replace generic input to solution type specific

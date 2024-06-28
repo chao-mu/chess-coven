@@ -13,7 +13,7 @@ export default function Page() {
         <div className="flex flex-col justify-center gap-8 p-8">
           <div className="flex flex-col gap-4">
             <h1 className="font-header text-6xl font-bold text-amber-300">
-              Tactical Elements
+              Chess Coven
             </h1>
             <p className="max-w-2xl text-xl">
               Survive in the wilderness of Chessimprovia, using your tactical

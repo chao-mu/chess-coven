@@ -1,8 +1,5 @@
 // React
-import React, { useEffect, useRef, useState } from "react";
-
-// NextJS
-import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 // Chessground
 import { Chessground } from "chessground";
@@ -11,48 +8,28 @@ import { type Key } from "chessground/types";
 import { type Config } from "chessground/config";
 
 type ChessboardProps = {
+  viewOnly?: boolean;
   movable?: boolean;
   fen?: string;
   goodSquares?: Key[];
   badSquares?: Key[];
   highlightedSquares?: Key[];
   flipped?: boolean;
-  gameUrl?: string;
-  onMove?: (san: string) => boolean;
-  onSelect?: (square: string) => void;
+  gameUrl?: string | null;
   children?: React.ReactNode;
+  onMove?: (san: string) => void;
+  onSelect?: (square: string) => void;
 };
-
-function ChessboardWrapper({
-  flipped,
-  children,
-}: {
-  flipped: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="relative m-auto flex aspect-square min-h-0 flex-col">
-      <canvas width="10000" height="10000" className="max-h-full max-w-full" />
-      <div
-        className={`absolute inset-0 flex ${
-          flipped ? "flex-col-reverse" : "flex-col"
-        }`}
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
 
 function onSelectFactory(f: ((s: Key) => void) | undefined) {
   if (!f) {
     return undefined;
   }
 
-  let last = Date.now();
+  let last: number | null = null;
   return (s: Key) => {
     const now = Date.now();
-    if (now - last > 300) {
+    if (last == null || now - last > 300) {
       last = now;
       f(s);
     }
@@ -60,11 +37,10 @@ function onSelectFactory(f: ((s: Key) => void) | undefined) {
 }
 
 export function Chessboard({
-  gameUrl,
   fen,
   onMove,
   onSelect,
-  children,
+  viewOnly = false,
   goodSquares = [],
   badSquares = [],
   highlightedSquares = [],
@@ -72,58 +48,43 @@ export function Chessboard({
   movable = false,
 }: ChessboardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
+  const boardWrapperRef = useRef<HTMLDivElement>(null);
   const [board, setBoard] = useState<BoardApi | null>(null);
+
+  if (!fen) {
+    fen = "8/8/8/8/8/8/8/8 w - - 0 1";
+  }
 
   useEffect(() => {
     if (!boardRef.current) {
       return;
     }
 
-    let config: Config = {
+    const config: Config = {
+      viewOnly,
       fen: fen,
       orientation: flipped ? "black" : "white",
       animation: { enabled: true },
+      events: {
+        select: movable ? undefined : onSelectFactory(onSelect),
+        move: (orig: Key, dest: Key) => {
+          if (!onMove) {
+            return;
+          }
+
+          onMove(orig + dest);
+        },
+      },
+      movable: { free: true },
+      draggable: { enabled: movable },
+      drawable: {
+        enabled: false,
+        autoShapes: goodSquares
+          .map((s) => ({ orig: s, brush: "green" }))
+          .concat(badSquares.map((s) => ({ orig: s, brush: "red" })))
+          .concat(highlightedSquares.map((s) => ({ orig: s, brush: "blue" }))),
+      },
     };
-
-    if (movable) {
-      config = {
-        ...config,
-        movable: {
-          free: true,
-          events: {
-            after: (orig: Key, dest: Key) => {
-              if (!onMove) {
-                return;
-              }
-
-              const allow = onMove(orig + dest);
-              if (!allow) {
-                board?.cancelMove();
-                board?.set(config);
-              }
-            },
-          },
-        },
-      };
-    } else {
-      config = {
-        ...config,
-        events: {
-          select: onSelectFactory(onSelect),
-        },
-        movable: { free: false },
-        draggable: { enabled: false },
-        drawable: {
-          enabled: false,
-          autoShapes: goodSquares
-            .map((s) => ({ orig: s, brush: "green" }))
-            .concat(badSquares.map((s) => ({ orig: s, brush: "red" })))
-            .concat(
-              highlightedSquares.map((s) => ({ orig: s, brush: "blue" })),
-            ),
-        },
-      };
-    }
 
     if (board) {
       board.set(config);
@@ -137,6 +98,7 @@ export function Chessboard({
   }, [
     board,
     boardRef,
+    viewOnly,
     fen,
     flipped,
     movable,
@@ -147,35 +109,35 @@ export function Chessboard({
     onSelect,
   ]);
 
-  let gameSourceEl = null;
-  if (gameUrl) {
-    gameSourceEl = (
-      <Link
-        href={gameUrl}
-        className="bg-backdrop px-2 text-white"
-        target="_blank"
-      >
-        View Game
-      </Link>
-    );
-  }
+  useEffect(() => {
+    const wrapper = boardWrapperRef.current;
+    if (!wrapper) {
+      return;
+    }
 
-  const topColor = flipped ? "bg-red-100" : "bg-red-400";
-  const bottomColor = flipped ? "bg-red-400" : "bg-red-100";
+    const wrapperParent = wrapper.parentElement;
+    if (!wrapperParent) {
+      return;
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+      const rect = wrapperParent.getBoundingClientRect();
+      const minLength = Math.min(rect.height, rect.width);
+      const sizeAttr = `${minLength}px`;
+      wrapper.style.width = sizeAttr;
+      wrapper.style.height = sizeAttr;
+    });
+
+    resizeObserver.observe(wrapperParent);
+    return () => resizeObserver.disconnect(); // clean up
+  }, [boardWrapperRef, board]);
 
   return (
-    <div className="flex min-h-0 flex-col">
-      <div className={`border-2 border-black ${topColor} min-h-8 text-black`}>
-        {children}
-      </div>
-      <ChessboardWrapper flipped={flipped}>
-        <div ref={boardRef} className="size-full" />
-      </ChessboardWrapper>
+    <div ref={boardWrapperRef} className="grow">
       <div
-        className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-8 pr-6 text-black`}
-      >
-        {gameSourceEl}
-      </div>
+        ref={boardRef}
+        className="flex size-full items-center justify-center"
+      />
     </div>
   );
 }

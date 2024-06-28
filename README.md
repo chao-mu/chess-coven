@@ -1,5 +1,5 @@
-# Tactical Elements
+# Chess Coven
 
-New kinds of Chess puzzles that focus on pattern recognition over what moves to play. Also includes a game memorizer tool/game to help my Chess Dojo siblings memorize their games.
+New kinds of Chess puzzles that focus on pattern recognition and thought process over what move is best to play. Also includes tools to help my Chess Dojo.
 
-[Live here](https://tactical-elements.danimal.app)
+[Live here](https://chesscoven.com)

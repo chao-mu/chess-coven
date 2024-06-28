@@ -1,6 +1,3 @@
-// React
-import React from "react";
-
 // NextJS
 import Link from "next/link";
 
@@ -9,12 +6,12 @@ import { SiGithub, SiLichess } from "react-icons/si";
 
 export function Footer() {
   return (
-    <footer className="mt-auto w-full bg-gray-900/75 shadow">
+    <footer className="bg-gray-900/75 shadow">
       <div className="flex w-full flex-wrap items-center justify-between p-2">
         <ul className="mr-8 flex flex-wrap items-center gap-4 text-gray-300">
           <li>
             <Link
-              href="https://github.com/chao-mu/tactical-elements"
+              href="https://github.com/chao-mu/chess-coven"
               className="flex items-center gap-2 hover:text-amber-500 hover:underline"
             >
               <SiGithub />

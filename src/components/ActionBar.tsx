@@ -1,89 +1,91 @@
-// React
-import React from "react";
-
 // Components
-import { NumberEntryForm } from "@/components/NumberEntryForm";
+import { NumberEntryForm } from "./NumberEntryForm";
+import { SanInputForm } from "./SanInputForm";
 
 // Types
-import { type PlayerStatus } from "@/types";
+import type { PlayerStatus, SolutionType } from "@/types";
 
 export type ActionBarProps = {
   playerStatus: PlayerStatus;
-  autoAdvance: boolean;
-  sanEntry: boolean;
-  allowNoSolution: boolean;
+  solutionType: SolutionType;
+  showNoSolution: boolean;
   pulseNoSolution: boolean;
-  onAdvance?: () => void;
-  onGiveUp?: () => void;
+  showReplay: boolean;
+  showAdvance: boolean;
+  showGiveUp: boolean;
+  onAdvance: () => void;
+  onGiveUp: () => void;
   onSanEntry: (san: string) => void;
-  onContinue?: () => void;
-  onNumberEntry?: (number: number) => void;
-  onReplayAnimation?: () => void;
+  onNumberEntry: (number: number) => void;
+  onReplay: () => void;
 };
 
 export const ActionBar = ({
-  autoAdvance,
   playerStatus,
-  allowNoSolution,
-  pulseNoSolution = false,
+  solutionType,
+  pulseNoSolution,
+  showNoSolution,
+  showAdvance,
+  showReplay,
+  showGiveUp,
+  onSanEntry,
   onGiveUp,
   onAdvance,
   onNumberEntry,
-  onReplayAnimation,
+  onReplay,
 }: ActionBarProps) => {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="flex flex-wrap items-center justify-between gap-4 px-2 py-1">
       <div className="flex items-center gap-1">
-        {(!autoAdvance || playerStatus == "gave-up") && (
-          <button
-            onClick={onAdvance}
-            className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
-          >
-            Advance
-          </button>
-        )}
-        {playerStatus != "gave-up" && (
-          <>
-            {allowNoSolution && (
-              <button
-                className={`${
-                  pulseNoSolution ? "animate-pulse" : ""
-                } rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700`}
-                onClick={onAdvance}
-              >
-                No Solution
-              </button>
-            )}
+        <div className="flex gap-2">
+          {showAdvance && (
+            <button
+              onClick={onAdvance}
+              className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
+            >
+              Advance
+            </button>
+          )}
+          {showGiveUp && (
             <button
               className="whitespace-nowrap rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
               onClick={onGiveUp}
             >
               Give Up
             </button>
-          </>
-        )}
+          )}
+          {showReplay && (
+            <button
+              className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
+              onClick={onReplay}
+            >
+              Replay
+            </button>
+          )}
+          {showNoSolution && (
+            <button
+              className={`${
+                pulseNoSolution ? "animate-pulse" : ""
+              } rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700`}
+              onClick={onAdvance}
+            >
+              No Solution
+            </button>
+          )}
+        </div>
       </div>
-      {onReplayAnimation && (
-        <button
-          className="rounded bg-amber-600 px-2 py-1 font-bold text-white hover:bg-amber-700"
-          onClick={onReplayAnimation}
-        >
-          Replay
-        </button>
+      {solutionType == "number" && (
+        <NumberEntryForm
+          label="Total value"
+          onSubmit={onNumberEntry}
+          isWrong={playerStatus == "wrong-guess"}
+        />
       )}
-      {onNumberEntry && (
-        <div className="mx-auto">
-          <NumberEntryForm
-            label="Total value"
-            onSubmit={onNumberEntry}
-            isWrong={playerStatus == "wrong-guess"}
-          />
-        </div>
-      )}
-      {playerStatus == "premature-advancement" && (
-        <div className="flex items-center justify-center pr-6 font-bold text-amber-400">
-          Still more to go!
-        </div>
+      {solutionType == "move" && (
+        <SanInputForm
+          onSubmit={onSanEntry}
+          isWrong={playerStatus == "wrong-guess"}
+        />
       )}
     </div>
   );

@@ -1,156 +1,201 @@
 "use client";
 
 // React
-import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 // Chess.js
-import { Chess, BLACK } from "chess.js";
-
-// Chessground
-import { type Key } from "chessground/types";
+import { Chess, BLACK, type Square } from "chess.js";
 
 // Components
 import { Chessboard } from "@/components/Chessboard";
-import { GameOverScreen } from "@/components/GameOverScreen";
 import { GameHUD } from "@/components/GameHUD";
-import { GameStartScreen } from "@/components/GameStartScreen";
 import { ActionBar } from "@/components/ActionBar";
 
 // Types
 import type {
-  GameStatus,
-  NextPuzzleLogic,
   PlayerStatus,
-  GameInfo,
+  GameLogic,
+  GameFlavor,
+  GameLevel,
+  LevelId,
+  APIResponse,
 } from "@/types";
+import { Overlay } from "./Overlay";
+import { GameOverScreen } from "./GameOverScreen";
+import { IncorrectScreen } from "./IncorrectScreen";
+
+// Ours
+import {
+  getHealth,
+  getHighScore,
+  getScore,
+  resetGameSession,
+  storeHighScore,
+  updateGameSession,
+} from "@/utils/storage";
+import { LevelClearScreen } from "./NextLevelScreen";
+import Link from "next/link";
 
 type GameProps = {
-  gameInfo: GameInfo;
-  nextPuzzle: NextPuzzleLogic;
+  id: string;
+  flavor: GameFlavor;
+  logic: GameLogic;
+  defaultLevel: GameLevel;
+  getLevel: (
+    gameId: string,
+    levelId: LevelId,
+  ) => Promise<APIResponse<GameLevel>>;
 };
 const MAX_HEALTH = 3;
 
 const ANIMATION_SPEED = 1000;
 
-export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
-  const [gameUrl, setGameUrl] = useState<string | undefined>();
-  const [solutions, setSolutions] = useState<Map<string, string>>(new Map());
-  const [flipped, setFlipped] = useState(false);
+export function Game({ logic, flavor, defaultLevel, id, getLevel }: GameProps) {
   const [goodGuesses, setGoodGuesses] = useState<string[]>([]);
   const [badGuesses, setBadGuesses] = useState<string[]>([]);
-  const [health, setHealth] = useState(MAX_HEALTH);
-  const [currentScore, setCurrentScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
-  const [gameStatus, setGameStatus] = useState<GameStatus>("start");
+  const [health, setHealth] = useState(getHealth(id));
   const [playerStatus, setPlayerStatus] = useState<PlayerStatus>("idle");
-  const [advanced, setAdvanced] = useState(false);
-  const [wins, setWins] = useState(0);
+  const [currentScore, setCurrentScore] = useState<number>(getScore(id));
+  const [previousHighScore, setPreviousHighScore] = useState<number>(
+    getHighScore(id),
+  );
+  const [level, setLevel] = useState(defaultLevel);
 
-  const [fens, setFens] = useState<string[]>();
   const [fenPosition, setFenPosition] = useState(0);
   const [highlightPosition, setHighlightPosition] = useState(0);
-  const [perFenFenHighlights, setPerFenHighlights] = useState<Key[][]>([]);
+  const [puzzleIdx, setPuzzleIdx] = useState<number>(0);
 
-  const { title, rules, story, autoAdvance, solutionType } = gameInfo;
+  const { autoAdvance, solutionType, supportNoSolution } = logic;
+  const { title, rules, shortRules } = flavor;
+
+  const { nextLevelId, puzzles } = level;
+
+  const {
+    fens,
+    highlights: perFenHighlights,
+    site: gameUrl,
+    solutionAliases: solutionAliasesRecord,
+    solutions: solutionsRaw,
+  } = puzzles[puzzleIdx];
+  const solutionAliases = new Map(Object.entries(solutionAliasesRecord));
+  const solutions = solutionsRaw.map((s) => s.toString());
+
+  let flipped = false;
+  try {
+    const chess = new Chess(fens[0]);
+    flipped = chess.turn() === BLACK;
+  } catch (e) {
+    // We support invalid FENs
+  }
 
   useEffect(() => {
-    if (fens && fenPosition < fens.length - 1) {
+    if (
+      ["gave-up", "playing", "idle"].includes(playerStatus) &&
+      fens &&
+      fenPosition <= fens.length - 1
+    ) {
       const interval = setInterval(() => {
         if (highlightPosition < fenPosition) {
           setHighlightPosition((position) => position + 1);
-        } else {
+        } else if (fenPosition < fens.length - 1) {
           setFenPosition((position) => position + 1);
         }
       }, ANIMATION_SPEED);
       return () => clearInterval(interval);
     }
-  }, [fens, fenPosition, highlightPosition]);
+  }, [fens, fenPosition, highlightPosition, playerStatus]);
 
-  const readyToAdvance = goodGuesses.length == solutions.size;
+  useEffect(() => {
+    updateGameSession(id, { score: currentScore });
+  }, [id, currentScore]);
 
-  const resetAnimation = () => {
+  useEffect(() => {
+    updateGameSession(id, { health });
+  }, [id, health]);
+
+  useEffect(() => {
+    if (playerStatus == "dead") {
+      resetGameSession(id);
+    }
+  }, [id, playerStatus]);
+
+  useMemo(() => {
+    if (health < 1) {
+      setPlayerStatus("dead");
+    }
+  }, [health]);
+
+  useMemo(() => {
+    if (playerStatus == "dead") {
+      const highScore = getHighScore(id);
+      setPreviousHighScore(highScore);
+
+      if (currentScore > highScore) {
+        storeHighScore(id, currentScore);
+      }
+    }
+  }, [id, playerStatus, currentScore]);
+
+  const readyToAdvance = goodGuesses.length == solutions.length;
+
+  const replayAnimation = () => {
     setFenPosition(0);
     setHighlightPosition(0);
   };
 
-  let highlightedSquares = perFenFenHighlights[highlightPosition] || [];
+  let highlightedSquares = perFenHighlights[highlightPosition] || [];
   if (solutionType == "square" && playerStatus == "gave-up") {
-    highlightedSquares = Object.keys(solutions) as Key[];
+    highlightedSquares = [...Object.keys(solutions)] as Square[];
   }
 
-  const playAgain = async (newGame: boolean) => {
-    if (currentScore > highScore) {
-      setHighScore(currentScore);
-    }
-
-    setHealth(MAX_HEALTH);
-    setCurrentScore(0);
-    setGameStatus("playing");
-    setPlayerStatus("playing");
-
-    if (newGame) {
-      await gotoNextPuzzle();
-    } else {
-      setPlayerStatus("respawn");
-    }
+  const resetBoard = () => {
+    setGoodGuesses([]);
+    setBadGuesses([]);
+    replayAnimation();
+    setFenPosition(0);
+    setHighlightPosition(0);
   };
 
   const gotoNextPuzzle = async () => {
-    setGoodGuesses([]);
-    setBadGuesses([]);
-
-    const puzzle = await nextPuzzle({ wins });
-    if (puzzle.fens) {
-      setFens(puzzle.fens);
+    if (puzzleIdx >= puzzles.length - 1) {
+      const nextLevel = await getLevel(id, nextLevelId);
+      if (nextLevel.success) {
+        setPuzzleIdx(0);
+        setLevel(nextLevel.data);
+        setPlayerStatus("level-clear");
+      } else {
+        console.error(nextLevel.error);
+      }
     } else {
-      setFens([puzzle.fen]);
+      setPuzzleIdx((idx) => idx + 1);
+      setPlayerStatus("playing");
     }
 
-    setSolutions(new Map(Object.entries(puzzle.solutions)));
-
-    setPerFenHighlights(puzzle.highlights ?? []);
-    resetAnimation();
-
-    if (puzzle.site) {
-      setGameUrl(puzzle.site);
-    }
-
-    try {
-      const chess = new Chess(puzzle.fen);
-      setFlipped(chess.turn() === BLACK);
-    } catch (e) {
-      // We support invalid FENs
-    }
+    resetBoard();
   };
 
   const loseHealth = () => {
-    const newHealth = health - 1;
-    setHealth(newHealth);
-    if (newHealth < 1) {
-      setGameStatus("over");
-    }
+    setHealth((health) => health - 1);
   };
 
   const gainPoints = () => {
     setCurrentScore((score) => score + 1);
   };
 
-  const checkCompleted = async () => {
-    if (playerStatus === "gave-up" || readyToAdvance) {
-      if (solutions.size == 0) {
-        setAdvanced(true);
-      }
-
-      if (readyToAdvance) {
-        setWins((w) => w + 1);
-      }
-
+  const advance = async () => {
+    if (playerStatus === "gave-up") {
       await gotoNextPuzzle();
-      setPlayerStatus("playing");
-      gainPoints();
     } else {
-      setPlayerStatus("premature-advancement");
+      await checkCompleted();
+    }
+  };
+
+  const checkCompleted = async () => {
+    if (readyToAdvance) {
+      await gotoNextPuzzle();
+      gainPoints();
+      setPlayerStatus("playing");
+    } else {
       loseHealth();
     }
   };
@@ -158,23 +203,24 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
   const checkGuess = (guess: string) => {
     setPlayerStatus("playing");
 
+    const guessAlias = solutionAliases.get(guess) ?? guess;
+
     if (
       goodGuesses.includes(guess) ||
-      goodGuesses.includes(solutions.get(guess) ?? "") ||
+      goodGuesses.includes(guessAlias) ||
       badGuesses.includes(guess)
     ) {
       return false;
     }
 
-    const isCorrect =
-      solutions.has(guess) || Object.values(solutions).includes(guess);
+    const isCorrect = solutions.includes(guess);
 
     if (isCorrect) {
-      const newGoodGuesses = [...goodGuesses, solutions.get(guess) ?? guess];
+      const newGoodGuesses = [...goodGuesses, guessAlias];
       setGoodGuesses(newGoodGuesses);
 
       // Check if puzzle is complete
-      if (newGoodGuesses.length === solutions.size && autoAdvance) {
+      if (newGoodGuesses.length === solutions.length && autoAdvance) {
         gotoNextPuzzle()
           .then(() => gainPoints())
           .catch((err) => console.error(err));
@@ -182,112 +228,170 @@ export const Game = ({ gameInfo, nextPuzzle }: GameProps) => {
         gainPoints();
       }
     } else {
-      loseHealth();
       setBadGuesses([...badGuesses, guess]);
       setPlayerStatus("wrong-guess");
+      loseHealth();
     }
-
-    return isCorrect;
   };
 
-  const giveUp = () => {
-    if (playerStatus != "premature-advancement" && playerStatus != "respawn") {
+  const replay = () => {
+    resetBoard();
+    if (!["gave-up", "wrong-guess"].includes(playerStatus)) {
+      loseHealth();
+    }
+  };
+
+  const giveUp = async (shouldLoseHealth = true) => {
+    if (shouldLoseHealth) {
       loseHealth();
     }
 
     setPlayerStatus("gave-up");
-    solutions.forEach((alias, solution) => {
+    showSolutions();
+  };
+
+  const tryAgain = () => {
+    setPlayerStatus("playing");
+  };
+
+  const showSolutions = () => {
+    solutions.forEach((solution) => {
+      const alias = solutionAliases.get(solution) ?? solution;
       if (!goodGuesses.includes(solution) && !goodGuesses.includes(alias)) {
         setGoodGuesses((guesses) => [...guesses, alias]);
       }
     });
   };
 
+  let gameSourceEl = null;
+  if (gameUrl) {
+    gameSourceEl = (
+      <Link
+        href={gameUrl}
+        className="bg-backdrop px-2 text-white"
+        target="_blank"
+      >
+        View Game
+      </Link>
+    );
+  }
+
+  const topColor = flipped ? "bg-red-100" : "bg-red-400";
+  const bottomColor = flipped ? "bg-red-400" : "bg-red-100";
+
   return (
-    <div className="flex h-[95vh] min-w-[33vw] flex-col bg-gray-800/50">
-      {gameStatus === "start" && (
-        <GameStartScreen
-          title={title}
-          story={story}
-          onGameStart={() => playAgain(true)}
-          rules={rules}
-        />
+    <div className="relative mx-auto flex w-full max-w-2xl flex-col justify-center bg-backdrop">
+      <div className="p-4">
+        <Link
+          href="/"
+          className="float-right ml-2 rounded bg-red-600 px-2 py-1 font-bold text-white hover:bg-red-700"
+        >
+          Exit
+        </Link>
+        <div className="font-header text-2xl">{shortRules}</div>
+      </div>
+
+      {playerStatus == "wrong-guess" && (
+        <Overlay>
+          <IncorrectScreen
+            tryAgain={tryAgain}
+            showSolutions={() => giveUp(false)}
+            currentScore={currentScore}
+            highScore={previousHighScore}
+            maxHealth={MAX_HEALTH}
+            health={health}
+          />
+        </Overlay>
       )}
-      {gameStatus === "over" && (
-        <GameOverScreen
-          title={title}
-          rules={rules}
-          finalScore={currentScore}
-          previousHighScore={highScore}
-          onContinue={() => playAgain(false)}
-        />
+      {playerStatus == "dead" && (
+        <Overlay>
+          <GameOverScreen
+            previousHighScore={previousHighScore}
+            finalScore={currentScore}
+            rules={rules}
+            title={title}
+            to={`/games/${id}/start`}
+          />
+        </Overlay>
       )}
-      {gameStatus == "playing" && (
-        <>
-          <div>
-            <div className="m-2 text-center font-header text-2xl font-bold">
-              {title}
-            </div>
-            <div className="mt-2 p-4">{rules}</div>
-            <GameHUD
-              score={currentScore}
-              health={health}
-              highScore={highScore}
-              maxHealth={MAX_HEALTH}
-            />
-          </div>
-          <Chessboard
-            movable={solutionType == "move"}
-            fen={fens?.[fenPosition]}
-            gameUrl={gameUrl}
-            goodSquares={solutionType == "square" ? (goodGuesses as Key[]) : []}
-            badSquares={solutionType == "square" ? (badGuesses as Key[]) : []}
-            highlightedSquares={highlightedSquares}
-            onSelect={checkGuess}
-            onMove={checkGuess}
-            flipped={flipped}
-          >
-            <div className="flex h-full flex-wrap items-center justify-between gap-2 px-2">
-              <div>
-                {goodGuesses && goodGuesses.length > 0 && (
-                  <div className="flex gap-2 bg-gray-800/50 px-2">
-                    {goodGuesses.map((guess) => (
-                      <div className="text-green-500" key={guess}>
-                        {guess}
-                      </div>
-                    ))}
+      {playerStatus == "level-clear" && (
+        <Overlay>
+          <LevelClearScreen
+            highScore={previousHighScore}
+            currentScore={currentScore}
+            levelName={level.name}
+            health={health}
+            maxHealth={MAX_HEALTH}
+            onContinue={() => setPlayerStatus("playing")}
+          />
+        </Overlay>
+      )}
+      <ActionBar
+        showGiveUp={
+          playerStatus != "gave-up" && (supportNoSolution || !readyToAdvance)
+        }
+        showReplay={fens.length > 1 && health > 1}
+        showAdvance={!autoAdvance || playerStatus == "gave-up"}
+        showNoSolution={supportNoSolution}
+        solutionType={solutionType}
+        onAdvance={advance}
+        onSanEntry={(san) => checkGuess(san)}
+        onNumberEntry={(number) => checkGuess(number.toString())}
+        onGiveUp={() => giveUp()}
+        onReplay={replay}
+        pulseNoSolution={playerStatus == "gave-up" && solutions.length == 0}
+        playerStatus={playerStatus}
+      />
+
+      <div className={`border-2 border-black ${topColor} min-h-9 text-black`}>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="p-1">
+            {goodGuesses && goodGuesses.length > 0 && (
+              <div className="flex gap-2 bg-backdrop px-2">
+                {goodGuesses.map((guess) => (
+                  <div className="text-green-500" key={guess}>
+                    {guess}
                   </div>
-                )}
+                ))}
               </div>
-              <div>
-                {badGuesses && badGuesses.length > 0 && (
-                  <div className="flex gap-2 bg-gray-800/50 px-2 line-through">
-                    {badGuesses.map((guess) => (
-                      <div className="text-red-500" key={guess}>
-                        {guess}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </Chessboard>
-          <div>
-            <ActionBar
-              autoAdvance={autoAdvance}
-              pulseNoSolution={!advanced && solutions.size == 0}
-              onAdvance={checkCompleted}
-              onGiveUp={giveUp}
-              allowNoSolution={gameInfo.noSolution ?? false}
-              playerStatus={playerStatus}
-              onSanEntry={(san) => checkGuess(san)}
-              sanEntry={solutionType == "move"}
-              onNumberEntry={(number) => checkGuess(String(number))}
-              onReplayAnimation={() => resetAnimation()}
-            />
+            )}
           </div>
-        </>
-      )}
+          <div className="p-1">
+            {badGuesses && badGuesses.length > 0 && (
+              <div className="flex gap-2 bg-backdrop px-2 line-through">
+                {badGuesses.map((guess) => (
+                  <div className="text-red-500" key={guess}>
+                    {guess}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      <Chessboard
+        viewOnly={solutionType == "number"}
+        movable={solutionType == "move"}
+        fen={fens?.[fenPosition]}
+        gameUrl={gameUrl}
+        goodSquares={solutionType == "square" ? (goodGuesses as Square[]) : []}
+        badSquares={solutionType == "square" ? (badGuesses as Square[]) : []}
+        highlightedSquares={highlightedSquares}
+        onSelect={checkGuess}
+        onMove={checkGuess}
+        flipped={flipped}
+      />
+      <div
+        className={`flex items-center justify-center border-2 border-black ${bottomColor} min-h-9 pr-6 text-black`}
+      >
+        {gameSourceEl}
+      </div>
+      <GameHUD
+        score={currentScore}
+        health={health}
+        highScore={previousHighScore}
+        maxHealth={MAX_HEALTH}
+      />
     </div>
   );
-};
+}

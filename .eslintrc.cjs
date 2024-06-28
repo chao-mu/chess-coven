@@ -4,23 +4,24 @@ const config = {
   parserOptions: {
     project: true,
   },
-  plugins: [
-    "@typescript-eslint",
-  ],
+  plugins: ["@typescript-eslint"],
   extends: [
     "next/core-web-vitals",
     "eslint:recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
-    "plugin:@cspell/recommended"
+    "plugin:@cspell/recommended",
+    "plugin:tailwindcss/recommended",
   ],
-  overrides: [{
-    "files": ["*.test.*"],
-    "rules": {
-      "@cspell/spellchecker": "off",
-    }
-  }],
+  overrides: [
+    {
+      files: ["*.test.*"],
+      rules: {
+        "@cspell/spellchecker": "off",
+      },
+    },
+  ],
   rules: {
     // These opinionated rules are enabled in stylistic-type-checked above.
     // Feel free to reconfigure them to your own preference.
@@ -43,23 +44,26 @@ const config = {
       },
     ],
     "@typescript-eslint/dot-notation": "off",
-    '@cspell/spellchecker': ['warn', {
-      checkIdentifiers: false,
-      cspell: {
-        ignoreWords: [
-          // Our Site Vernacular
-          "Chessground",
-          "Chessimprovia",
-          "chessperson",
-          "chesspersons",
+    "@cspell/spellchecker": [
+      "warn",
+      {
+        checkIdentifiers: false,
+        cspell: {
+          ignoreWords: [
+            // Our Site Vernacular
+            "Chessground",
+            "Chessimprovia",
+            "chessperson",
+            "chesspersons",
 
-          // Workarounds
-          "gtag",
-          "HLBR",
-          "ndjson",
-        ]
-      }
-    }]
+            // Workarounds
+            "gtag",
+            "HLBR",
+            "ndjson",
+          ],
+        },
+      },
+    ],
   },
 };
 

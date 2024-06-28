@@ -1,6 +1,3 @@
-// React
-import React from "react";
-
 // Types
 import { type Game } from "@/types";
 

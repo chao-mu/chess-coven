@@ -1,6 +1,3 @@
-// React
-import React from "react";
-
 type NavButtonProps = {
   text?: string | number;
   children?: React.ReactNode;

@@ -1,6 +1,3 @@
-// React
-import React from "react";
-
 // React Hook Form
 import { useForm } from "react-hook-form";
 

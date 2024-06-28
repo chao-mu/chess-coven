@@ -1,7 +1,6 @@
 "use client";
 
 // React
-import React from "react";
 import { useState } from "react";
 
 // chess.js
@@ -75,7 +74,7 @@ export const GameMemorizer = () => {
   }
 
   return (
-    <div className="flex h-[95vh] min-w-[33vw]  flex-col bg-gray-800/50">
+    <div className="mx-auto flex flex-col bg-backdrop">
       <div className="m-2 text-center font-header text-2xl font-bold">
         Game Memorizer
       </div>

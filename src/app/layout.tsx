@@ -10,11 +10,8 @@ import { Analytics } from "@vercel/analytics/react";
 // CSS
 import "@/app/globals.css";
 
-// Components
-import { Footer } from "@/components/Footer";
-
 export const metadata = {
-  title: "Tactical Elements",
+  title: "Chess Coven",
   description: "Chess learning tools and games",
 };
 
@@ -43,12 +40,9 @@ export default function RootLayout({
             `,
         }}
       />
-      <body className="bg-gray-950 bg-forest bg-left-top font-body text-white">
-        <div className="flex h-full min-h-screen flex-col">
-          {children}
-          <Footer />
-        </div>
+      <body className="flex min-h-dvh flex-col bg-forest-bottom bg-forest bg-top bg-no-repeat font-body text-white">
         <Analytics />
+        {children}
       </body>
     </html>
   );
